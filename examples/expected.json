@@ -1,0 +1,5 @@
+{
+  "description": "Independent predictions frozen from the original Boolean functions, the synthetic source-field assignments and the stimulus. Time unit is ps.",
+  "addf": {"pin":"S","window":[9000,80000],"events":[{"input_ps":10000,"value":1,"delay_ps":233,"due_ps":10233,"source_line":7,"slot":"rise","sense":"positive_unate","expected_source":"100"}]},
+  "mux4": {"pin":"Z","window":[40000,80000],"events":[{"input_ps":50000,"value":1,"delay_ps":511,"due_ps":50511,"source_line":8,"slot":"rise","sense":"positive_unate","expected_source":"1001x0"},{"input_ps":70000,"value":0,"delay_ps":617,"due_ps":70617,"source_line":8,"slot":"fall","sense":"positive_unate","expected_source":"0001x0"}]}
+}

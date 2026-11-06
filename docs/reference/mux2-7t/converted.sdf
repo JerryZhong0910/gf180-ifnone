@@ -1,0 +1,15 @@
+(DELAYFILE
+ (SDFVERSION "3.0")
+ (DIVIDER /)
+ (TIMESCALE 1ns)
+ (CELL
+ (CELLTYPE "gf180mcu_fd_sc_mcu7t5v0__mux2_2")
+ (INSTANCE)
+ (DELAY (ABSOLUTE
+(IOPATH (posedge S) Z (0.289752:0.289752:0.289752) ())
+(IOPATH (negedge S) Z () (0.382399:0.382399:0.382399))
+(IOPATH (negedge S) Z (0.445571:0.445571:0.445571) ())
+(IOPATH (posedge S) Z () (0.428267:0.428267:0.428267))
+))
+)
+)

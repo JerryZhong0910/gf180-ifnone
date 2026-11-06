@@ -1,0 +1,29 @@
+{
+  "source": "Synthetic writer fixture. Arc identities are assigned at construction; triplets are illustrative, in ns.",
+  "master": "gf180mcu_fd_sc_mcu9t5v0__addf_1",
+  "groups": [
+    [
+      "A",
+      "S"
+    ],
+    [
+      "B",
+      "S"
+    ],
+    [
+      "CI",
+      "S"
+    ]
+  ],
+  "original_declarations": 18,
+  "generated_declarations": 30,
+  "records": [
+    {
+      "line": 7,
+      "record_sha256": "246d2b115c7738e1d6fbcbe87cbac60623d893ed03a9c629cfe5e61ea851de0e",
+      "rise_group": 12,
+      "fall_group": 12,
+      "group_sha256": "d259b3b31aca469fd21ae9b408d4d41f55076e09fe98d99e0de80177a1d33bc5"
+    }
+  ]
+}

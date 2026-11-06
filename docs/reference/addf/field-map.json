@@ -1,0 +1,34 @@
+[
+  {
+    "source": "A",
+    "destination": "S",
+    "original_declaration": 90,
+    "original_sdf_line": 7,
+    "liberty_group": 12,
+    "liberty_line": 1559,
+    "sense": "positive_unate",
+    "condition": "B===1'b0 && CI===1'b0",
+    "edge": "posedge",
+    "key": "__gls_path_A_S_9f7c123088d11c7d",
+    "slot": "rise",
+    "typical_ns": "0.233",
+    "generated_model_line": 90,
+    "sdf_line": 9
+  },
+  {
+    "source": "A",
+    "destination": "S",
+    "original_declaration": 90,
+    "original_sdf_line": 7,
+    "liberty_group": 12,
+    "liberty_line": 1559,
+    "sense": "positive_unate",
+    "condition": "B===1'b0 && CI===1'b0",
+    "edge": "negedge",
+    "key": "__gls_path_A_S_9f7c123088d11c7d",
+    "slot": "fall",
+    "typical_ns": "0.347",
+    "generated_model_line": 91,
+    "sdf_line": 10
+  }
+]

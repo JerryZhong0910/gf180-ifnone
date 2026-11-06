@@ -1,0 +1,15 @@
+(DELAYFILE
+ (SDFVERSION "3.0")
+ (DIVIDER /)
+ (TIMESCALE 1ns)
+ (CELL
+ (CELLTYPE "gf180mcu_fd_sc_mcu9t5v0__mux4_2")
+ (INSTANCE)
+ (DELAY (ABSOLUTE
+(COND __gls_path_S0_Z_fallback (IOPATH (negedge S0) Z (0.701:0.727:0.759) ()))
+(COND __gls_path_S0_Z_fallback (IOPATH (posedge S0) Z () (0.811:0.839:0.877)))
+(COND __gls_path_S0_Z_fallback (IOPATH (posedge S0) Z (0.503:0.511:0.557) ()))
+(COND __gls_path_S0_Z_fallback (IOPATH (negedge S0) Z () (0.601:0.617:0.653)))
+))
+)
+)

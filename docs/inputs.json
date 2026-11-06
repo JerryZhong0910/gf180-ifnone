@@ -1,0 +1,24 @@
+{
+  "nine_track_public_source": "https://github.com/fossi-foundation/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu9t5v0/tree/02b7af3f8d88c0b014d9af3db6a17f02aa983305/cells",
+  "seven_track_public_source": "https://github.com/fossi-foundation/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu7t5v0/tree/0ef8889a8df0acf959683fbe73013f342a2206a2/cells",
+  "sha256": {
+    "examples/addf/original.sdf": "5aa36058e52c234f8e6851b4b05b195921a33fe85b2c718ee8d54021c20e5cb6",
+    "examples/addf/producer.json": "5820feddc5fba88d6ac456690fd9f34645010aee2b73671070628810b5a69868",
+    "examples/bench.v": "22782c0f55d7d7f83739d781a62cdf1387f498cf7de3f1b0ac20d81459abc5d0",
+    "examples/design.v": "1511ad53edce60720df344e289be6c1bafff33729de056846f0cb023b3dd40fb",
+    "examples/expected.json": "d1a438ae5599fbefbc556cd40548192ffc1221ffbb25bba37bee79bcd6375034",
+    "examples/mux2-7t/original.sdf": "6677ac18dedfc9e42ce6d748a4fe60144a346e0b39cd8f57a3fd4183a8aa39bb",
+    "examples/mux2-7t/producer.json": "a7c084728cf5ef4a117bb41323d2c9c07971f46ef5a200431034513273bb3a05",
+    "examples/mux4/original.sdf": "fe5d4d5464f4e2ee2157d6093177962776c20cd76631d165c128ab3c713ce4e6",
+    "examples/mux4/producer.json": "4dfc2912646e88d7f7e3a2592afe32a5d86cda592bdf8eb678c61b9f74ae34f4",
+    "upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.behavioral.v": "5c8e4ef21a2472b4b58d35fcc270ab103c94b7dd7b0025143aab1fed9dea4512",
+    "upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.functional.v": "8b40feb80af9ba3101ac1eda5fe2b414ecace51a580da860f43af509f546dcb5",
+    "upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2__tt_025C_5v00.lib": "400ff5a013f1f61e752d61c9febb1f8ee3fa5cf3ddae9cb8fb8bdb29b09567ba",
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__addf_1.behavioral.v": "dc4d6612eb2e31bbf420bf65ff76c6ab9d011ef5e262d4b2d86222fe509b6d43",
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__addf_1.functional.v": "861c851c0a23b01fd014896422bb731361fe1e262f6e74d9f936c13f87b16777",
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__addf_1__tt_025C_5v00.lib": "eb65a9d13b1ff4f229a0cbc56cb2db6d4caf1834f67a59b1d0099c5a24d27bcf",
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2.behavioral.v": "b5b193a30f1cd37beda511b05eb944dee21faa8abf74db58c247ffbab72b071a",
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2.functional.v": "4f6249c433c1c0e52797d5d167f06e0200fce56f11ed11619d52debfcea94c11",
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2__tt_025C_5v00.lib": "1e9fc892244e2bcf3198034d436c52fa8e14a3ef695e14403cb5ee0b83881a64"
+  }
+}
