@@ -1,0 +1,147 @@
+{
+  "date": "2026-11-12",
+  "status": "PASS",
+  "repository_base": "1ca8ea512fc21c921e7d8889f0968cb04bb79210",
+  "icarus_revision": "beb32f3945f5be1f45cf5d898d440161e9c6f113",
+  "source_archive_sha256": "4d6471d2a79b2dcbf1270b9f494c772fd4b35e9d844683b11552c724f8283407",
+  "patch_sha256": "9096ec309018e69a752ff148c90b73d8f77eb1395e2f51767375f3e3cd5d062c",
+  "docker_image": "sha256:9bf368f4b38f15350dec8a8a0283225bcebddf51a91793c800ca60475d37a210",
+  "network": "disabled",
+  "public_online_fetch_executed": false,
+  "commands": [
+    "ICARUS_ARCHIVE=/evidence/icarus-source.tar JOBS=4 make build",
+    "make check",
+    "make check-upstream",
+    "python3 -B tools/prepare.py runs/source-review",
+    "python3 -B tools/run.py --prefix .build/install --out runs/review"
+  ],
+  "results": {
+    "source_regressions": {
+      "passed": 6,
+      "failed": 0
+    },
+    "upstream_condition_regressions": {
+      "passed": 15,
+      "failed": 0
+    },
+    "ordered_writes": 6,
+    "checked_fields": {
+      "addf": 2,
+      "mux4": 4,
+      "mux2-7t": 4
+    },
+    "derived_references": 20,
+    "source_path_locators": 151,
+    "pin_event_times_ps": [
+      10233,
+      50511,
+      70617
+    ],
+    "negatives": [
+      "MISSING_FIELD_OWNER",
+      "unknown compiled predicate; exit 1, first write retained, no stimulus"
+    ]
+  },
+  "baseline_comparison": {
+    "addf": {
+      "model_tokens_identical": true,
+      "helper_bytes_identical": true,
+      "sdf_bytes_identical": true,
+      "field_binding_identical": true
+    },
+    "mux4": {
+      "model_tokens_identical": true,
+      "helper_bytes_identical": true,
+      "sdf_bytes_identical": true,
+      "field_binding_identical": true
+    },
+    "mux2-7t": {
+      "model_tokens_identical": true,
+      "helper_bytes_identical": true,
+      "sdf_bytes_identical": true,
+      "field_binding_identical": true
+    },
+    "delivery_excluding_generated_locations": true,
+    "ordered_channels_identical": true
+  },
+  "clean_tools_sha256": {
+    "bin/iverilog": "7558e8452ed2f448e5a1b2c7f1cb3558487f4fd633f097f3795ec08157bfb670",
+    "bin/vvp": "df401df5a5ea43854e41439247e2dbcfcdd6950dc87ce6f9413424f139aeb1c3",
+    "lib/ivl/ivl": "c71f55b8ae55aeb3f344600e9b9c411470fe79db161ea1d94e0dccc0305d1f84",
+    "lib/ivl/system.vpi": "84e5e0d22d3425f57351cd2155e94ba59fbf149203e6288ec6c770db6de512b0"
+  },
+  "clean_capture_sha256": "fdf3c3447fcd00cc33ea8e5c4fe6878f1d2a87d7810263d48201454639f34e1e",
+  "clean_negative_capture_sha256": "d472b367bc7bf3dae781a3cc8a0fa04557137aaaa26b88a5405bdcd66eb8c9a2",
+  "clean_build_check_log_sha256": "05f42be260eb7ff3e9415417d174251da1c85b23f0ddb46bedc1f16c251f81e1",
+  "fresh_execution_scope": "Source-only export built offline in Docker; source checks for three cases, two nine-track simulations and focused upstream regressions.",
+  "reused_evidence": "RC1 clean acceptance; historical nine-track route and seven-track minimal/SHA3 records, including retained Docker representation and C42 report. No new SHA3 or physical execution.",
+  "independent_review": "PASS; archive tar.umask portability issue repaired and conflicting-configuration control passed.",
+  "candidate_manifest_scope": "All distributed files except this manifest itself. Build/runtime scientific files match the clean executed copy. Validation prose finalized after execution.",
+  "candidate_sha256": {
+    ".gitignore": "270b9457f3b7f7419be3d88bd94efd776ec59ef639b366fe7aee29b5c1a42cc0",
+    "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "Makefile": "2c3394d71633efbb469eb33280f506714566f09306ef47e9614c815577f50f2f",
+    "NOTICE.md": "b3367148bb075c11823bf8640f39d3596a349d718eec16d32629bc6bc810a4ea",
+    "README.md": "5c58e72d0783c65f9d21981c9351f0dbdbeab0e269140495f346a136a9bb8e82",
+    "docs/examples.md": "9fa5492d9fe523d0d49ef4c3e85041147c19be9d681ceded430e94419ca404c3",
+    "docs/implementation.md": "d4b1b6325a3dc26063d0314ccb3f9aa36f51a4afef0d5a3eecd9f9f3d80ec1db",
+    "docs/inputs.json": "7bb77795f9784fe47acf7b63d26ccf6dc4a98d6da5128fb33cfbbca7098f6bb6",
+    "docs/release.md": "35d5d56b42a9f68afbd71a462fe7598ead842069665a68c73b7dc4d8edf899a8",
+    "docs/scope.md": "85fd59457f9ae590394358968c145ebc44512434070ae527edfa2335e080c86a",
+    "docs/validation.md": "9cc32d819371a37d7db7cb24915d42a111a6f5f16fb609f248fd9e1ae740b3b7",
+    "examples/addf/original.sdf": "5aa36058e52c234f8e6851b4b05b195921a33fe85b2c718ee8d54021c20e5cb6",
+    "examples/addf/producer.json": "5820feddc5fba88d6ac456690fd9f34645010aee2b73671070628810b5a69868",
+    "examples/addf/reference/changes.diff": "769c04472b54a856f09643d241de906da77ff8f790b182d0e860365d6d888b9c",
+    "examples/addf/reference/converted.sdf": "5e8156d1c0b0ced95b6c4a39cc488d2a6930abf93453b02a014fbae5d8b05130",
+    "examples/addf/reference/field-map.json": "28a30be6e70718d274ef284986c121a7d29ca9321e23dc05cdf78796b019f290",
+    "examples/addf/reference/helper.v": "ccedd38483c32a07f3fee5ae97c8a0c0514abfb60484adcc0aa0d95a248e2c89",
+    "examples/addf/reference/model.v": "04bb05ee04b9bf570ebb092fb143cd9015835b0aab42c7ac33cd7ee5fe60a65b",
+    "examples/addf/reference/source-map.json": "acc868fca28bb00712b1f7cc830489f4779cbca99f535d7f562e724668598dfb",
+    "examples/bench.v": "22782c0f55d7d7f83739d781a62cdf1387f498cf7de3f1b0ac20d81459abc5d0",
+    "examples/design.v": "1511ad53edce60720df344e289be6c1bafff33729de056846f0cb023b3dd40fb",
+    "examples/expected.json": "d1a438ae5599fbefbc556cd40548192ffc1221ffbb25bba37bee79bcd6375034",
+    "examples/mux2-7t/original.sdf": "6677ac18dedfc9e42ce6d748a4fe60144a346e0b39cd8f57a3fd4183a8aa39bb",
+    "examples/mux2-7t/producer.json": "a7c084728cf5ef4a117bb41323d2c9c07971f46ef5a200431034513273bb3a05",
+    "examples/mux2-7t/reference/changes.diff": "da34876c4ee88122bb60b672bde1edfb88382fe956841ff3c6d4cb8437a262e8",
+    "examples/mux2-7t/reference/converted.sdf": "62a64b752589d9aeea1efdf2722a14a8f66ac303f256c54b31de969774802d97",
+    "examples/mux2-7t/reference/field-map.json": "467192dc8930e59675d25c46ee2200075ac708671bfc28d531e7e4fa693ba309",
+    "examples/mux2-7t/reference/helper.v": "c07ea82c49714f7da3bbdfcbb1f075b9c13235f7b3f90fbeb31184b947c707d0",
+    "examples/mux2-7t/reference/model.v": "170897d91ffa1e1ea9d6d87f15269fe249773323b740fdb8d4ff4bf3c5d8cc5c",
+    "examples/mux2-7t/reference/source-map.json": "4be84182f354a288c91ffadb46f82ad927197a9e2a73945280110adee241abfe",
+    "examples/mux4/original.sdf": "fe5d4d5464f4e2ee2157d6093177962776c20cd76631d165c128ab3c713ce4e6",
+    "examples/mux4/producer.json": "4dfc2912646e88d7f7e3a2592afe32a5d86cda592bdf8eb678c61b9f74ae34f4",
+    "examples/mux4/reference/changes.diff": "aabd182e3e131255ac46eb14b5a9826064658d2e7c2cc6ece996def45d392006",
+    "examples/mux4/reference/converted.sdf": "88c308f78a5b9ca1debaf9f3a075b7891a9672c997e5ea3940e06e8716454786",
+    "examples/mux4/reference/field-map.json": "9d5d3c3561a125591906e4b699e4fff969701a56e6472ef5b7f753d1f9a34914",
+    "examples/mux4/reference/helper.v": "e3acaf48f5839866cee08e438fddc47facfb956a1fd4422cc41ae502da608df9",
+    "examples/mux4/reference/model.v": "1bcc9ce95e4944258461dcc72fa4110860fe78163435b3b4192a1afa8063d34a",
+    "examples/mux4/reference/source-map.json": "4d9269588b89b22e2843bda58898a29912470ea1e867b60585f4808089909103",
+    "examples/reference/delivery.json": "f43bb48440a3b1bb0241dce99a45454221c42db9b3b2f042a590579005fdde9f",
+    "examples/reference/trace.txt": "b1358a513a68a46d0185037c010d8b431835945265cabc033a3fe0fed2da6d01",
+    "licenses/Icarus-GPL-2.0.txt": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+    "licenses/Icarus-target-LGPL-2.1.txt": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
+    "patches/initial-annotation.patch": "9096ec309018e69a752ff148c90b73d8f77eb1395e2f51767375f3e3cd5d062c",
+    "tests/test_source_contract.py": "127e473a048299ae69cc7c7f3c202f8d677129cda903aa0409e7dae7da30700a",
+    "tests/upstream.list": "c038dbc7fffe48d1d6428aafba105e328c2aafaa632ea90fe594a51cc1195ad3",
+    "tools/assess.py": "d41c2d8dbc2e057a3ce532f4ba98b61d04508772badc541961d39ae404d6168b",
+    "tools/build.sh": "a4033769691e1052ff0ab8955c7efa98ec87c421a56f477470004a93af82c10e",
+    "tools/check-upstream.sh": "0c167e3ce054369414bc328726ba59d8ed1adc5e88140e52cc611ae71c4cb2d9",
+    "tools/checks.py": "2e5c169abb7352d62c3ab68959749fc4268a9e138258f1a7b9d68249675ddf36",
+    "tools/convert.py": "5c189653f7bcbff46815cdb3381f325ed02e6838c544530ecadd27afdfd08f4b",
+    "tools/intake.py": "b3ffb1218d06b507e9907251396fe14b57c08b74eaa04edf51bc8fdeeac18de7",
+    "tools/liberty.py": "68b96a9c4ee56a700274f86cd399726813e43e9f1ca71e06b7e2c7e8ffa5cb14",
+    "tools/prepare.py": "644e4b85c35cfa2be3bc8d5d7c2c5150692911d18b989e3de2a0445a94bb7bd1",
+    "tools/references.py": "d2b2c235b46a0800f0c19692d61762bae79d51cce96bd53797d5afe7ce8b1dda",
+    "tools/run.py": "f1c770649b7340937ade2c8e56d9bc7e969d6d5fe7317173240116925da79d57",
+    "tools/verify.py": "f39e9d7a6858207e7b7505cbd655f8d61838eff37399cf3d45ec7f3cb03d3cde",
+    "upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.behavioral.v": "5c8e4ef21a2472b4b58d35fcc270ab103c94b7dd7b0025143aab1fed9dea4512",
+    "upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.functional.v": "8b40feb80af9ba3101ac1eda5fe2b414ecace51a580da860f43af509f546dcb5",
+    "upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2__tt_025C_5v00.lib": "400ff5a013f1f61e752d61c9febb1f8ee3fa5cf3ddae9cb8fb8bdb29b09567ba",
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__addf_1.behavioral.v": "dc4d6612eb2e31bbf420bf65ff76c6ab9d011ef5e262d4b2d86222fe509b6d43",
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__addf_1.functional.v": "861c851c0a23b01fd014896422bb731361fe1e262f6e74d9f936c13f87b16777",
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__addf_1__tt_025C_5v00.lib": "eb65a9d13b1ff4f229a0cbc56cb2db6d4caf1834f67a59b1d0099c5a24d27bcf",
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2.behavioral.v": "b5b193a30f1cd37beda511b05eb944dee21faa8abf74db58c247ffbab72b071a",
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2.functional.v": "4f6249c433c1c0e52797d5d167f06e0200fce56f11ed11619d52debfcea94c11",
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2__tt_025C_5v00.lib": "1e9fc892244e2bcf3198034d436c52fa8e14a3ef695e14403cb5ee0b83881a64"
+  }
+}

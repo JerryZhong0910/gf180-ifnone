@@ -1,25 +1,41 @@
-# Sources, assumptions and runtime
+# Conversion and runtime responsibilities
 
-The model and SDF emitters in `tools/convert.py` are extracted from the research implementation of `standard_model` and `standard_cell`. The source verifier in `tools/verify.py` separately reconstructs the predicate cone and checks original declaration membership, edges, slots, untouched text and ordered SDF records. Its expected ownership comes from the original model, the authenticated writer identity and the raw Liberty sense/condition. The generator's mapping is checked last. The two public fixtures use per-cell PDK source files, an explicit small inventory, and file-local line numbers. They need no chip netlist.
+The [examples](examples.md) show the concrete changes. The selected representation is called **GF180-ARC-PAIR-1**: ordinary input-edge paths qualified by explicit scalar predicates, with each supplied output-delay field assigned through its producer/Liberty identity.
 
-Each original conjunction is a local `wand` of scalar case equalities; a `wor` combines membership. `membership === 1'b0` enables the fallback. The compiler retains the named scalar condition alongside the actual module path. The SDF consumer matches scope, source, destination, edge and the compiled predicate key. A generic bare endpoint alone cannot distinguish two unqualified producer records with different Liberty senses. Writer IDs in the fixture are bound to original record and raw timing-group digests. Delay magnitudes do not select the owner.
+## What the Python tools own
 
-**Dependencies.** Start from public Icarus commit `9f26050130988d661cec6ab11b43d45f7ef533f5` and apply [the source patch](../patches/ordinary-sdf-condition.patch). It carries the scalar predicate identity through the compiler/target/VVP interface, binds bare named SDF conditions, and reports effective slots after each write in verbose mode. A time-zero system task, `$sdf_annotate_initial`, checks the named target population and returns an error for a missing conditional path. Earlier writes remain visible on rejection. The demo bench performs both annotations while its inputs are still unknown and drives its first inputs at 1 ns. This finite entry does not implement the historical full-design supervisor or every form of SDF condition.
+| Component | Responsibility |
+|---|---|
+| [intake.py](../tools/intake.py), [liberty.py](../tools/liberty.py) | Read original declarations, SDF occurrences and raw Liberty groups; authenticate writer identities and endpoints |
+| [convert.py](../tools/convert.py) | Emit predicate nets, edge paths and ordered one-field SDF children |
+| [verify.py](../tools/verify.py) | Independently derive membership, cone structure, edge/slot ownership and unchanged text from source inputs; check emitted text before accepting generator metadata |
+| [prepare.py](../tools/prepare.py) | Authenticate inputs, prepare each case, generate complete diffs and source/field maps |
+| [assess.py](../tools/assess.py), [run.py](../tools/run.py) | Compile, annotate, observe, compare independent expected events, and require effective negative controls |
+| [references.py](../tools/references.py) | Compare the single committed reference set, or explicitly regenerate it after a passing run |
 
-In a control run on the same public base without the patch, using its standard `$sdf_annotate` entry, the SDF parser emitted six unsupported-COND warnings and left the 1 ns path defaults active. The three pin events occurred at 11,000 / 51,000 / 71,000 ps. This distinguishes conditional field binding from correct functional output alone.
+Each original conjunction becomes a `wand` driven by scalar `===` comparisons. A `wor` combines those exact binary matches; `membership === 1'b0` enables the endpoint fallback. Empty membership yields unconditional edge paths. The original helper evaluates the logic; the predicates affect timing paths only.
 
-The larger research execution also checked genuine history at time zero and general event competition with a patched runtime and observer. The two release stimuli select paths after time has advanced and after the documented input settling step. The release uses pin and source observations, settled named predicates and per-write path readback. It does not require the independent [Icarus time-zero history PR #1704](https://github.com/steveicarus/iverilog/pull/1704) or inherit that PR's time-zero result. The [escaped-name PR #1694](https://github.com/steveicarus/iverilog/pull/1694) is independent as well.
+All declarations sharing a selected output are checked. On the owned paired-edge groups, each conditional declaration becomes two edge children. Collateral mux data groups keep one simple path per declaration and receive the same explicit predicate representation. This preserves the selected endpoint-local fallback policy without invoking destination-wide legacy `ifnone` selection. Addf carry paths and all functional helper bodies stay unchanged. Each helper's module declaration is renamed to match the behavioral wrapper, as shown in its case diff.
 
-Upstream status checked on **2026-11-06**:
+Generated nets occupy separate readable lines. The verifier reads syntax and unchanged byte spans, reconstructs every cone independently, and measures generated locations after parsing. Source line numbers identify the original statements; they do not dictate output formatting. The regression suite checks single-line source declarations, expanded cone formatting and rejected corruption of membership, collateral paths, untouched carry text and field bindings.
 
-| Contribution | Upstream status | Relationship to RC1 |
-|---|---|---|
-| [#1694 — escaped identifier boundaries](https://github.com/steveicarus/iverilog/pull/1694) | Merged as `3b5615f55eea381aa03aea019691c9cc5d03f280` | Separate parser repair; RC1 retains its accepted source pin and does not require this patch. |
-| [#1704 — first matching edge](https://github.com/steveicarus/iverilog/pull/1704) | Open, unmerged | Separate scheduling repair; RC1's scored events occur after the documented settling step. |
-| RC1 named-condition binding and cold annotation | Experimental patch distributed here | Required by the supplied `make build` / `make check` route; upstream adoption is not claimed. |
+The SDF reader supplies owned records with authenticated field identities. Unused literal-record serialization from the research API has been removed; collateral HDL verification remains. Source triplets and write order are preserved, and empty companion fields retain earlier values. The fixture format and required inputs are documented [beside the commands](examples.md#run-and-interpret-the-results).
 
-The build remains pinned to `9f26050130988d661cec6ab11b43d45f7ef533f5` with the bundled patch. Upstream status updates do not change the accepted executable or scientific inputs.
+## What fixed upstream Icarus owns
 
-**Format limits.** The intake accepts the pinned scalar cell source syntax, a single-cell 1 ns SDF envelope, two explicit output triplets per source record, and positive/negative-unate combinational owners. It preserves all three supplied tokens but the simulation selects typical. Names and input files are pinned for these examples. Each zero-based writer group ordinal is checked against a raw group hash, the actual related pin, output and original condition. Source readback/derivation is independent of the net names produced by the generator.
+The build pins official commit [`beb32f3945f5be1f45cf5d898d440161e9c6f113`](https://github.com/steveicarus/iverilog/commit/beb32f3945f5be1f45cf5d898d440161e9c6f113). It contains the following responsibilities formerly duplicated in the RC1 patch:
 
-Release provenance for the converter and checker: research revision `424bf08221c027a374271b8d173f100a472a9d6b`, functions in `prepare_owned_inputs.py`, `independent_owned.py` and `producer_formats.py`. The new standalone input reader, build route, scoped native port and testbench are release adaptations. The source build, distributions and operating-system requirements are part of this package's validation boundary.
+- [Local scalar COND binding, #1713](https://github.com/steveicarus/iverilog/pull/1713): carry condition identity through compiler and VVP, expose `_vpiModPathCondition`, and match scope, source, destination, input edge and condition during SDF annotation.
+- [Comparison/conjunction support, #1718](https://github.com/steveicarus/iverilog/pull/1718): additional ordinary condition syntax. The GF180 exact-case predicate network remains necessary for the selected model representation.
+- Existing `vpi_get_delays` / `vpi_put_delays` processing: preserve fields not specified by a partial SDF write.
+- [First-matching-edge history, #1704](https://github.com/steveicarus/iverilog/pull/1704): included in this base. The current scored events occur after initialization and settling.
+
+The [remaining patch](../patches/initial-annotation.patch) changes **one file**, `vpi/sys_sdf.c`, down from 17 in RC1. It supplies `$sdf_annotate_initial`, rejects calls after time zero, requires exactly one match for a named conditional path through that entry, and prints effective two-slot readback in verbose mode. Earlier writes remain observable if a later named path is missing. The ordinary `$sdf_annotate` entry retains upstream multiple-match and later-annotation behavior.
+
+The demo calls the initial entry while inputs are unknown, then releases the first stimulus at 1 ns. The custom task's time check does not itself order other time-zero active events; the bench supplies that ordering. This small patch is an example harness facility. General SDF error supervision is outside its interface.
+
+[Build instructions](examples.md#build-environment) pin and authenticate the source export. [Validation](validation.md) compares the old and new model structure, writes and events, and exercises upstream scalar-condition regressions against this reduced patch. Historical RC1's unmodified-base control is recorded in [release.md](release.md), separate from the new upstream base that already supports `COND`.
+
+## Extraction provenance
+
+The model and SDF emitters derive from `standard_model` and `standard_cell` in research revision `424bf08221c027a374271b8d173f100a472a9d6b` (`prepare_owned_inputs.py`, `independent_owned.py`, `producer_formats.py`). The standalone input reader, finite profile, bench and build route were extracted for RC1. This maintenance keeps that modeling policy and independent expected events while simplifying formatting, ownership of derived files and the runtime boundary. The larger historical research supervisor and application captures remain historical evidence, not runtime dependencies of these examples.

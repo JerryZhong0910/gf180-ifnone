@@ -1,0 +1,353 @@
+[
+  {
+    "source_line": 74,
+    "generated_line": 132,
+    "input": "A",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_A_S_1272398d5af3b1eb"
+  },
+  {
+    "source_line": 74,
+    "generated_line": 133,
+    "input": "A",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_A_S_1272398d5af3b1eb"
+  },
+  {
+    "source_line": 78,
+    "generated_line": 135,
+    "input": "A",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_A_S_1d7b1ea11cb582b3"
+  },
+  {
+    "source_line": 78,
+    "generated_line": 136,
+    "input": "A",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_A_S_1d7b1ea11cb582b3"
+  },
+  {
+    "source_line": 82,
+    "generated_line": 138,
+    "input": "A",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_A_S_fallback"
+  },
+  {
+    "source_line": 86,
+    "generated_line": 140,
+    "input": "A",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_A_S_fallback"
+  },
+  {
+    "source_line": 90,
+    "generated_line": 142,
+    "input": "A",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_A_S_9f7c123088d11c7d"
+  },
+  {
+    "source_line": 90,
+    "generated_line": 143,
+    "input": "A",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_A_S_9f7c123088d11c7d"
+  },
+  {
+    "source_line": 94,
+    "generated_line": 145,
+    "input": "A",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_A_S_671e30e47da0f78c"
+  },
+  {
+    "source_line": 94,
+    "generated_line": 146,
+    "input": "A",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_A_S_671e30e47da0f78c"
+  },
+  {
+    "source_line": 98,
+    "generated_line": 148,
+    "input": "B",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_B_S_8fdc0f3f6809d161"
+  },
+  {
+    "source_line": 98,
+    "generated_line": 149,
+    "input": "B",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_B_S_8fdc0f3f6809d161"
+  },
+  {
+    "source_line": 102,
+    "generated_line": 151,
+    "input": "B",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_B_S_5865df151bc9af75"
+  },
+  {
+    "source_line": 102,
+    "generated_line": 152,
+    "input": "B",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_B_S_5865df151bc9af75"
+  },
+  {
+    "source_line": 106,
+    "generated_line": 154,
+    "input": "B",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_B_S_fallback"
+  },
+  {
+    "source_line": 110,
+    "generated_line": 156,
+    "input": "B",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_B_S_fallback"
+  },
+  {
+    "source_line": 114,
+    "generated_line": 158,
+    "input": "B",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_B_S_818c09fad5ba477f"
+  },
+  {
+    "source_line": 114,
+    "generated_line": 159,
+    "input": "B",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_B_S_818c09fad5ba477f"
+  },
+  {
+    "source_line": 118,
+    "generated_line": 161,
+    "input": "B",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_B_S_0e0fa1d3733dfa61"
+  },
+  {
+    "source_line": 118,
+    "generated_line": 162,
+    "input": "B",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_B_S_0e0fa1d3733dfa61"
+  },
+  {
+    "source_line": 122,
+    "generated_line": 164,
+    "input": "CI",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_CI_S_e6c721e3e82c3e1d"
+  },
+  {
+    "source_line": 122,
+    "generated_line": 165,
+    "input": "CI",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_CI_S_e6c721e3e82c3e1d"
+  },
+  {
+    "source_line": 126,
+    "generated_line": 167,
+    "input": "CI",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_CI_S_fe8b4c915f6ca384"
+  },
+  {
+    "source_line": 126,
+    "generated_line": 168,
+    "input": "CI",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_CI_S_fe8b4c915f6ca384"
+  },
+  {
+    "source_line": 130,
+    "generated_line": 170,
+    "input": "CI",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_CI_S_fallback"
+  },
+  {
+    "source_line": 134,
+    "generated_line": 172,
+    "input": "CI",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_CI_S_fallback"
+  },
+  {
+    "source_line": 138,
+    "generated_line": 174,
+    "input": "CI",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_CI_S_5653c68b2ea50a9a"
+  },
+  {
+    "source_line": 138,
+    "generated_line": 175,
+    "input": "CI",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_CI_S_5653c68b2ea50a9a"
+  },
+  {
+    "source_line": 142,
+    "generated_line": 177,
+    "input": "CI",
+    "output": "S",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_CI_S_1d97fa80b7ce4536"
+  },
+  {
+    "source_line": 142,
+    "generated_line": 178,
+    "input": "CI",
+    "output": "S",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": "__gls_path_CI_S_1d97fa80b7ce4536"
+  },
+  {
+    "source_line": 38,
+    "generated_line": 96,
+    "input": "A",
+    "output": "CO",
+    "edge": null,
+    "role": "untouched",
+    "predicate": "B===1'b0&&CI===1'b1"
+  },
+  {
+    "source_line": 42,
+    "generated_line": 100,
+    "input": "A",
+    "output": "CO",
+    "edge": null,
+    "role": "untouched",
+    "predicate": "B===1'b1&&CI===1'b0"
+  },
+  {
+    "source_line": 46,
+    "generated_line": 104,
+    "input": "A",
+    "output": "CO",
+    "edge": null,
+    "role": "untouched",
+    "predicate": ""
+  },
+  {
+    "source_line": 50,
+    "generated_line": 108,
+    "input": "B",
+    "output": "CO",
+    "edge": null,
+    "role": "untouched",
+    "predicate": "A===1'b0&&CI===1'b1"
+  },
+  {
+    "source_line": 54,
+    "generated_line": 112,
+    "input": "B",
+    "output": "CO",
+    "edge": null,
+    "role": "untouched",
+    "predicate": "A===1'b1&&CI===1'b0"
+  },
+  {
+    "source_line": 58,
+    "generated_line": 116,
+    "input": "B",
+    "output": "CO",
+    "edge": null,
+    "role": "untouched",
+    "predicate": ""
+  },
+  {
+    "source_line": 62,
+    "generated_line": 120,
+    "input": "CI",
+    "output": "CO",
+    "edge": null,
+    "role": "untouched",
+    "predicate": "A===1'b0&&B===1'b1"
+  },
+  {
+    "source_line": 66,
+    "generated_line": 124,
+    "input": "CI",
+    "output": "CO",
+    "edge": null,
+    "role": "untouched",
+    "predicate": "A===1'b1&&B===1'b0"
+  },
+  {
+    "source_line": 70,
+    "generated_line": 128,
+    "input": "CI",
+    "output": "CO",
+    "edge": null,
+    "role": "untouched",
+    "predicate": ""
+  }
+]

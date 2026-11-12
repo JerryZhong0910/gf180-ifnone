@@ -1,37 +1,20 @@
-# RC1 release evidence
+# Historical RC1 acceptance
 
-RC1 connects original GF180 path declarations, producer-owned SDF fields and observed output delivery. Start with [the worked examples](examples.md). The converter, independent source verifier and necessary experimental Icarus patch are included as source.
+This page records the **2026-11-04 acceptance and 2026-11-06 publication**. The current implementation and results are described in [validation.md](validation.md). Historical release/tag bytes remain available at [rc1](https://github.com/JerryZhong0910/gf180-ifnone/releases/tag/rc1).
 
-## Accepted baseline
+The accepted candidate was extracted into an empty directory and executed in rootless Linux mount, PID and network namespaces. Only the extracted source, authenticated official Icarus archive and ordinary host compiler/OS dependencies were visible. HOME and temporary storage started empty; networking was disabled. `make build` and `make check` returned 0.
 
-The local source candidate passed a fresh build and example run on 2026-11-04. It was extracted into an empty directory and executed in rootless Linux mount, PID and network namespaces. Only the extracted source package, the authenticated official Icarus archive and ordinary host OS/compiler dependencies were available. HOME and temporary storage started empty, and network access was disabled. `make build` followed by `make check` completed with exit status 0.
-
-| Build input | Pinned identity |
+| Historical build input | Identity |
 |---|---|
-| Official Icarus source | `9f26050130988d661cec6ab11b43d45f7ef533f5` |
-| Official source tarball SHA256 | `7ab87bd7d524783ccdd26d23b1cfa9653311b9602608603d0cd150fe01ac38d2` |
-| Bundled `ordinary-sdf-condition.patch` SHA256 | `f4113dec40b35ab777e227f99752bfd162d049bb6d2412a3d124a11b9260ece1` |
+| Icarus source | `9f26050130988d661cec6ab11b43d45f7ef533f5` |
+| Official tarball SHA256 | `7ab87bd7d524783ccdd26d23b1cfa9653311b9602608603d0cd150fe01ac38d2` |
+| [RC1 condition patch](https://github.com/JerryZhong0910/gf180-ifnone/blob/rc1/patches/ordinary-sdf-condition.patch) SHA256 | `f4113dec40b35ab777e227f99752bfd162d049bb6d2412a3d124a11b9260ece1` |
+| Publication commit | `1ca8ea512fc21c921e7d8889f0968cb04bb79210` |
 
-This publication adds documentation and upstream status updates. All converter, checker, patch, build, model, Liberty, stimulus, expectation and recorded-reference bytes remain identical to that accepted candidate. No build, control campaign or simulation was rerun for publication.
+RC1 measured S at 10,233 ps and Z at 50,511 / 70,617 ps on the synthetic nine-track fixtures. Six ordered conditional writes, companion slots, settled predicates, source vectors and complete scored output lists passed. Four seven-track real-producer fields were checked offline. Generated model/SDF/maps and delivery records matched the archived references.
 
-## Results available in this package
+Removing a writer identity produced `MISSING_FIELD_OWNER`. An unknown second addf condition returned exit 1, retained the first write and stopped before stimulus. The unmodified **RC1** public base, using ordinary `$sdf_annotate`, produced six unsupported-COND warnings, retained 1 ns defaults and delivered the three scored events at 11,000 / 51,000 / 71,000 ps. That control belongs to the old base; the current pinned upstream includes named-condition support.
 
-| Track and case | Evidence |
-|---|---|
-| Nine-track `addf_1` | A rises at 10,000 ps with a 233 ps source delay; S is observed at 10,233 ps. |
-| Nine-track `mux4_2` | S0 rises at 50,000 ps and falls at 70,000 ps; Z is observed at 50,511 ps and 70,617 ps. The masked-X condition exercises the fallback. |
-| Seven-track `mux2_2` | Four fields from two historical real-producer SDF records are checked offline against source declarations and authenticated Liberty owners. RC1 adds no seven-track simulation. |
+The November 6 publication changed documentation and then-current upstream status, with no new simulation. The [scope table](scope.md) separately preserves the earlier seven-/nine-track application evidence. RC1 acceptance covered its declared fixtures and observation windows; it did not run a full upstream Icarus regression suite.
 
-The nine-track delays are synthetic, asymmetric SDF inputs. Six ordered conditional writes, their companion slots, settled predicates, source-pin vectors and complete output event lists within the declared windows were checked. Generated models, SDF records, field maps and delivery results matched the included references. [Delivery records](reference/delivery.json) · [Trace](reference/trace.txt) · [Input identities](inputs.json)
-
-Two negative controls establish specific rejection paths. Removing a source-field owner reaches `MISSING_FIELD_OWNER`. Changing the second generated addf condition to an unknown name reaches the initial-annotation error with exit status 1, retains the first write, and stops before stimulus. On the unmodified public Icarus base, the standard annotation entry reported six unsupported-COND warnings and retained 1 ns defaults, giving the three scored output times 11,000 / 51,000 / 71,000 ps.
-
-The [scope table](scope.md) separately preserves historical seven-track and nine-track results. Fresh RC1 measurements cover the declared fixtures and observation windows. They do not establish original-model equivalence, independent-simulator agreement, exhaustive waveform coverage or physical signoff. The extracted patch has not undergone a full upstream regression suite in this package's acceptance run.
-
-## Distribution
-
-The release contains source, public per-cell PDK files, reduced fixture provenance, generated reference files and license texts. It includes no internal chip design, PAD design, application capture, historical workspace, private binary or build output. The Icarus source is downloaded from its public pinned URL, or supplied through the digest-checked `ICARUS_ARCHIVE` option.
-
-Project-owned files use Apache-2.0. PDK files and Icarus-derived changes retain their original terms as detailed in [NOTICE.md](../NOTICE.md). The published source archive and SHA256 checksum are attached to [release rc1](https://github.com/JerryZhong0910/gf180-ifnone/releases/tag/rc1).
-
-The upstream status table in [implementation.md](implementation.md) records #1694 as merged and #1704 as open on 2026-11-06. The bundled experimental condition patch remains separate from both contributions.
+The release contains redistributable source, public per-cell PDK inputs, reduced fixture provenance, generated references and license texts. Terms and credits are in [NOTICE.md](../NOTICE.md). The current source layout keeps derived references beside each example; the release archive preserves the original layout.

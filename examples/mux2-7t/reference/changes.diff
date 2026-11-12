@@ -1,0 +1,103 @@
+--- upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.behavioral.v
++++ examples/mux2-7t/reference/model.v
+@@ -31,41 +31,44 @@
+ 
+ 
+ 
++   wand __gls_path_I0_Z_3235b9e3e2cc8771;
++   assign __gls_path_I0_Z_3235b9e3e2cc8771 = (I1 === 1'b0);
++   wand __gls_path_I0_Z_4d4772acaeb8e908;
++   assign __gls_path_I0_Z_4d4772acaeb8e908 = (I1 === 1'b1);
++   wor __gls_path_I0_Z_any;
++   assign __gls_path_I0_Z_any = __gls_path_I0_Z_3235b9e3e2cc8771;
++   assign __gls_path_I0_Z_any = __gls_path_I0_Z_4d4772acaeb8e908;
++   wire __gls_path_I0_Z_fallback;
++   assign __gls_path_I0_Z_fallback = (__gls_path_I0_Z_any === 1'b0);
++   wand __gls_path_I1_Z_835cf1eec13ef5b2;
++   assign __gls_path_I1_Z_835cf1eec13ef5b2 = (I0 === 1'b0);
++   wand __gls_path_I1_Z_e60879f3ff0ab737;
++   assign __gls_path_I1_Z_e60879f3ff0ab737 = (I0 === 1'b1);
++   wor __gls_path_I1_Z_any;
++   assign __gls_path_I1_Z_any = __gls_path_I1_Z_835cf1eec13ef5b2;
++   assign __gls_path_I1_Z_any = __gls_path_I1_Z_e60879f3ff0ab737;
++   wire __gls_path_I1_Z_fallback;
++   assign __gls_path_I1_Z_fallback = (__gls_path_I1_Z_any === 1'b0);
++
+    specify
+ 
+ 	// specify_block_begin
+ 
+-	if(I1===1'b0)
+-	// comb arc I0 --> Z
+-	 (I0 => Z) = (1.0,1.0);
++	if (__gls_path_I0_Z_3235b9e3e2cc8771) (I0 => Z) = (1.0,1.0);
+ 
+-	if(I1===1'b1)
+-	// comb arc I0 --> Z
+-	 (I0 => Z) = (1.0,1.0);
++	if (__gls_path_I0_Z_4d4772acaeb8e908) (I0 => Z) = (1.0,1.0);
+ 
+-	ifnone
+-	// comb arc I0 --> Z
+-	 (I0 => Z) = (1.0,1.0);
++	if (__gls_path_I0_Z_fallback) (I0 => Z) = (1.0,1.0);
+ 
+-	if(I0===1'b0)
+-	// comb arc I1 --> Z
+-	 (I1 => Z) = (1.0,1.0);
++	if (__gls_path_I1_Z_835cf1eec13ef5b2) (I1 => Z) = (1.0,1.0);
+ 
+-	if(I0===1'b1)
+-	// comb arc I1 --> Z
+-	 (I1 => Z) = (1.0,1.0);
++	if (__gls_path_I1_Z_e60879f3ff0ab737) (I1 => Z) = (1.0,1.0);
+ 
+-	ifnone
+-	// comb arc I1 --> Z
+-	 (I1 => Z) = (1.0,1.0);
++	if (__gls_path_I1_Z_fallback) (I1 => Z) = (1.0,1.0);
+ 
+-	ifnone
+-	// comb arc posedge S --> (Z:S)
+-	 (posedge S => (Z:S)) = (1.0,1.0);
++	(posedge S => (Z : S)) = (1.0,1.0);
+ 
+-	ifnone
+-	// comb arc negedge S --> (Z:S)
+-	 (negedge S => (Z:S)) = (1.0,1.0);
++	(negedge S => (Z : S)) = (1.0,1.0);
+ 
+ 	// specify_block_end
+ 
+--- upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.functional.v
++++ examples/mux2-7t/reference/helper.v
+@@ -12,7 +12,7 @@
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+ 
+-module gf180mcu_fd_sc_mcu7t5v0__mux2_2( Z, I1, S, I0 );
++module gf180mcu_fd_sc_mcu7t5v0__mux2_2_func( Z, I1, S, I0 );
+ input I0, I1, S;
+ output Z;
+ 
+--- examples/mux2-7t/original.sdf
++++ examples/mux2-7t/reference/converted.sdf
+@@ -2,8 +2,14 @@
+  (SDFVERSION "3.0")
+  (DIVIDER /)
+  (TIMESCALE 1ns)
+- (CELL (CELLTYPE "gf180mcu_fd_sc_mcu7t5v0__mux2_2") (INSTANCE)
++ (CELL
++ (CELLTYPE "gf180mcu_fd_sc_mcu7t5v0__mux2_2")
++ (INSTANCE)
+  (DELAY (ABSOLUTE
+-(IOPATH S Z (0.289752:0.289752:0.289752) (0.382399:0.382399:0.382399))
+-(IOPATH S Z (0.445571:0.445571:0.445571) (0.428267:0.428267:0.428267))
+-))))
++(IOPATH (posedge S) Z (0.289752:0.289752:0.289752) ())
++(IOPATH (negedge S) Z () (0.382399:0.382399:0.382399))
++(IOPATH (negedge S) Z (0.445571:0.445571:0.445571) ())
++(IOPATH (posedge S) Z () (0.428267:0.428267:0.428267))
++))
++)
++)

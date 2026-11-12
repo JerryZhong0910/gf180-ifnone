@@ -1,0 +1,204 @@
+--- upstream/gf180mcu_fd_sc_mcu9t5v0__addf_1.behavioral.v
++++ examples/addf/reference/model.v
+@@ -30,6 +30,64 @@
+ 	// spec_gates_end
+ 
+ 
++
++   wand __gls_path_A_S_1272398d5af3b1eb;
++   assign __gls_path_A_S_1272398d5af3b1eb = (B === 1'b0);
++   assign __gls_path_A_S_1272398d5af3b1eb = (CI === 1'b1);
++   wand __gls_path_A_S_1d7b1ea11cb582b3;
++   assign __gls_path_A_S_1d7b1ea11cb582b3 = (B === 1'b1);
++   assign __gls_path_A_S_1d7b1ea11cb582b3 = (CI === 1'b0);
++   wand __gls_path_A_S_9f7c123088d11c7d;
++   assign __gls_path_A_S_9f7c123088d11c7d = (B === 1'b0);
++   assign __gls_path_A_S_9f7c123088d11c7d = (CI === 1'b0);
++   wand __gls_path_A_S_671e30e47da0f78c;
++   assign __gls_path_A_S_671e30e47da0f78c = (B === 1'b1);
++   assign __gls_path_A_S_671e30e47da0f78c = (CI === 1'b1);
++   wor __gls_path_A_S_any;
++   assign __gls_path_A_S_any = __gls_path_A_S_1272398d5af3b1eb;
++   assign __gls_path_A_S_any = __gls_path_A_S_1d7b1ea11cb582b3;
++   assign __gls_path_A_S_any = __gls_path_A_S_9f7c123088d11c7d;
++   assign __gls_path_A_S_any = __gls_path_A_S_671e30e47da0f78c;
++   wire __gls_path_A_S_fallback;
++   assign __gls_path_A_S_fallback = (__gls_path_A_S_any === 1'b0);
++   wand __gls_path_B_S_8fdc0f3f6809d161;
++   assign __gls_path_B_S_8fdc0f3f6809d161 = (A === 1'b0);
++   assign __gls_path_B_S_8fdc0f3f6809d161 = (CI === 1'b1);
++   wand __gls_path_B_S_5865df151bc9af75;
++   assign __gls_path_B_S_5865df151bc9af75 = (A === 1'b1);
++   assign __gls_path_B_S_5865df151bc9af75 = (CI === 1'b0);
++   wand __gls_path_B_S_818c09fad5ba477f;
++   assign __gls_path_B_S_818c09fad5ba477f = (A === 1'b0);
++   assign __gls_path_B_S_818c09fad5ba477f = (CI === 1'b0);
++   wand __gls_path_B_S_0e0fa1d3733dfa61;
++   assign __gls_path_B_S_0e0fa1d3733dfa61 = (A === 1'b1);
++   assign __gls_path_B_S_0e0fa1d3733dfa61 = (CI === 1'b1);
++   wor __gls_path_B_S_any;
++   assign __gls_path_B_S_any = __gls_path_B_S_8fdc0f3f6809d161;
++   assign __gls_path_B_S_any = __gls_path_B_S_5865df151bc9af75;
++   assign __gls_path_B_S_any = __gls_path_B_S_818c09fad5ba477f;
++   assign __gls_path_B_S_any = __gls_path_B_S_0e0fa1d3733dfa61;
++   wire __gls_path_B_S_fallback;
++   assign __gls_path_B_S_fallback = (__gls_path_B_S_any === 1'b0);
++   wand __gls_path_CI_S_e6c721e3e82c3e1d;
++   assign __gls_path_CI_S_e6c721e3e82c3e1d = (A === 1'b0);
++   assign __gls_path_CI_S_e6c721e3e82c3e1d = (B === 1'b1);
++   wand __gls_path_CI_S_fe8b4c915f6ca384;
++   assign __gls_path_CI_S_fe8b4c915f6ca384 = (A === 1'b1);
++   assign __gls_path_CI_S_fe8b4c915f6ca384 = (B === 1'b0);
++   wand __gls_path_CI_S_5653c68b2ea50a9a;
++   assign __gls_path_CI_S_5653c68b2ea50a9a = (A === 1'b0);
++   assign __gls_path_CI_S_5653c68b2ea50a9a = (B === 1'b0);
++   wand __gls_path_CI_S_1d97fa80b7ce4536;
++   assign __gls_path_CI_S_1d97fa80b7ce4536 = (A === 1'b1);
++   assign __gls_path_CI_S_1d97fa80b7ce4536 = (B === 1'b1);
++   wor __gls_path_CI_S_any;
++   assign __gls_path_CI_S_any = __gls_path_CI_S_e6c721e3e82c3e1d;
++   assign __gls_path_CI_S_any = __gls_path_CI_S_fe8b4c915f6ca384;
++   assign __gls_path_CI_S_any = __gls_path_CI_S_5653c68b2ea50a9a;
++   assign __gls_path_CI_S_any = __gls_path_CI_S_1d97fa80b7ce4536;
++   wire __gls_path_CI_S_fallback;
++   assign __gls_path_CI_S_fallback = (__gls_path_CI_S_any === 1'b0);
+ 
+    specify
+ 
+@@ -71,77 +129,53 @@
+ 	// comb arc CI --> CO
+ 	 (CI => CO) = (1.0,1.0);
+ 
+-	if(B===1'b0 && CI===1'b1)
+-	// comb arc A --> S
+-	 (A => S) = (1.0,1.0);
++	if (__gls_path_A_S_1272398d5af3b1eb) (posedge A => (S : A)) = (1.0,1.0);
++	if (__gls_path_A_S_1272398d5af3b1eb) (negedge A => (S : A)) = (1.0,1.0);
+ 
+-	if(B===1'b1 && CI===1'b0)
+-	// comb arc A --> S
+-	 (A => S) = (1.0,1.0);
++	if (__gls_path_A_S_1d7b1ea11cb582b3) (posedge A => (S : A)) = (1.0,1.0);
++	if (__gls_path_A_S_1d7b1ea11cb582b3) (negedge A => (S : A)) = (1.0,1.0);
+ 
+-	ifnone
+-	// comb arc posedge A --> (S:A)
+-	 (posedge A => (S:A)) = (1.0,1.0);
++	if (__gls_path_A_S_fallback) (posedge A => (S : A)) = (1.0,1.0);
+ 
+-	ifnone
+-	// comb arc negedge A --> (S:A)
+-	 (negedge A => (S:A)) = (1.0,1.0);
++	if (__gls_path_A_S_fallback) (negedge A => (S : A)) = (1.0,1.0);
+ 
+-	if(B===1'b0 && CI===1'b0)
+-	// comb arc A --> S
+-	 (A => S) = (1.0,1.0);
++	if (__gls_path_A_S_9f7c123088d11c7d) (posedge A => (S : A)) = (1.0,1.0);
++	if (__gls_path_A_S_9f7c123088d11c7d) (negedge A => (S : A)) = (1.0,1.0);
+ 
+-	if(B===1'b1 && CI===1'b1)
+-	// comb arc A --> S
+-	 (A => S) = (1.0,1.0);
++	if (__gls_path_A_S_671e30e47da0f78c) (posedge A => (S : A)) = (1.0,1.0);
++	if (__gls_path_A_S_671e30e47da0f78c) (negedge A => (S : A)) = (1.0,1.0);
+ 
+-	if(A===1'b0 && CI===1'b1)
+-	// comb arc B --> S
+-	 (B => S) = (1.0,1.0);
++	if (__gls_path_B_S_8fdc0f3f6809d161) (posedge B => (S : B)) = (1.0,1.0);
++	if (__gls_path_B_S_8fdc0f3f6809d161) (negedge B => (S : B)) = (1.0,1.0);
+ 
+-	if(A===1'b1 && CI===1'b0)
+-	// comb arc B --> S
+-	 (B => S) = (1.0,1.0);
++	if (__gls_path_B_S_5865df151bc9af75) (posedge B => (S : B)) = (1.0,1.0);
++	if (__gls_path_B_S_5865df151bc9af75) (negedge B => (S : B)) = (1.0,1.0);
+ 
+-	ifnone
+-	// comb arc posedge B --> (S:B)
+-	 (posedge B => (S:B)) = (1.0,1.0);
++	if (__gls_path_B_S_fallback) (posedge B => (S : B)) = (1.0,1.0);
+ 
+-	ifnone
+-	// comb arc negedge B --> (S:B)
+-	 (negedge B => (S:B)) = (1.0,1.0);
++	if (__gls_path_B_S_fallback) (negedge B => (S : B)) = (1.0,1.0);
+ 
+-	if(A===1'b0 && CI===1'b0)
+-	// comb arc B --> S
+-	 (B => S) = (1.0,1.0);
++	if (__gls_path_B_S_818c09fad5ba477f) (posedge B => (S : B)) = (1.0,1.0);
++	if (__gls_path_B_S_818c09fad5ba477f) (negedge B => (S : B)) = (1.0,1.0);
+ 
+-	if(A===1'b1 && CI===1'b1)
+-	// comb arc B --> S
+-	 (B => S) = (1.0,1.0);
++	if (__gls_path_B_S_0e0fa1d3733dfa61) (posedge B => (S : B)) = (1.0,1.0);
++	if (__gls_path_B_S_0e0fa1d3733dfa61) (negedge B => (S : B)) = (1.0,1.0);
+ 
+-	if(A===1'b0 && B===1'b1)
+-	// comb arc CI --> S
+-	 (CI => S) = (1.0,1.0);
++	if (__gls_path_CI_S_e6c721e3e82c3e1d) (posedge CI => (S : CI)) = (1.0,1.0);
++	if (__gls_path_CI_S_e6c721e3e82c3e1d) (negedge CI => (S : CI)) = (1.0,1.0);
+ 
+-	if(A===1'b1 && B===1'b0)
+-	// comb arc CI --> S
+-	 (CI => S) = (1.0,1.0);
++	if (__gls_path_CI_S_fe8b4c915f6ca384) (posedge CI => (S : CI)) = (1.0,1.0);
++	if (__gls_path_CI_S_fe8b4c915f6ca384) (negedge CI => (S : CI)) = (1.0,1.0);
+ 
+-	ifnone
+-	// comb arc posedge CI --> (S:CI)
+-	 (posedge CI => (S:CI)) = (1.0,1.0);
++	if (__gls_path_CI_S_fallback) (posedge CI => (S : CI)) = (1.0,1.0);
+ 
+-	ifnone
+-	// comb arc negedge CI --> (S:CI)
+-	 (negedge CI => (S:CI)) = (1.0,1.0);
++	if (__gls_path_CI_S_fallback) (negedge CI => (S : CI)) = (1.0,1.0);
+ 
+-	if(A===1'b0 && B===1'b0)
+-	// comb arc CI --> S
+-	 (CI => S) = (1.0,1.0);
++	if (__gls_path_CI_S_5653c68b2ea50a9a) (posedge CI => (S : CI)) = (1.0,1.0);
++	if (__gls_path_CI_S_5653c68b2ea50a9a) (negedge CI => (S : CI)) = (1.0,1.0);
+ 
+-	if(A===1'b1 && B===1'b1)
+-	// comb arc CI --> S
+-	 (CI => S) = (1.0,1.0);
++	if (__gls_path_CI_S_1d97fa80b7ce4536) (posedge CI => (S : CI)) = (1.0,1.0);
++	if (__gls_path_CI_S_1d97fa80b7ce4536) (negedge CI => (S : CI)) = (1.0,1.0);
+ 
+ 	// specify_block_end
+ 
+--- upstream/gf180mcu_fd_sc_mcu9t5v0__addf_1.functional.v
++++ examples/addf/reference/helper.v
+@@ -12,7 +12,7 @@
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+ 
+-module gf180mcu_fd_sc_mcu9t5v0__addf_1( S, A, CI, B, CO );
++module gf180mcu_fd_sc_mcu9t5v0__addf_1_func( S, A, CI, B, CO );
+ input A, B, CI;
+ output CO, S;
+ 
+--- examples/addf/original.sdf
++++ examples/addf/reference/converted.sdf
+@@ -2,7 +2,12 @@
+  (SDFVERSION "3.0")
+  (DIVIDER /)
+  (TIMESCALE 1ns)
+- (CELL (CELLTYPE "gf180mcu_fd_sc_mcu9t5v0__addf_1") (INSTANCE)
++ (CELL
++ (CELLTYPE "gf180mcu_fd_sc_mcu9t5v0__addf_1")
++ (INSTANCE)
+  (DELAY (ABSOLUTE
+-(COND (B===1'b0 && CI===1'b0) (IOPATH A S (0.211:0.233:0.267) (0.319:0.347:0.383)))
+-))))
++(COND __gls_path_A_S_9f7c123088d11c7d (IOPATH (posedge A) S (0.211:0.233:0.267) ()))
++(COND __gls_path_A_S_9f7c123088d11c7d (IOPATH (negedge A) S () (0.319:0.347:0.383)))
++))
++)
++)

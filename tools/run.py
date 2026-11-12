@@ -7,14 +7,16 @@ from pathlib import Path
 import subprocess
 import tempfile
 from assess import assess
-from prepare import ROOT, CASES, prepare
-from checks import exact, sha
+from prepare import ROOT, CASES, prepare, check_inputs
+from checks import exact
+from references import references
 
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--prefix',type=Path,default=ROOT/'.build'/'install')
     parser.add_argument('--out',type=Path,help='new directory (default: new child of runs/)')
+    parser.add_argument('--refresh-references',action='store_true',help='replace checked-in derived references after a successful run')
     args=parser.parse_args()
     if args.out:
         out=args.out.resolve()
@@ -22,8 +24,7 @@ def main():
     else:
         (ROOT/'runs').mkdir(exist_ok=True)
         out=Path(tempfile.mkdtemp(prefix='case-',dir=ROOT/'runs'))
-    for name,want in json.loads((ROOT/'docs'/'inputs.json').read_text())['sha256'].items():
-        exact(sha(ROOT/name),want,'PINNED_INPUT_'+name)
+    check_inputs()
     maps={case:prepare(case,out) for case in CASES}
     expected=json.loads((ROOT/'examples'/'expected.json').read_text())
     probes=[]
@@ -75,6 +76,7 @@ def main():
     for row in rows:
         print(f"PASS {row['master']} {row['input_edge']} -> {row['slot']}: "
               f"source {row['input_ps']} ps, expected {row['expected_ps']} ps, observed {row['observed_ps']} ps")
+    references(out,write=args.refresh_references)
     print(f'Field maps, raw output and delivery chains: {out}')
 
 if __name__=='__main__':

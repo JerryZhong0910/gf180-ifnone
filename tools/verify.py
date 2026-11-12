@@ -25,7 +25,6 @@ def standard_model(parent, canonical, catalog, matrix, generated, *, profile_inv
     """
     original=Path(canonical).read_bytes();original.decode('ascii')
     before=Path(parent).read_text();after=Path(generated).read_text()
-    c.exact(before.count('\n'),after.count('\n'),'STANDARD_SOURCE_LINE_PRESERVATION')
     ownership={(g['master'],g['input'],g['output']) for g in matrix['groups']}
     masters=sorted({m for m,s,d in ownership})
     c.exact(masters,profile_inventory['masters'],'STANDARD_SOURCE_PROFILE_MASTER_IDENTITIES')
@@ -44,22 +43,34 @@ def standard_model(parent, canonical, catalog, matrix, generated, *, profile_inv
     for master in masters:
         a,b,old=body(before,master);na,nb,new=body(after,master)
         ca,cb,raw=body(original.decode(),master);c.exact(old,raw,'STANDARD_ORIGINAL_COMBINATIONAL_HELPER_SOURCE')
-        oldlines=old.splitlines();newlines=new.splitlines();c.exact(len(newlines),len(oldlines),'STANDARD_MASTER_LINES')
+        # The source prefix and every inter-declaration byte remain intact.
+        # Parse the inserted cone and path statements by syntax, not physical rows.
+        old_spec=re.search(r'(?m)^[ \t]*specify\b',old)
+        new_spec=re.search(r'(?m)^[ \t]*specify\b',new)
+        c.require(old_spec and new_spec,'STANDARD_SPECIFY_BLOCK')
+        prefix=old[:old_spec.start()]
+        c.exact(new[:len(prefix)],prefix,'STANDARD_ORIGINAL_FUNCTIONAL_PREFIX')
+        cone=new[len(prefix):new_spec.start()]
+        old_at=old_spec.start();new_at=new_spec.start()
         ds=catalog[master];destinations={d['destination'] for d in ds if d['kind']=='ifnone' and d['edge']}
         selected=[d for d in ds if d['destination'] in destinations]
-        declaration_lines=set();expected=[];group_conditions={};group_fallbacks={}
+        expected=[];group_conditions={};group_fallbacks={}
         for d in selected:
             x,y=d['loc']['bytes'];c.exact(original[x:y].decode(),d['text'],'STANDARD_RAW_DECLARATION_IDENTITY')
             c.exact(old.count(d['text']),1,'STANDARD_ONE_ORIGINAL_DECLARATION')
-            offset=old.index(d['text']);first=old[:offset].count('\n');last=first+d['text'].count('\n')
-            c.require(not (set(range(first,last+1))&declaration_lines),'STANDARD_NONOVERLAPPING_SOURCE_DECLARATIONS')
-            declaration_lines.update(range(first,last+1))
+            offset=old.index(d['text'])
+            unchanged=old[old_at:offset]
+            c.exact(new[new_at:new_at+len(unchanged)],unchanged,'STANDARD_UNCHANGED_BETWEEN_PATHS')
+            new_at+=len(unchanged)
             source,target=d['source'],d['destination'];owned=(master,source,target) in ownership
             edges=['posedge','negedge'] if owned and d['kind']=='conditional' else [d['edge']]
-            rows=[line.strip() for line in newlines[first:last+1] if line.strip()]
-            c.exact(len(rows),len(edges),'STANDARD_REQUIRED_PATH_MULTIPLICITY')
-            for j,(statement,edge) in enumerate(zip(rows,edges)):
-                match=path_pattern.fullmatch(statement);c.require(match is not None,'STANDARD_EXACT_PATH_LANGUAGE',statement)
+            for j,edge in enumerate(edges):
+                if j:
+                    new_at+=len(new[new_at:])-len(new[new_at:].lstrip())
+                match=path_pattern.match(new,new_at)
+                c.require(match is not None,'STANDARD_EXACT_PATH_LANGUAGE',new[new_at:new_at+150])
+                line=after[:na+new_at].count('\n')+1
+                new_at=match.end()
                 key,actual_edge,src,simple,output,data=match.groups();key=key or ''
                 c.exact([actual_edge,src,output or simple],[edge,source,target],'STANDARD_SOURCE_ENDPOINT_EDGE')
                 c.exact(data,source if edge else None,'STANDARD_DESCRIPTIVE_EDGE_DATA_SOURCE')
@@ -72,22 +83,15 @@ def standard_model(parent, canonical, catalog, matrix, generated, *, profile_inv
                 else:
                     c.exact(d['kind'],'ifnone','STANDARD_SOURCE_FALLBACK_KIND')
                     group_fallbacks.setdefault((source,target),set()).add(key);condition_role='endpoint_fallback'
-                line=after[:na].count('\n')+first+j+1
                 expected.append(dict(id=str(d['id'])+(':'+edge if owned else ''),origin_declaration=d['id'],source=source,destination=target,
                     edge=edge,edge_mask={None:0,'posedge':13,'negedge':50}[edge],kind='conditional' if key else 'unconditional',key=key,
                     condition_tree=d['condition_tree'],condition_role=condition_role,role='producer_edge' if owned else 'literal_preservation',
                     line=line,file=str(generated),initial_ps=list(d['initial_ps']),omitted=False,source_sha256=digest(original[x:y])))
-        # Only one originally blank source line may hold the new cone. Remove
-        # it and the verified declaration edits; all helper text must match.
-        changed=[i for i,(x,y) in enumerate(zip(oldlines,newlines)) if x!=y and i not in declaration_lines]
-        c.exact(len(changed),int(bool(group_conditions)),'STANDARD_ONLY_REQUIRED_PREDICATE_INSERTION')
-        declarations={};drivers={};tokens=[]
-        if changed:
-            insert=changed[0]
-            c.exact(oldlines[insert].strip(),'','STANDARD_BLANK_INSERTION_SITE')
-            c.exact(oldlines[insert+1].strip(),'specify','STANDARD_DECLARATIONS_BEFORE_SPECIFY')
-            tokens=[token.strip() for token in newlines[insert].split(';')]
-            c.exact(tokens.pop(),'','STANDARD_CONE_COMPLETE_TERMINATOR')
+            old_at=offset+len(d['text'])
+        c.exact(new[new_at:],old[old_at:],'STANDARD_ORIGINAL_FUNCTIONAL_AND_UNAFFECTED_TEXT')
+        declarations={};drivers={}
+        tokens=[token.strip() for token in cone.split(';')]
+        c.exact(tokens.pop(),'','STANDARD_CONE_COMPLETE_TERMINATOR')
         for token in tokens:
             decl=re.fullmatch(r'(wand|wor|wire)\s+('+ident+r')',token)
             if decl:
@@ -125,14 +129,10 @@ def standard_model(parent, canonical, catalog, matrix, generated, *, profile_inv
         for d in ds:
             if d in selected:continue
             c.exact(new.count(d['text']),1,'STANDARD_UNCHANGED_OTHER_PATH')
-            opening=re.search(r'\([^\n]*?(?:=>|\*>)',d['text']);c.require(opening is not None,'STANDARD_OTHER_PATH_LOCATION')
-            line=after[:na+new.index(d['text'])+opening.start()].count('\n')+1
+            line=after[:na+new.index(d['text'])].count('\n')+1
             key,_=expression(d['condition_tree'])
             expected.append(dict(d,key=key,edge_mask={None:0,'posedge':13,'negedge':50}[d['edge']],line=line,file=str(generated)))
         result[master]=expected;cones[master]=master_cones
-        clean_old=oldlines[:];clean_new=newlines[:]
-        for i in declaration_lines|set(changed):clean_old[i]=clean_new[i]=''
-        c.exact(clean_new,clean_old,'STANDARD_ORIGINAL_FUNCTIONAL_AND_UNAFFECTED_TEXT')
         rest_before=rest_before.replace(old,'<verified '+master+'>',1);rest_after=rest_after.replace(new,'<verified '+master+'>',1)
         deltas.append(dict(master=master,original=len(selected),generated=sum('origin_declaration' in d for d in expected),total_paths=len(expected)))
     c.exact(rest_after,rest_before,'STANDARD_ALL_OTHER_MODEL_BYTES_UNCHANGED')
@@ -166,46 +166,29 @@ def standard_cell(records, original_declarations, declarations, accepted_join, l
                   and (not row['condition_tree'] or d['condition_tree']==row['condition_tree'])
                   and (not row['events'][0]['edge'] or d['edge']==row['events'][0]['edge'])]
         c.exact([d['id'] for d in original],row['original_matches'],'STANDARD_SOURCE_LITERAL_TARGET_SET')
-        if v['mode']=='O':
-            for slot in (0,1):
-                fields=[f['values'] for f in prior['fields'] if f['values']['slot']==slot]
-                c.exact(len(fields),1,'STANDARD_SOURCE_SINGLE_PRODUCER_FIELD');f=fields[0]
-                group=liberty_groups[int(f['group'])]
-                c.exact(digest(group['raw'].encode()),f['group_sha256'],'STANDARD_SOURCE_LIBERTY_IDENTITY')
-                c.exact([group['related_pin'],group['output'],group['timing_type']],[source,destination,'combinational'],'STANDARD_SOURCE_LIBERTY_ENDPOINT_ROLE')
-                c.exact(re.sub(r'\s+','',group['sdf_cond'] or ''),re.sub(r'\s+','',row['condition'] or ''),'STANDARD_SOURCE_LIBERTY_CONDITION')
-                c.require(group['timing_sense'] in ('positive_unate','negative_unate'),'STANDARD_SOURCE_UNATE_ROLE')
-                edge='posedge' if (slot==0)==(group['timing_sense']=='positive_unate') else 'negedge'
-                c.exact(int(f['input_edge']),13 if edge=='posedge' else 50,'STANDARD_SOURCE_PRODUCER_EDGE')
-                c.exact(f['output_slot'],slot,'STANDARD_SOURCE_PRODUCER_SLOT')
-                owners=[d for d in original if d['kind']=='conditional'] if row['condition_tree'] else [d for d in original if d['kind']=='ifnone' and d['edge']==edge]
-                c.exact(len(owners),1,'STANDARD_SOURCE_ORIGINAL_OWNER')
-                target=[d for d in declarations if d.get('origin_declaration')==owners[0]['id'] and d['edge']==edge and d.get('role')=='producer_edge']
-                c.exact(len(target),1,'STANDARD_SOURCE_REPLACEMENT_OWNER');d=target[0]
-                raw_slots=['',''];raw_slots[slot]=row['slots'][slot][0]
-                text='(IOPATH ('+edge+' '+source+') '+destination+' ('+raw_slots[0]+') ('+raw_slots[1]+'))'
-                if d['kind']=='conditional':text='(COND '+d['key']+' '+text+')'
-                else:c.exact(d['kind'],'unconditional','STANDARD_SOURCE_EMPTY_PATH_KIND')
-                tokens=['',''];tokens[slot]=row['selected_typical'][slot]
-                expected.append(dict(canonical=row['id'],source=source,destination=destination,edge=edge,key=d['key'],line=line,tokens=tokens,
-                                     targets=target,mode='ordinary',producer_group=group['ordinal'],producer_output_slot=slot))
-                pieces.append(text);line+=text.count('\n')+1
-        else:
-            c.exact(v['mode'],'L','STANDARD_SOURCE_LITERAL_MODE')
-            targets=[d for source_d in original for d in declarations if
-                     (d.get('origin_declaration')==source_d['id'] and d.get('role')=='literal_preservation')
-                     or ('origin_declaration' not in d and d['id']==source_d['id'])]
-            c.exact(len(targets),len(original),'STANDARD_SOURCE_PRESERVED_LITERAL_FANOUT')
-            c.require(bool(targets),'STANDARD_SOURCE_REQUIRED_LITERAL_TARGETS')
-            text=row['source_text'];key=''
-            if row['condition_tree'] and any(d.get('role')=='literal_preservation' for d in targets):
-                c.exact(len(targets),1,'STANDARD_SOURCE_ONE_LITERAL_CONDITION');key=targets[0]['key']
-                start,stop=row['leaf_loc']['bytes'];leaf=canonical_sdf[start:stop].decode()
-                c.require(leaf.startswith('(IOPATH '),'STANDARD_SOURCE_LITERAL_LEAF')
-                text='(COND '+key+' '+leaf+')'
-            elif row['condition_tree']:key=expression(row['condition_tree'])[0]
-            expected.append(dict(canonical=row['id'],source=source,destination=destination,edge=row['events'][0]['edge'],key=key,line=line,
-                                 tokens=list(row['selected_typical']),targets=targets,mode='ordinary'))
+        c.exact(v['mode'],'O','STANDARD_SOURCE_OWNED_RECORD_MODE')
+        for slot in (0,1):
+            fields=[f['values'] for f in prior['fields'] if f['values']['slot']==slot]
+            c.exact(len(fields),1,'STANDARD_SOURCE_SINGLE_PRODUCER_FIELD');f=fields[0]
+            group=liberty_groups[int(f['group'])]
+            c.exact(digest(group['raw'].encode()),f['group_sha256'],'STANDARD_SOURCE_LIBERTY_IDENTITY')
+            c.exact([group['related_pin'],group['output'],group['timing_type']],[source,destination,'combinational'],'STANDARD_SOURCE_LIBERTY_ENDPOINT_ROLE')
+            c.exact(re.sub(r'\s+','',group['sdf_cond'] or ''),re.sub(r'\s+','',row['condition'] or ''),'STANDARD_SOURCE_LIBERTY_CONDITION')
+            c.require(group['timing_sense'] in ('positive_unate','negative_unate'),'STANDARD_SOURCE_UNATE_ROLE')
+            edge='posedge' if (slot==0)==(group['timing_sense']=='positive_unate') else 'negedge'
+            c.exact(int(f['input_edge']),13 if edge=='posedge' else 50,'STANDARD_SOURCE_PRODUCER_EDGE')
+            c.exact(f['output_slot'],slot,'STANDARD_SOURCE_PRODUCER_SLOT')
+            owners=[d for d in original if d['kind']=='conditional'] if row['condition_tree'] else [d for d in original if d['kind']=='ifnone' and d['edge']==edge]
+            c.exact(len(owners),1,'STANDARD_SOURCE_ORIGINAL_OWNER')
+            target=[d for d in declarations if d.get('origin_declaration')==owners[0]['id'] and d['edge']==edge and d.get('role')=='producer_edge']
+            c.exact(len(target),1,'STANDARD_SOURCE_REPLACEMENT_OWNER');d=target[0]
+            raw_slots=['',''];raw_slots[slot]=row['slots'][slot][0]
+            text='(IOPATH ('+edge+' '+source+') '+destination+' ('+raw_slots[0]+') ('+raw_slots[1]+'))'
+            if d['kind']=='conditional':text='(COND '+d['key']+' '+text+')'
+            else:c.exact(d['kind'],'unconditional','STANDARD_SOURCE_EMPTY_PATH_KIND')
+            tokens=['',''];tokens[slot]=row['selected_typical'][slot]
+            expected.append(dict(canonical=row['id'],source=source,destination=destination,edge=edge,key=d['key'],line=line,tokens=tokens,
+                                 targets=target,mode='ordinary',producer_group=group['ordinal'],producer_output_slot=slot))
             pieces.append(text);line+=text.count('\n')+1
     c.exact(body,header+'\n'.join(pieces)+'\n))\n)\n)\n','STANDARD_SOURCE_EXACT_ORDERED_RECORDS')
     return expected
@@ -217,11 +200,8 @@ def standard_relation(mapping,expected):
         c.exact({k:row[k] for k in ('canonical','source','destination','line','key')},
                 {k:wanted[k] for k in ('canonical','source','destination','line','key')},'STANDARD_AUDIT_RECORD_RELATION')
         c.exact(row['input_edge'],wanted['edge'],'STANDARD_AUDIT_INPUT_EDGE')
-        c.exact(row['slot'],wanted.get('producer_output_slot'),'STANDARD_AUDIT_OUTPUT_SLOT')
-        owned='producer_output_slot' in wanted;c.exact(row['mode'],'O' if owned else 'L','STANDARD_AUDIT_SOURCE_MODE')
-        if owned:
-            c.exact(row['group'],str(wanted['producer_group']),'STANDARD_AUDIT_PRODUCER_GROUP')
-            c.exact(row['origin_declaration'],wanted['targets'][0]['origin_declaration'],'STANDARD_AUDIT_ORIGINAL_OWNER')
-        else:
-            c.exact(row['origin_declarations'],[d.get('origin_declaration',d['id']) for d in wanted['targets']],'STANDARD_AUDIT_LITERAL_TARGETS')
+        c.exact(row['slot'],wanted['producer_output_slot'],'STANDARD_AUDIT_OUTPUT_SLOT')
+        c.exact(row['mode'],'O','STANDARD_AUDIT_SOURCE_MODE')
+        c.exact(row['group'],str(wanted['producer_group']),'STANDARD_AUDIT_PRODUCER_GROUP')
+        c.exact(row['origin_declaration'],wanted['targets'][0]['origin_declaration'],'STANDARD_AUDIT_ORIGINAL_OWNER')
     return dict(status='PASS',records=len(expected),generator_decisions_used_as_expectations=False)

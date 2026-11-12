@@ -2,6 +2,7 @@
 """Materialize one exact profile, then independently verify the generated files."""
 import argparse
 import copy
+import difflib
 import json
 from pathlib import Path
 import checks
@@ -12,6 +13,12 @@ import verify
 
 ROOT=Path(__file__).resolve().parents[1]
 CASES=('addf','mux4','mux2-7t')
+
+
+def check_inputs():
+    for name,want in json.loads((ROOT/'docs'/'inputs.json').read_text())['sha256'].items():
+        checks.exact(checks.sha(ROOT/name),want,'PINNED_INPUT_'+name)
+
 
 def prepare(case, output):
     inputs=ROOT/'examples'/case
@@ -46,6 +53,20 @@ def prepare(case, output):
     needle='module '+master+'('
     checks.exact(h.count(needle),1,'UNIQUE_HELPER_MODULE_NAME')
     (out/'helper.v').write_text(h.replace(needle,'module '+master+'_func('))
+    # Keep the complete model/helper/SDF changes beside each case. These are
+    # generated from the real inputs, including every collateral path edit.
+    changes=[]
+    for before,after in [(model,transformed),(helper,out/'helper.v'),(inputs/'original.sdf',sdf_path)]:
+        changes.extend(difflib.unified_diff(before.read_text().splitlines(True),after.read_text().splitlines(True),
+            fromfile=str(before.relative_to(ROOT)),tofile=f'examples/{case}/reference/{after.name}'))
+    (out/'changes.diff').write_text(''.join(changes))
+    source_map=[]
+    for d in proven['declarations'][master]:
+        orig=next(x for x in decls if x['id']==d.get('origin_declaration',d['id']))
+        source_map.append(dict(source_line=orig['line'],generated_line=d['line'],
+            input=d['source'],output=d['destination'],edge=d['edge'],
+            role=d.get('role','untouched'),predicate=d['key']))
+    (out/'source-map.json').write_text(json.dumps(source_map,indent=2)+'\n')
     # Source path and line references are relative to this release.
     audit=[]
     for row, record in zip(mapping,expected):
@@ -72,6 +93,7 @@ def prepare(case, output):
     return audit
 
 def generate(output):
+    check_inputs()
     for case in CASES: prepare(case,output)
 
 if __name__=='__main__':

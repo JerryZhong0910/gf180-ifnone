@@ -1,0 +1,86 @@
+--- a/vpi/sys_sdf.c
++++ b/vpi/sys_sdf.c
+@@ -55,6 +55,14 @@
+       return sdf_timescale / pow(10.0, (double)unit);
+ }
+ static char* sdf_fname = NULL;
++static bool initial_annotation;
++
++static void reject_initial_annotation(const char*reason)
++{
++      vpi_printf("SDF INITIAL ERROR: %s\n", reason);
++      vpip_set_return_value(1);
++      vpi_control(vpiFinish, 1);
++}
+ 
+ /* Hierarchy separators have been normalized to dots by the parser. Split
+    before decoding escapes so a literal dot remains part of its local name.
+@@ -380,8 +388,18 @@
+ 	    }
+ 
+ 	    vpi_put_delays(path, &delays);
++            if (key && sdf_flag_inform && delval_list->count == 2) {
++                  vpi_get_delays(path, &delays);
++                  vpi_printf("SDF READBACK: %s %s %s %s %s %.9g %.9g\n",
++                             vpi_get_str(vpiFullName, sdf_cur_cell), key,
++                             vpi_edge == vpiPosedge ? "posedge" : vpi_edge == vpiNegedge ? "negedge" : "any",
++                             src, dst, delay_vals[0].real, delay_vals[1].real);
++            }
+ 	    match_count += 1;
+       }
++
++      if (initial_annotation && key && match_count != 1)
++            reject_initial_annotation("expected exactly one named conditional path");
+ 
+       if (match_count == 0) {
+ 	    vpi_printf("SDF ERROR: %s:%d: Unable to match ModPath %s%s -> %s in %s\n",
+@@ -484,9 +502,20 @@
+       vpiHandle callh = vpi_handle(vpiSysTfCall, 0);
+       vpiHandle argv = vpi_iterate(vpiArgument, callh);
+       FILE *sdf_fd;
++      bool initial_call = strcmp(name, "$sdf_annotate_initial") == 0;
++      if (initial_call) {
++            s_vpi_time now = { .type = vpiSimTime };
++            vpi_get_time(0, &now);
++            if (now.high || now.low) {
++                  reject_initial_annotation("annotation must precede stimulus at time zero");
++                  vpi_free_object(argv);
++                  return 0;
++            }
++      }
+       char *fname = get_filename(callh, name, vpi_scan(argv));
+ 
+       if (fname == 0) {
++            if (initial_call) reject_initial_annotation("missing SDF file name");
+ 	    vpi_free_object(argv);
+ 	    return 0;
+       }
+@@ -500,6 +529,7 @@
+ 
+       sdf_fd = fopen(fname, "r");
+       if (sdf_fd == 0) {
++            if (initial_call) reject_initial_annotation("SDF file unavailable");
+ 	    vpi_printf("SDF WARNING: %s:%d: ", vpi_get_str(vpiFile, callh),
+ 	               (int)vpi_get(vpiLineNo, callh));
+ 	    vpi_printf("Unable to open SDF file \"%s\"."
+@@ -520,7 +550,9 @@
+ 
+       sdf_cur_cell = 0;
+       sdf_callh = callh;
++      initial_annotation = initial_call;
+       sdf_process_file(sdf_fd, fname);
++      initial_annotation = false;
+       sdf_callh = 0;
+ 
+       fclose(sdf_fd);
+@@ -542,4 +574,9 @@
+       tf_data.user_data = "$sdf_annotate";
+       res = vpi_register_systf(&tf_data);
+       vpip_make_systf_system_defined(res);
+-}
++
++      tf_data.tfname = "$sdf_annotate_initial";
++      tf_data.user_data = "$sdf_annotate_initial";
++      res = vpi_register_systf(&tf_data);
++      vpip_make_systf_system_defined(res);
++}

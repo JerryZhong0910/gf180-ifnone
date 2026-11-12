@@ -1,6 +1,14 @@
-.PHONY: build check
+.PHONY: build check test check-upstream
+PREFIX ?= .build/install
+
 build:
 	sh tools/build.sh
 
-check:
-	python3 -B tools/run.py
+check: test
+	python3 -B tools/run.py --prefix "$(PREFIX)"
+
+test:
+	python3 -B -m unittest discover -s tests -v
+
+check-upstream:
+	sh tools/check-upstream.sh

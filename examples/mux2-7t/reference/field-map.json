@@ -12,7 +12,7 @@
     "key": "",
     "slot": "rise",
     "typical_ns": "0.289752",
-    "generated_model_line": 62,
+    "generated_model_line": 69,
     "sdf_line": 9
   },
   {
@@ -28,7 +28,7 @@
     "key": "",
     "slot": "fall",
     "typical_ns": "0.382399",
-    "generated_model_line": 66,
+    "generated_model_line": 71,
     "sdf_line": 10
   },
   {
@@ -44,7 +44,7 @@
     "key": "",
     "slot": "rise",
     "typical_ns": "0.445571",
-    "generated_model_line": 66,
+    "generated_model_line": 71,
     "sdf_line": 11
   },
   {
@@ -60,7 +60,7 @@
     "key": "",
     "slot": "fall",
     "typical_ns": "0.428267",
-    "generated_model_line": 62,
+    "generated_model_line": 69,
     "sdf_line": 12
   }
 ]

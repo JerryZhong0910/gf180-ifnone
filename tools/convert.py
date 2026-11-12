@@ -16,8 +16,8 @@ def standard_model(parent, canonical, catalog, matrix, destination, *, profile_i
     """Materialize the selected ordinary interface; never certify its mapping.
 
     The original source supplies structural membership. Producer field ownership
-    is a separate SDF operation. Keep physical line counts outside replaced path
-    statements so the unchanged timing-check/helper source locators remain valid.
+    is a separate SDF operation. Generated locators are measured after emission;
+    the source and generated files have independent line numbers.
     Independent source and emitted-program checks must validate this view.
     """
     parent,canonical,destination=map(Path,(parent,canonical,destination))
@@ -79,7 +79,7 @@ def standard_model(parent, canonical, catalog, matrix, destination, *, profile_i
             for d in members:
                 raw=d['text'];c.exact(body.count(raw),1,'STANDARD_UNIQUE_STRUCTURAL_DECLARATION')
                 c.exact(d['initial_ps'],[1000,1000],'STANDARD_SOURCE_DEFAULT_PAIR')
-                old_lines=raw.count('\n');generated=[]
+                generated=[]
                 role='producer_edge' if replacement else 'literal_preservation'
                 if replacement:
                     edges=['posedge','negedge'] if d['kind']=='conditional' else [d['edge']]
@@ -100,17 +100,15 @@ def standard_model(parent, canonical, catalog, matrix, destination, *, profile_i
                     generated.append(dict(origin_declaration=d['id'],source=source,destination=target,edge=None,kind='conditional',key=predicate,
                         condition_tree=d['condition_tree'],condition_role='strict_conjunction' if d['kind']=='conditional' else 'endpoint_fallback',
                         role=role,statement=statement,initial_ps=list(d['initial_ps'])))
-                c.require(len(generated)-1<=old_lines,'STANDARD_AVAILABLE_DECLARATION_LINES')
-                replacement_text='\n'.join(p['statement'] for p in generated)+'\n'*(old_lines-len(generated)+1)
-                c.exact(replacement_text.count('\n'),old_lines,'STANDARD_LOCAL_LINE_COUNT')
+                replacement_text='\n\t'.join(p['statement'] for p in generated)
                 start=body.index(raw);rewrites.append((start,start+len(raw),replacement_text))
                 expected.extend(generated)
         for name in names:c.require(re.search(r'\b'+re.escape(name)+r'\b',body) is None,'STANDARD_NO_SOURCE_NAME_COLLISION')
         for start,end,replacement_text in sorted(rewrites,reverse=True):body=body[:start]+replacement_text+body[end:]
-        anchor=list(re.finditer(r'\n[ \t]*\n(?=[ \t]*specify\b)',body))
-        c.exact(len(anchor),1,'STANDARD_EXISTING_DECLARATION_INSERTION_LINE')
-        item=anchor[0];body=body[:item.start()]+'\n'+' '.join(nets)+'\n'+body[item.end():]
-        c.exact(body.count('\n'),text[a:b].count('\n'),'STANDARD_PRESERVED_MODULE_LINE_COUNT')
+        anchor=list(re.finditer(r'(?m)^[ \t]*specify\b',body))
+        c.exact(len(anchor),1,'STANDARD_SINGLE_SPECIFY_BLOCK')
+        at=anchor[0].start()
+        body=body[:at]+''.join('   '+net+'\n' for net in nets)+'\n'+body[at:]
         for p in expected:
             c.exact(body.count(p['statement']),1,'STANDARD_UNIQUE_GENERATED_STATEMENT')
             p['line']=text[:a].count('\n')+body[:body.index(p['statement'])].count('\n')+1
@@ -122,10 +120,10 @@ def standard_model(parent, canonical, catalog, matrix, destination, *, profile_i
             if d['destination'] in tagged:continue
             c.exact(body.count(d['text']),1,'STANDARD_UNCHANGED_OTHER_DECLARATION')
             key,_=condition(d['condition_tree'])
-            expected.append(dict(d,origin_declaration=d['id'],role='untouched',key=key))
+            line=text[:a].count('\n')+body[:body.index(d['text'])].count('\n')+1
+            expected.append(dict(d,origin_declaration=d['id'],role='untouched',key=key,line=line))
         declarations[master]=expected;used_names[master]=sorted(names)
         text=text[:a]+body+text[b:]
-    c.exact(text.count('\n'),base.count('\n'),'STANDARD_GLOBAL_LINE_COUNT')
     destination.parent.mkdir(parents=True,exist_ok=True)
     with destination.open('x') as f:f.write(text)
     return dict(status='GENERATED_REQUIRES_INDEPENDENT_SOURCE_AND_PROGRAM_CHECKS',interface='GF180-ARC-PAIR-1',
@@ -153,32 +151,20 @@ def standard_cell(records, declarations, accepted_join):
         c.require(all(len(slot)==1 for slot in row['slots']),'STANDARD_SINGLE_TRIPLET_SLOTS')
         candidates=[d for d in declarations if (d['source'],d['destination'])==(source,target)]
         exports=[]
-        if prior['mode']=='O':
-            c.require(candidates and all(d['role']=='producer_edge' for d in candidates),'STANDARD_OWNED_GROUP_ROLE')
-            for slot in (0,1):
-                fields=[f['values'] for f in receipt['fields'] if f['values']['slot']==slot]
-                c.exact(len(fields),1,'STANDARD_ONE_PRODUCER_SLOT_OWNER');field=fields[0]
-                edge={13:'posedge',50:'negedge'}[int(field['input_edge'])]
-                selected=[d for d in candidates if d['edge']==edge and
-                          (d['condition_tree']==row['condition_tree'] and d['condition_role']=='strict_conjunction'
-                           if row['condition_tree'] else d['condition_role']=='endpoint_fallback')]
-                c.exact(len(selected),1,'STANDARD_ONE_EDGE_CONDITION_OWNER');owner=selected[0]
-                slots=['',''];slots[slot]=row['slots'][slot][0]
-                record='(IOPATH ('+edge+' '+source+') '+target+' '+' '.join('('+value+')' for value in slots)+')'
-                if owner['key']:record='(COND '+owner['key']+' '+record+')'
-                exports.append((record,dict(input_edge=edge,slot=slot,key=owner['key'],origin_declaration=owner['origin_declaration'],group=field['group'],group_sha256=field['group_sha256'])))
-        else:
-            c.exact(prior['mode'],'L','STANDARD_EXPLICIT_LITERAL_MODE')
-            c.require(candidates and all(d['role'] in ('literal_preservation','untouched') for d in candidates),'STANDARD_LITERAL_GROUP_ROLE')
-            record=row['source_text'];key=''
-            if row['condition_tree'] and any(d['role']=='literal_preservation' for d in candidates):
-                selected=[d for d in candidates if d['condition_tree']==row['condition_tree'] and d['condition_role']=='strict_conjunction']
-                c.exact(len(selected),1,'STANDARD_LITERAL_CONDITION_OWNER');key=selected[0]['key']
-                a,b=row['leaf_loc']['bytes'];offset=row['source_loc']['bytes'][0]
-                leaf=record[a-offset:b-offset];c.require(leaf.startswith('(IOPATH '),'STANDARD_ORIGINAL_LEAF')
-                record='(COND '+key+' '+leaf+')'
-            elif row['condition_tree']:key,_=condition(row['condition_tree'])
-            exports.append((record,dict(input_edge=row['events'][0]['edge'],slot=None,key=key,origin_declarations=list(row['original_matches']))))
+        c.exact(prior['mode'],'O','STANDARD_OWNED_RECORD_MODE')
+        c.require(candidates and all(d['role']=='producer_edge' for d in candidates),'STANDARD_OWNED_GROUP_ROLE')
+        for slot in (0,1):
+            fields=[f['values'] for f in receipt['fields'] if f['values']['slot']==slot]
+            c.exact(len(fields),1,'STANDARD_ONE_PRODUCER_SLOT_OWNER');field=fields[0]
+            edge={13:'posedge',50:'negedge'}[int(field['input_edge'])]
+            selected=[d for d in candidates if d['edge']==edge and
+                      (d['condition_tree']==row['condition_tree'] and d['condition_role']=='strict_conjunction'
+                       if row['condition_tree'] else d['condition_role']=='endpoint_fallback')]
+            c.exact(len(selected),1,'STANDARD_ONE_EDGE_CONDITION_OWNER');owner=selected[0]
+            slots=['',''];slots[slot]=row['slots'][slot][0]
+            record='(IOPATH ('+edge+' '+source+') '+target+' '+' '.join('('+value+')' for value in slots)+')'
+            if owner['key']:record='(COND '+owner['key']+' '+record+')'
+            exports.append((record,dict(input_edge=edge,slot=slot,key=owner['key'],origin_declaration=owner['origin_declaration'],group=field['group'],group_sha256=field['group_sha256'])))
         for child,(record,relation) in enumerate(exports):
             body.append(record+'\n')
             mapping.append(dict(canonical=row['id'],canonical_source=row['source_loc'],mode=prior['mode'],child=child,line=local,
