@@ -1,0 +1,29 @@
+{
+  "provenance": "Existing carry-boundary stimulus and SDF unchanged. A->CO follows A at B=0, CI=1; typical rise 211 ps and fall 419 ps are read directly from the original SDF. No observed events are used to set expectations.",
+  "window_ps": [
+    9000,
+    29000
+  ],
+  "events": [
+    [
+      10211,
+      "1"
+    ],
+    [
+      20419,
+      "0"
+    ]
+  ],
+  "end_ps": 30000,
+  "carry_key": " A C1:B0 C2:CI1",
+  "carry_pair_ps": [
+    211,
+    419
+  ],
+  "all_paths": 39,
+  "carry_paths": 9,
+  "other_carry_pair_ps": [
+    1000,
+    1000
+  ]
+}

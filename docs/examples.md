@@ -177,13 +177,13 @@ The mixed runner invokes that same file-based entry before compilation. It annot
 
 Actual path snapshots check all eight path objects. The named I0 path reads `(211,419)`, then `(211,617)`, then `(211,617)` ps after its successive writes. The real select fields round to `(290,428)` ps on posedge and `(446,382)` ps on negedge. [Measured results](../examples/mixed-mux2/reference/results.json) · [Frozen events and windows](../examples/mixed-mux2/expected.json)
 
-Three dynamic negatives reuse the same compiled design and complete the stimulus at 120 ns with process exit 0. Swapping select input edges changes the first observed event to 10,446 ps; dropping the ordinary I1 record changes its first event to 101,000 ps; leaving the old I0 condition unsynchronized changes the first data fall to 61,000 ps. Each fails `MIXED_PIN_EVENTS` against the unchanged complete expected list. The unsynchronized condition also produces SDF diagnostics, while execution still reaches the checked final time. Separate source checks reject the malformed output relation before simulation. These controls distinguish a field-binding failure from a compiler refusal.
+Three dynamic negatives share a compiled design using ordinary `$sdf_annotate` and complete the unchanged stimulus at 120 ns with process exit 0. Swapping select input edges changes the first observed event to 10,446 ps; dropping the ordinary I1 record changes its first event to 101,000 ps; leaving the old I0 condition unsynchronized changes the first data fall to 61,000 ps. Each fails `MIXED_PIN_EVENTS` against the unchanged complete expected list. The unsynchronized condition is parsed as an expression but has no matching named path. Ordinary annotation reports the mismatch and reaches the checked final time; the positive run keeps `$sdf_annotate_initial`, and the existing strict-entry negative checks cold rejection. Separate source checks reject the malformed output relation before simulation. These controls distinguish a field-binding failure from a compiler refusal.
 
 ## Run and interpret the results
 
 All supplied model, helper, Liberty, SDF, producer, bench and expected-event inputs are authenticated by [inputs.json](inputs.json). The converter accepts the pinned scalar source syntax, one-cell 1 ns SDF envelopes, two output fields containing non-negative scalar values, complete triplets or empty slots, and positive/negative-unate combinational Liberty owners for redistributed fields. The single CELL may name a scalar or hierarchical instance. Target records require at least one supplied field; all-empty ordinary records are preserved. Unknown record kinds, including INTERCONNECT or timing checks in this finite reader, produce an explicit error rather than disappearing. To prepare a different fixture, supply its exact endpoint inventory and declaration populations, and an acquisition-time owner identity for **each supplied target output field**. Ordinary records need their source declaration matches, not invented field owners. An edge-qualified target record must agree with the owner-derived edge; per-field group hashes allow its rise and fall fields to have different owners. A real producer with missing or ambiguous identities must be resolved at its source; the converter cannot infer those identities from the SDF numbers.
 
-For untouched paths, conversion preserves the original conditions as well as the leaf. For example, addf carry's `COND (B===1'b0 && CI===1'b1)` passes source-preservation checks, but this pinned Icarus reports `COND not supported` and leaves its carry slots at 1 ns. A focused probe observed CO at 11,000 and 21,000 ps for A transitions at 10 and 20 ns. The runnable mixed mux2 case instead uses the synchronized scalar predicates shown above. Adding runtime support for untouched case-equality conditions would require a separate implementation; the converter does not silently substitute `==` or discard the record.
+For untouched paths, conversion preserves the original conditions as well as the leaf. The existing [addf carry probe](../examples/addf-carry/bench.v) is now public: `make check-carry` uses the file-based converter, the existing addf producer profile and [unchanged probe SDF](../examples/addf-carry/original.sdf). With B=0 and CI=1, `(COND (B===1'b0 && CI===1'b1) (IOPATH A CO ...))` remains verbatim. The case-equality binding increment gives its actual path `(211,419)` ps; A changes at 10/20 ns produce CO at **10,211/20,419 ps**, matching the [independent expectation](../examples/addf-carry/expected.json). All nine carry paths are read back; the other eight retain 1 ns defaults. [Complete change](../examples/addf-carry/reference/changes.diff) · [Measured paths and events](../examples/addf-carry/reference/results.json). The old tool failed these same event expectations at 11,000/21,000 ps; the [validation record](validation.md) identifies both tools.
 
 From the repository root:
 
@@ -196,7 +196,7 @@ python3 -B tools/prepare.py runs/source-review
 python3 -B tools/run.py --prefix .build/install --out runs/review
 ```
 
-Use a new output directory for each command. A passing full run prints the three expected/observed times, missing-owner rejection, unknown-predicate rejection, and `PASS 23 derived references reproduced`, followed by the edge-annotation and mixed-record results. `make check` also runs the source regressions. Inspect:
+Use a new output directory for each command. A passing full run prints the three expected/observed times, missing-owner rejection, unknown-predicate rejection, and `PASS 23 derived references reproduced`, followed by the edge-annotation, mixed-record and carry results. `make check` also runs the source regressions. Inspect:
 
 | Output | What it establishes |
 |---|---|
@@ -211,7 +211,7 @@ The missing-owner negative fails at `MISSING_FIELD_OWNER`. The annotation negati
 
 ### Build environment
 
-`make build` uses public Icarus commit `beb32f3945f5be1f45cf5d898d440161e9c6f113` plus [initial-annotation.patch](../patches/initial-annotation.patch). The tool requirements are listed on the home page. `JOBS=8 make build` selects eight compiler jobs. To reuse a local clone or transfer inputs to an offline machine:
+`make build` uses public Icarus commit `beb32f3945f5be1f45cf5d898d440161e9c6f113` plus [initial-annotation.patch](../patches/initial-annotation.patch) and [case-equality-condition.patch](../patches/case-equality-condition.patch). The tool requirements are listed on the home page. `JOBS=8 make build` selects eight compiler jobs. To reuse a local clone or transfer inputs to an offline machine:
 
 ```sh
 git -c tar.umask=0002 -C /path/to/iverilog archive --format=tar \
@@ -233,4 +233,4 @@ Keep using the same `/repo` mount when running that installed toolchain: Icarus 
 
 ### Updating derived references
 
-`examples/*/reference/` and `examples/reference/` are the single committed reference set. Normal checks compare against them without writing. After an intentional implementation change, run the affected runner with `--refresh-references` (`run.py`, `run_annotation.py` or `run_mixed.py`), review the diffs and record the validation. This regenerates the full diffs and location maps together; [expected.json](../examples/expected.json) remains an independent input.
+`examples/*/reference/` and `examples/reference/` are the single committed reference set. Normal checks compare against them without writing. After an intentional implementation change, run the affected runner with `--refresh-references` (`run.py`, `run_annotation.py`, `run_mixed.py` or `run_carry.py`), review the diffs and record the validation. This regenerates the full diffs and location maps together; [expected.json](../examples/expected.json) remains an independent input.

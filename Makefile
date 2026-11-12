@@ -1,4 +1,4 @@
-.PHONY: build check test check-upstream check-annotation check-mixed
+.PHONY: build check test check-upstream check-annotation check-mixed check-carry
 PREFIX ?= .build/install
 
 build:
@@ -8,6 +8,7 @@ check: test
 	python3 -B tools/run.py --prefix "$(PREFIX)"
 	python3 -B tools/run_annotation.py --prefix "$(PREFIX)"
 	python3 -B tools/run_mixed.py --prefix "$(PREFIX)"
+	python3 -B tools/run_carry.py --prefix "$(PREFIX)"
 
 test:
 	python3 -B -m unittest discover -s tests -v
@@ -20,3 +21,6 @@ check-annotation:
 
 check-mixed:
 	python3 -B tools/run_mixed.py --prefix "$(PREFIX)"
+
+check-carry:
+	python3 -B tools/run_carry.py --prefix "$(PREFIX)"

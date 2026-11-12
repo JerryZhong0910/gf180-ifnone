@@ -1,284 +1,381 @@
 {
   "date": "2026-11-12",
   "status": "PASS",
-  "repository_base": "3e24e835089bcd5c4334d484d3be7f213d5ef500",
-  "candidate_kind": "local working tree; no commit or remote write in this round",
+  "repository_base": "a565911fc8068211d7970fe90cf75d2dbc81500e",
+  "research_revision": "424bf08221c027a374271b8d173f100a472a9d6b",
+  "first_public_revision": "1ca8ea512fc21c921e7d8889f0968cb04bb79210",
+  "candidate_kind": "delivery handoff; publication reuses the exact locally executed implementation",
   "icarus_revision": "beb32f3945f5be1f45cf5d898d440161e9c6f113",
   "source_archive_sha256": "4d6471d2a79b2dcbf1270b9f494c772fd4b35e9d844683b11552c724f8283407",
-  "patch_sha256": "9096ec309018e69a752ff148c90b73d8f77eb1395e2f51767375f3e3cd5d062c",
-  "docker_image": "sha256:9bf368f4b38f15350dec8a8a0283225bcebddf51a91793c800ca60475d37a210",
-  "network": "disabled",
-  "build": "Unchanged existing build reused after source/patch stamp check; VPI probe rebuilt with its iverilog-vpi",
-  "tools_sha256": {
-    "bin/iverilog": "7f9f85e66c201352923a49e1b7a1231260fb138780e035e05b141918ab1ffd2b",
-    "bin/vvp": "0888d51856d54be7a33c236985b40cbac8f39d4585934966f47f59997bdb203b",
-    "lib/ivl/ivl": "3c678cbc5f3b582e260a7512da0f1c477c46069e19f13565034c96846f24fdfa",
-    "lib/ivl/system.vpi": "e9ca2c899a0e1516781617cdd8fb552c786da90ecee37f546816630ad7c147ec"
+  "patches_sha256": {
+    "patches/initial-annotation.patch": "9096ec309018e69a752ff148c90b73d8f77eb1395e2f51767375f3e3cd5d062c",
+    "patches/case-equality-condition.patch": "00c3cd4b650a147e9bcfb1ace957696893ba62eb3ef3bafd3c36f7e72c802dd8"
   },
+  "ordered_patch_contents_sha256": "e80cb80976d9392c73efe02182ae34da541214239e4fb0bd5cf7187da36d8dea",
+  "tools_sha256": {
+    "bin/iverilog": "391f8dfa868f64c54ab7705d237ce26d0764e2f12d962d749c83fe75bd27b337",
+    "bin/vvp": "688a05f9d5bf4d16985e6d72269bef215d9d67ce5e67d28091ae005d04a0e8f3",
+    "lib/ivl/ivl": "d45c3d7434eed2ba5f50d795be36e762c2b0bf48e42ff8d72888df9818b99ce8",
+    "lib/ivl/system.vpi": "212c02516bec5e16131c14075572285e2a4947c6ab9778a6f60b21d3aad7d96c"
+  },
+  "docker_image": "sha256:9bf368f4b38f15350dec8a8a0283225bcebddf51a91793c800ca60475d37a210",
+  "network": "disabled during build and execution",
+  "build": "Fresh configure/build/install from authenticated archive; both patches fuzz=0; fixed base retained",
   "commands": [
-    "make build",
+    "python3 -B tools/run_carry.py --out /evidence/carry-before",
+    "ICARUS_ARCHIVE=/input/icarus-source.tar JOBS=4 make build",
+    "python3 -B tools/run_carry.py --refresh-references --out /evidence/carry-after",
     "make check",
     "make check-upstream",
-    "python3 -B tools/prepare.py /evidence/final-source-verified",
-    "make check-annotation",
-    "make check-mixed"
+    "make check-carry"
   ],
   "results": {
     "source_regressions": 14,
-    "upstream_condition_regressions": 15,
-    "original_ordered_writes": 6,
-    "original_checked_fields": {
-      "addf": 2,
-      "mux4": 4,
-      "mux2-7t": 4
-    },
-    "original_pin_event_times_ps": [
-      10233,
-      50511,
-      70617
-    ],
     "edge_annotation_combinations": 36,
-    "edge_annotation_scored_events_per_combination": 4,
-    "edge_annotation_actual_path_readbacks": "first and final, edge and both slots, all combinations",
-    "mixed_source_records": 6,
-    "mixed_output_records": 8,
-    "mixed_path_objects": 8,
-    "mixed_pin_events": [
+    "mixed_events": 9,
+    "mixed_event_negatives": 3,
+    "upstream_condition_regressions": 15,
+    "newly_connected_existing_upstream_event_tests": 3,
+    "reproduced_old_references": 42,
+    "carry_references": 4,
+    "carry_expected_events": [
       [
-        10290,
+        10211,
         "1"
       ],
       [
-        20382,
-        "0"
-      ],
-      [
-        40428,
-        "0"
-      ],
-      [
-        50446,
-        "1"
-      ],
-      [
-        60617,
-        "0"
-      ],
-      [
-        70211,
-        "1"
-      ],
-      [
-        80617,
-        "0"
-      ],
-      [
-        100811,
-        "1"
-      ],
-      [
-        110877,
+        20419,
         "0"
       ]
     ],
-    "mixed_dynamic_negatives": [
-      {
-        "name": "swapped-input-edges",
-        "exit": 0,
-        "end_ps": 120000,
-        "rejected_by": "MIXED_PIN_EVENTS",
-        "observed_events": [
-          [
-            10446,
-            "1"
-          ],
-          [
-            20428,
-            "0"
-          ],
-          [
-            40382,
-            "0"
-          ],
-          [
-            50290,
-            "1"
-          ],
-          [
-            60617,
-            "0"
-          ],
-          [
-            70211,
-            "1"
-          ],
-          [
-            80617,
-            "0"
-          ],
-          [
-            100811,
-            "1"
-          ],
-          [
-            110877,
-            "0"
-          ]
-        ]
-      },
-      {
-        "name": "dropped-ordinary-record",
-        "exit": 0,
-        "end_ps": 120000,
-        "rejected_by": "MIXED_PIN_EVENTS",
-        "observed_events": [
-          [
-            10290,
-            "1"
-          ],
-          [
-            20382,
-            "0"
-          ],
-          [
-            40428,
-            "0"
-          ],
-          [
-            50446,
-            "1"
-          ],
-          [
-            60617,
-            "0"
-          ],
-          [
-            70211,
-            "1"
-          ],
-          [
-            80617,
-            "0"
-          ],
-          [
-            101000,
-            "1"
-          ],
-          [
-            111000,
-            "0"
-          ]
-        ]
-      },
-      {
-        "name": "unsynchronized-condition",
-        "exit": 0,
-        "end_ps": 120000,
-        "rejected_by": "MIXED_PIN_EVENTS",
-        "observed_events": [
-          [
-            10290,
-            "1"
-          ],
-          [
-            20382,
-            "0"
-          ],
-          [
-            40428,
-            "0"
-          ],
-          [
-            50446,
-            "1"
-          ],
-          [
-            61000,
-            "0"
-          ],
-          [
-            71000,
-            "1"
-          ],
-          [
-            81000,
-            "0"
-          ],
-          [
-            100811,
-            "1"
-          ],
-          [
-            110877,
-            "0"
-          ]
-        ]
-      }
+    "carry_before_observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ]
     ],
-    "reproduced_references": {
-      "originals": 23,
-      "edge_annotation": 11,
-      "mixed": 8
-    },
+    "carry_after_observed_events": [
+      [
+        10211,
+        "1"
+      ],
+      [
+        20419,
+        "0"
+      ]
+    ],
+    "carry_readback_ps": [
+      211,
+      419
+    ],
+    "carry_paths_checked": 9,
+    "carry_other_paths_at_defaults": 8,
     "document_review": {
-      "local_links_checked": 117,
+      "local_links_checked": 125,
       "source_excerpts_checked": 37,
       "errors": [],
       "input_hashes": "ALL_MATCH",
       "source_paths_checked": 159,
       "source_occurrences_accounted": 11,
       "generated_and_source_locators": "PASS",
-      "complete_diffs": "PASS"
+      "complete_diffs": "PASS",
+      "carry_complete_diff": "PASS",
+      "carry_source_occurrences_accounted": 2
     }
   },
-  "comparison": {
-    "repository_base": "3e24e835089bcd5c4334d484d3be7f213d5ef500",
-    "original_inputs_unchanged": 18,
-    "original_references": {
-      "addf": {
-        "model.v": true,
-        "helper.v": true,
-        "converted.sdf": true,
-        "field-map.json": true,
-        "source-map.json": true,
-        "changes.diff": true
+  "handoff": {
+    "research": "424bf08221c027a374271b8d173f100a472a9d6b",
+    "first_public": "1ca8ea512fc21c921e7d8889f0968cb04bb79210",
+    "current_base": "a565911fc8068211d7970fe90cf75d2dbc81500e",
+    "research_sources_sha256": {
+      "tests/sha3_ifnone_owned_integration/prepare_owned_inputs.py": "def258d9a738a25e01c26e69408f371cfa26caad6175903bb732f0368b7ba4d6",
+      "tests/sha3_ifnone_owned_integration/independent_owned.py": "8ae4d7ed377026121a683225541e24cef5d17dce4898d5e7b63a5bfadf70dae2",
+      "tests/sha3_ifnone_owned_integration/materialize_finite.py": "bc06bfd3f46a1c79341a759b5507e7326d3c5eb4c9c13630073526f68dc17c4c",
+      "tests/sha3_ifnone_owned_integration/finite_source_oracle.py": "a28e29a3a20cfa10d01d7bad403d3e8637dbb1a5fc1828f17a784cab9ae6a7a6",
+      "tests/sha3_ifnone_owned_integration/finite_runtime.py": "f4c0e162f80f0ac58b1eac991009fdec872bdf46d82de51acde770a93805f44f",
+      "tests/sha3_ifnone_owned_integration/path_assessment.py": "5c2cf82fed4b440f62cbd2f3ce29e10f81819fdfbebf9b9bf084bab63c3f0f72",
+      "tests/sha3_ifnone_owned_integration/semantic_oracle.py": "cee7745334e7379849bfe2e21ec781f99c45ab5d48fff4e330d33afef094a309",
+      "tests/sha3_ifnone_owned_integration/prepare_finite.py": "43404cbc7012e9b81524fceedcf82346759e748cfbccbc5a445d787da84e64a4",
+      "tests/sha3_ifnone_owned_integration/producer/adapter.py": "499cc63b7ef1a23501577d0c26d17ba1d3fca5eb06a7b386a2ce38dead97131f",
+      "tests/sha3_ifnone_owned_integration/producer/source_oracle.py": "927eb8078a9862dbef6d96d9ca7c01317ce94f7213d797802fe1ec147e99a46f",
+      "tests/sha3_ifnone_owned_integration/producer/source_join.py": "a5b299ada799810ac3463100ccb7c1d2790b7000063a865d16848189fb0a286d",
+      "tests/sha3_ifnone_owned_integration/producer/RESULT.md": "e47aeaf11e2abe0812ffe0f48a07cb387357addbb2bb1bd5e64892aa307cf820",
+      "tests/shared_evidence_readers/producer_formats.py": "04b52cc3c9e49b48c6b48ad2cc3c3e9459391a2d444a83431eb2b5e1792d5db5",
+      "tests/sha3_ifnone_binding_contract/APPLICATION_MATRIX.json": "3d978725ab82a91e50511e0a9965ca4ef692e2bf4650514a691fc4e492603c1e"
+    },
+    "first_public_sources_sha256": {
+      "tools/convert.py": "bf68571c852838501b61f6d4930081263fc1ca01e94a021ea3c913c0d6031ae2",
+      "tools/verify.py": "f775d366b3458a3275f0fe0b5227890c9858f3451d163af1e6cb8689e2f59176",
+      "tools/intake.py": "b3ffb1218d06b507e9907251396fe14b57c08b74eaa04edf51bc8fdeeac18de7",
+      "tools/prepare.py": "048b1f42caec4cf692e16611f6574794b72b9c3f78030f4c05661c4723b4e164",
+      "tools/assess.py": "d41c2d8dbc2e057a3ce532f4ba98b61d04508772badc541961d39ae404d6168b"
+    },
+    "research_families": {
+      "gf180mcu_fd_sc_mcu9t5v0__addf_1": [
+        {
+          "input": "A",
+          "output": "S",
+          "class": "FOUR"
+        },
+        {
+          "input": "B",
+          "output": "S",
+          "class": "FOUR"
+        },
+        {
+          "input": "CI",
+          "output": "S",
+          "class": "FOUR"
+        }
+      ],
+      "gf180mcu_fd_sc_mcu9t5v0__addh_1": [
+        {
+          "input": "A",
+          "output": "S",
+          "class": "EMPTY"
+        },
+        {
+          "input": "B",
+          "output": "S",
+          "class": "EMPTY"
+        }
+      ],
+      "gf180mcu_fd_sc_mcu9t5v0__addh_2": [
+        {
+          "input": "A",
+          "output": "S",
+          "class": "EMPTY"
+        },
+        {
+          "input": "B",
+          "output": "S",
+          "class": "EMPTY"
+        }
+      ],
+      "gf180mcu_fd_sc_mcu9t5v0__addh_4": [
+        {
+          "input": "A",
+          "output": "S",
+          "class": "EMPTY"
+        },
+        {
+          "input": "B",
+          "output": "S",
+          "class": "EMPTY"
+        }
+      ],
+      "gf180mcu_fd_sc_mcu9t5v0__mux2_2": [
+        {
+          "input": "S",
+          "output": "Z",
+          "class": "EMPTY"
+        }
+      ],
+      "gf180mcu_fd_sc_mcu9t5v0__mux4_2": [
+        {
+          "input": "S0",
+          "output": "Z",
+          "class": "SIXTEEN"
+        },
+        {
+          "input": "S1",
+          "output": "Z",
+          "class": "SIXTEEN"
+        }
+      ],
+      "gf180mcu_fd_sc_mcu9t5v0__xnor2_2": [
+        {
+          "input": "A1",
+          "output": "ZN",
+          "class": "EMPTY"
+        },
+        {
+          "input": "A2",
+          "output": "ZN",
+          "class": "EMPTY"
+        }
+      ],
+      "gf180mcu_fd_sc_mcu9t5v0__xnor2_4": [
+        {
+          "input": "A1",
+          "output": "ZN",
+          "class": "EMPTY"
+        },
+        {
+          "input": "A2",
+          "output": "ZN",
+          "class": "EMPTY"
+        }
+      ],
+      "gf180mcu_fd_sc_mcu9t5v0__xnor3_2": [
+        {
+          "input": "A1",
+          "output": "ZN",
+          "class": "FOUR"
+        },
+        {
+          "input": "A2",
+          "output": "ZN",
+          "class": "FOUR"
+        },
+        {
+          "input": "A3",
+          "output": "ZN",
+          "class": "FOUR"
+        }
+      ],
+      "gf180mcu_fd_sc_mcu9t5v0__xnor3_4": [
+        {
+          "input": "A1",
+          "output": "ZN",
+          "class": "FOUR"
+        },
+        {
+          "input": "A2",
+          "output": "ZN",
+          "class": "FOUR"
+        },
+        {
+          "input": "A3",
+          "output": "ZN",
+          "class": "FOUR"
+        }
+      ],
+      "gf180mcu_fd_sc_mcu9t5v0__xor2_2": [
+        {
+          "input": "A1",
+          "output": "Z",
+          "class": "EMPTY"
+        },
+        {
+          "input": "A2",
+          "output": "Z",
+          "class": "EMPTY"
+        }
+      ],
+      "gf180mcu_fd_sc_mcu9t5v0__xor2_4": [
+        {
+          "input": "A1",
+          "output": "Z",
+          "class": "EMPTY"
+        },
+        {
+          "input": "A2",
+          "output": "Z",
+          "class": "EMPTY"
+        }
+      ],
+      "gf180mcu_fd_sc_mcu9t5v0__xor3_2": [
+        {
+          "input": "A1",
+          "output": "Z",
+          "class": "FOUR"
+        },
+        {
+          "input": "A2",
+          "output": "Z",
+          "class": "FOUR"
+        },
+        {
+          "input": "A3",
+          "output": "Z",
+          "class": "FOUR"
+        }
+      ]
+    },
+    "counts": {
+      "masters": 13,
+      "replacement_groups": 29
+    },
+    "handoff": [
+      {
+        "responsibility": "model/SDF source transformation",
+        "status": "carried",
+        "chain": "research standard_model/standard_cell -> RC1 convert/verify -> public prepare_files; same predicate policy and endpoint structure"
       },
-      "mux4": {
-        "model.v": true,
-        "helper.v": true,
-        "converted.sdf": true,
-        "field-map.json": true,
-        "source-map.json": true,
-        "changes.diff": true
+      {
+        "responsibility": "ordinary records, renamed conditions, partial/empty fields",
+        "status": "carried",
+        "chain": "research O/L -> RC1 latent L -> a565911 source-classified file entry; existing mixed regression covers actual flow"
       },
-      "mux2-7t": {
-        "model.v": true,
-        "helper.v": true,
-        "converted.sdf": true,
-        "field-map.json": true,
-        "source-map.json": true,
-        "changes.diff": true
+      {
+        "responsibility": "untouched addf carry COND annotation",
+        "status": "completed",
+        "chain": "existing diagnostic probe -> run_carry public CLI -> typed case-equality identity patch; no PDK or converter policy changes"
+      },
+      {
+        "responsibility": "time-zero valid history, asymmetric pending pulses, four-state delivery",
+        "status": "completed",
+        "chain": "existing upstream tests registered in check-upstream; original sources and event expectations reused"
+      },
+      {
+        "responsibility": "D1/D3 same-time competing causes and D4/D5 full causal trace, D7 relocated hierarchy",
+        "status": "mechanism adaptation",
+        "chain": "finite_runtime -> path_assessment -> semantic_oracle requires compiled-object bijection and passive/pre-path observations beyond public PIN/SOURCE/PRED; existing downstream events are not equivalent proof"
+      },
+      {
+        "responsibility": "producer process-to-occurrence bridge",
+        "status": "mechanism adaptation",
+        "chain": "producer.adapter POST_EXECUTION -> source_oracle.assess_transcript -> source_join.when_identity -> bridge; current public entry consumes authenticated field ledger, not producer process handles"
+      },
+      {
+        "responsibility": "scan, chip timing/interconnect/supervision and physical validation",
+        "status": "independent extension",
+        "chain": "single-clock/noncombinational profiles and application lifecycle remain outside paired-edge cell conversion"
       }
-    },
-    "new_frozen_inputs": {
-      "examples/edge-annotation/expected.json": "d09f61577c1e075edff49134259d48831882d564bf684204bb86bfcf54da2627",
-      "examples/edge-annotation/bench.v": "564e4ac0e063d1e6b4dfb941b4bc7e6409dce999b2a9e5b45a17efe2a417a150",
-      "examples/mixed-mux2/expected.json": "078075be87e819eaf636f456d064c95dcf01e9312950330d6ebc8386b6ce4667",
-      "examples/mixed-mux2/original.sdf": "3df2b7de5a600c629b2b0ff0a68a92f5bde33a6064681a9c4cf667542559e8f7",
-      "examples/mixed-mux2/bench.v": "7e1b9209c4763d3bf223584025c5dfecb8e2484e06c513a9620be39a55dee8db",
-      "examples/mixed-mux2/producer.json": "dbe6f895659f923fa9b33267112ac98274d0c582629f0a1481697d42b8b55083"
-    },
-    "old_delivery_and_trace_bytes_identical": true,
-    "tool_stamp_unchanged": "beb32f3945f5be1f45cf5d898d440161e9c6f113 9096ec309018e69a752ff148c90b73d8f77eb1395e2f51767375f3e3cd5d062c"
+    ]
   },
+  "upstream_comparison": {
+    "official_head": "af170a0b5adf0dc35c71f9d7f813b3dfd61b7d33",
+    "pinned_base": "beb32f3945f5be1f45cf5d898d440161e9c6f113",
+    "official_files_sha256": {
+      "elaborate.cc": "7d390f3d0b7ab5fdad436cfd3a751be61caf60fb1fed9322a49757c68a9095ab",
+      "vpi/sdf_parse.y": "ea7f2b765376a857712fa6a47e76f7da101afbf48892d1874201a0902e5cba7a",
+      "ivtest/gold/sdf_cond_expr_reject-vvp-stdout.gold": "92a06cef7538c4668460f25d304a71010a3fc73492c4f3ed2d43d55d0213b6f9"
+    },
+    "comparison": "Both versions omit case-equality keys in HDL and SDF. Current upstream adds ordered logical OR and unrelated INTERCONNECT updates; neither resolves carry ===. The incremental patch applies to both, preserving logical versus case equality.",
+    "patch_apply_upstream": "PASS fuzz=0",
+    "upstream_binary_run": false,
+    "candidate_base_choice": "Keep the authenticated pinned base and add only the required case-equality identity support."
+  },
+  "baseline_comparison": {
+    "original_inputs_unchanged": 24,
+    "original_expected_files_unchanged": true,
+    "old_references_byte_identical": 42,
+    "carry_source_and_bench_match_prior_probe": true,
+    "carry_expected_matches_before_execution_freeze": true,
+    "converter_and_checker_source_unchanged": true,
+    "initial_patch_unchanged": true
+  },
+  "reused_evidence": "Previous source relations, event expectations and 42 references retained. Research producer/application and full causal results remain historical; no producer, SHA3 or physical rerun.",
   "execution_evidence_sha256": {
-    "EDGE_INPUTS_BEFORE_RUN.json": "14c189387454ff1f071883fe7f47c0c679b98b7ab0dbc7e3994c97862aed10e2",
-    "IHP_REVIEW.json": "d33cb29b12f24835ad0a44a77c45907cd1014df9415ab2d13c3b15f67cbddac1",
-    "MIXED_INPUTS_BEFORE_RUN.json": "e2053708e170ddaf62ae52514518e9664623c53b5d4a362e6ef1da4e9a82c446",
-    "carry-boundary/converted/field-map.json": "28a30be6e70718d274ef284986c121a7d29ca9321e23dc05cdf78796b019f290",
-    "carry-boundary/converted/inputs.json": "42580cce0c357c376a90b9378114edb331ec24be71c82911a2b74c8f60a10593",
-    "carry-boundary/converted/record-map.json": "452effca4b79ee96e200e47182a9af8ac46f25054629aa843f26ca68f26c2aab",
-    "carry-boundary/converted/source-map.json": "acc868fca28bb00712b1f7cc830489f4779cbca99f535d7f562e724668598dfb",
+    "BASELINE.json": "12a8996d5c96ece3b448b40cd2ac25a206879b649aeb5845f212d1b8b325ac3a",
+    "CARRY_INPUTS_BEFORE_RUN.json": "09942d046a8dbfffd6b32ff91843f1c64c36aa3be0a9429e00b662a1eea8b6a4",
+    "COMPARISON.json": "4449dd510f4a61b2dd789ce8f373f163d6d06bbc1f5e601a4c444b0bd113a37e",
+    "HANDOFF.json": "56b4ad6f9a2e5f3bd5e4e1e8ce4e1e7f7e420795fa16fce30dca7404dd835b17",
+    "UPSTREAM_COMPARISON.json": "e5782b9c250b4ea3e2b4456a42cf280629cd50459cf41ea0d6e376f60cb61e95",
+    "carry-after/conversion.log": "9ddb01cd3b253d0676908d73d5e8d436ab4a0cbd0a8edddca1ff656b8e2496ed",
+    "carry-after/converted/capture.log": "48a6f6036009e97824495a134a43ce4119c3c9842995d0b538437edec2ce102c",
+    "carry-after/converted/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "carry-after/converted/field-map.json": "28a30be6e70718d274ef284986c121a7d29ca9321e23dc05cdf78796b019f290",
+    "carry-after/converted/inputs.json": "89ed0fe47e0f1fc7a889e1551d580ee0be56e0fd3d6c478a14cd7df250b712f7",
+    "carry-after/converted/record-map.json": "452effca4b79ee96e200e47182a9af8ac46f25054629aa843f26ca68f26c2aab",
+    "carry-after/converted/source-map.json": "acc868fca28bb00712b1f7cc830489f4779cbca99f535d7f562e724668598dfb",
+    "carry-after/probe-build.log": "d2d9f9588839ef2c1f5576b267b15b254f58b11dc786173725d69f41543798de",
+    "carry-after/results.json": "7d646a107927f9b8dd002ca4b54511a521411c5b60b83b39b22a834774aeff91",
+    "carry-before/conversion.log": "9ddb01cd3b253d0676908d73d5e8d436ab4a0cbd0a8edddca1ff656b8e2496ed",
+    "carry-before/converted/capture.log": "d25c9da131d72902ffeb94cbffe9211aaa50358cd61fd6aa2f28c00ba1681241",
+    "carry-before/converted/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "carry-before/converted/field-map.json": "28a30be6e70718d274ef284986c121a7d29ca9321e23dc05cdf78796b019f290",
+    "carry-before/converted/inputs.json": "89ed0fe47e0f1fc7a889e1551d580ee0be56e0fd3d6c478a14cd7df250b712f7",
+    "carry-before/converted/record-map.json": "452effca4b79ee96e200e47182a9af8ac46f25054629aa843f26ca68f26c2aab",
+    "carry-before/converted/source-map.json": "acc868fca28bb00712b1f7cc830489f4779cbca99f535d7f562e724668598dfb",
+    "carry-before/probe-build.log": "d2d9f9588839ef2c1f5576b267b15b254f58b11dc786173725d69f41543798de",
+    "carry-before/results.json": "28305c1146616748f304906d3439c5de9e49bd3c6e30e93fd24d880a50fdb96a",
     "final-annotation/edge-bare-max/capture.log": "51d1bdcf5a883d66c5dc19b2fd2bfd82dd631e25b782c642dadc100cf9f8506d",
     "final-annotation/edge-bare-max/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "final-annotation/edge-bare-min/capture.log": "3ea144e16ba2b1c048e16c4b0e5e54464dcde6a5adf7800d6dc8f06f6d5e2e95",
@@ -357,18 +454,28 @@
     "final-annotation/simple-qualified-reversed-typ/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "final-annotation/simple-qualified-typ/capture.log": "5db3febc9a7be70330ca7f418fb2f6bf71075ec7ff09363c81cdc3a191af9a5f",
     "final-annotation/simple-qualified-typ/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-carry/conversion.log": "9ddb01cd3b253d0676908d73d5e8d436ab4a0cbd0a8edddca1ff656b8e2496ed",
+    "final-carry/converted/capture.log": "48a6f6036009e97824495a134a43ce4119c3c9842995d0b538437edec2ce102c",
+    "final-carry/converted/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-carry/converted/field-map.json": "28a30be6e70718d274ef284986c121a7d29ca9321e23dc05cdf78796b019f290",
+    "final-carry/converted/inputs.json": "89ed0fe47e0f1fc7a889e1551d580ee0be56e0fd3d6c478a14cd7df250b712f7",
+    "final-carry/converted/record-map.json": "452effca4b79ee96e200e47182a9af8ac46f25054629aa843f26ca68f26c2aab",
+    "final-carry/converted/source-map.json": "acc868fca28bb00712b1f7cc830489f4779cbca99f535d7f562e724668598dfb",
+    "final-carry/probe-build.log": "d2d9f9588839ef2c1f5576b267b15b254f58b11dc786173725d69f41543798de",
+    "final-carry/results.json": "7d646a107927f9b8dd002ca4b54511a521411c5b60b83b39b22a834774aeff91",
     "final-mixed/conversion.log": "7eb990d9c6910c852a25a7ef19bb5bba969819a88414b9e14371936569c0cf7e",
     "final-mixed/converted/capture.log": "9ff4f8f1e671a2f53fd4b86890728052da4659539ac119a8cd43eba8e5205b3d",
     "final-mixed/converted/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "final-mixed/converted/field-map.json": "f3b89d3b266c2cb821d5cdac4b511191f058eb87056a1cf9c531ca40b644eada",
     "final-mixed/converted/inputs.json": "e59068017be9874c7913b1d908156ef1b9a7ff0ca25526f62800853b13f4b940",
+    "final-mixed/converted/ordinary-compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "final-mixed/converted/record-map.json": "3d6fa378e59464154a7f05ba711e41af24d0cd3f90c646559b62c75153f07292",
     "final-mixed/converted/source-map.json": "4be84182f354a288c91ffadb46f82ad927197a9e2a73945280110adee241abfe",
-    "final-mixed/dropped-ordinary-record/capture.log": "72f5f03810d494504e21ee08faf28dd55d957f2bff9d71c277d19644372a4679",
+    "final-mixed/dropped-ordinary-record/capture.log": "df8ffc87bf443de7e4e549f255d573cfbf6254fa11bc4664bd9b055b0b3dd7e0",
     "final-mixed/probe-build.log": "d2d9f9588839ef2c1f5576b267b15b254f58b11dc786173725d69f41543798de",
     "final-mixed/results.json": "4ae9f647c788756052041e552e4522bc81bde2d3d87493c063a80f79fac88e5a",
-    "final-mixed/swapped-input-edges/capture.log": "8bd2375b4bb054633c1ebe1d7eb93263f49269eb99af37752ea0eed579473b47",
-    "final-mixed/unsynchronized-condition/capture.log": "1adb0dd236850ab2fa45e6e920870034c2ddb712a783d12f5d4b700d967ebc7f",
+    "final-mixed/swapped-input-edges/capture.log": "625b5d8ad20b1f9941ad2fd5d8232c20c7955e295e73fe6d7768a65f738a2054",
+    "final-mixed/unsynchronized-condition/capture.log": "05bd2aff2ad57af8d246a2ecce5c5764bf1d559cd58b4afd432068cc195423a4",
     "final-originals/addf/field-map.json": "28a30be6e70718d274ef284986c121a7d29ca9321e23dc05cdf78796b019f290",
     "final-originals/addf/inputs.json": "d68e66190c27b7725b959ec58f0d75c9084d08279129a8cb9d654f594272221a",
     "final-originals/addf/record-map.json": "6d105e547412b07a312514fbfb8cf97a961fe7c923f22949b7679a76fabd0aba",
@@ -385,39 +492,32 @@
     "final-originals/mux4/inputs.json": "845e217d38547abcc03727eec2dc056408970ba0eb17e0105fc359fff5df813d",
     "final-originals/mux4/record-map.json": "219b7e8f38f63b6cc76db0ad44a338763e1f2786ba11ced7a6ce8af4b10bf9d2",
     "final-originals/mux4/source-map.json": "4d9269588b89b22e2843bda58898a29912470ea1e867b60585f4808089909103",
-    "logs/before-supported-entry.log": "217e648f2dc75acdda09eaa427b2d59d68ad83716f4cbdb6f5bf6cb43f578b8f",
-    "logs/carry-boundary.log": "ea2c3b2775392db7dbd127c3e7382a43f8db6f69afc181b7095db9d4c2d4ba76",
-    "logs/final-check.log": "de3d4e1eaba6d2ed6c1002a08d1d75f500ff61100bc311107a7d214c78c15ebd",
-    "logs/final-entries.log": "acb6c9d5faf739aeb65b9dbc6194ed3db86053b5e0e8d77a9e75237f09d45bfc"
+    "logs/after-check.log": "974d8c97616e6080e34dfe0d4a2efba1b0db727e7e50e09a5f913118669be869",
+    "logs/build.log": "f2649af1d524006d0b6f80385865e9e1ec5405fee2583638c44fc0c0680bf603",
+    "logs/carry-before.log": "a7bdacbb48258df056ebdb5765d2b2e9829f3d91bef3e47dbdafcabcb954fa2a",
+    "logs/final-check.log": "fe148167f04f8daf5c33f796819085346aeba723efb732eb24f527a15d01d5c9",
+    "logs/upstream-patch-check.log": "b07ca4e42a7c44b075d4f11c1a4cf64fb27adad5074ddd10e8b0b3ef87726556"
   },
-  "carry_runtime_boundary": "Untouched === carry COND is source-preserved but unsupported by pinned Icarus; observed 1 ns defaults and CO at 11000/21000 ps for A at 10000/20000 ps. See logs/carry-boundary.log.",
-  "ihp_review": {
-    "sources": {
-      "ihp-cell-classification-20261026/CLASSIFICATION.json": "28d083ae57afee22af13af845e57e38a52c78476e11f109d6bb2baee34fa8a65",
-      "gls-ihp-research-navigation-20261028/research/docs/ihp.md": "a2383bb4cd22afaae391e2e26011dd732b6093ef1755000bff8d3af0b4d5f065",
-      "gls-ihp-research-navigation-20261028/research/docs/ihp-contracts/finite-logical-domain.md": "899e4c4c2e180fe0fc69d1e042c0e7a18084e95b071458f3c5e673e34794ca8b"
-    },
-    "model": {
-      "path": "/foss/pdks/ihp-sg13g2/libs.ref/sg13g2_stdcell/verilog/sg13g2_stdcell.v",
-      "sha256": "9c91c5311e0b10525b2e02bfd30910927d821c0928aff45cb7f34f3a6a3280f8"
-    },
-    "finding": "The retained IHP contracts preserve canonical model, UDP and raw SDF. No authenticated before/after model revision and corresponding SDF for the reported simple-path update were obtained. No IHP update execution is claimed."
-  },
-  "reused_evidence": "Previous maintenance fresh offline Icarus builds; RC1 and historical family/application records remain historical. No new SHA3 or physical run.",
-  "independent_review": "# Independent read-only review \u2014 2026-11-12\n\nReviewer: /root/independent_review, not an implementation author.\n\nCompared deletion responsibilities at 1ca8ea5 and 3e24e83. The ordinary L serialization/checking branch had a useful retention, fanout and condition-synchronization duty even though the old public writer_join produced only O. The earlier rationale for deletion was withdrawn. Physical line-count constraints have syntax/location replacements; condition implementation has fixed upstream replacements. Initial annotation supervision/readback remain necessary and retained.\n\nRead README.md, docs/examples.md, tools/intake.py, tools/verify.py, tools/run_mixed.py and tests/test_mixed_contract.py in the current candidate. The restored ordinary flow, independent source classification and Liberty condition/sense checks, and event-failing negatives correspond to the documentation. Maintenance readers can locate the real changes and complete diffs; engineers can locate inputs, commands and acceptance criteria.\n\nFound the untouched addf carry === condition boundary. The primary agent reproduced it on the pinned tool: conversion preserves the record, SDF reports COND not supported, carry slots remain at 1 ns, and CO arrives at 11000/21000 ps for A at 10000/20000 ps. Reviewed the amended input contract, scope and validation. They distinguish source preservation from successful timed binding without weakening the original expression or dropping the record. No remaining correctness blocker in the reviewed scope.\n\nIHP review located the retained canonical source identity and unchanged-model compatibility contracts, but no authenticated before/after revision plus SDF for the reported simple-path update. GF180 controls are correctly labeled separately. IHP_REVIEW.json identifies the inspected records. A Docker read attempt was interrupted before providing further evidence; no IHP execution is claimed.\n\nThe independent review did not rerun regressions. Final 14 source tests, 36 annotation controls, nine mixed events/three dynamic negatives and 15 upstream regressions, plus the carry diagnostic probe, were executed and recorded by the primary agent. Local document verification checked 117 links, 37 excerpts, 159 source/generated path locations, all 11 case input records and complete diffs.\n",
-  "candidate_manifest_scope": "All distributed files except this manifest. Executed implementation, tests, inputs and references unchanged since the final combined run; prose finalized after review.",
+  "candidate_manifest_scope": "All distributed files except this manifest. Implementation, inputs and references match the final executed candidate; documentation finalized afterward.",
   "candidate_sha256": {
     ".gitignore": "270b9457f3b7f7419be3d88bd94efd776ec59ef639b366fe7aee29b5c1a42cc0",
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
-    "Makefile": "786f0f527d323d537a8320e2b76315df0c1c755429613b0b96d1ee3da0d649a0",
+    "Makefile": "1e17485a529a4aeb283e412b021d0b6e89a0b5f28d219c31a0e23a5aed783549",
     "NOTICE.md": "b3367148bb075c11823bf8640f39d3596a349d718eec16d32629bc6bc810a4ea",
-    "README.md": "a5cb74d7ebbc53f24e71a8dfb3bd3758930d5e2eb5fecbbcd688227ed4c4f1af",
-    "docs/examples.md": "43dffa17286399de0249da9687a0ffe9da6211c9ac6e0eb93c30a90e91852200",
-    "docs/implementation.md": "4082f705a29d83a99c9038e64deacb5761c7c00515baad049f36b3e327ac7354",
-    "docs/inputs.json": "3ea349313a2401f1172eb7965fc17d11f5cbcd11cffdba8b79c0368ed0de328d",
+    "README.md": "d59c45556af324c5241a6b66476b05e57058b141aa038ff27718f4c3421d1413",
+    "docs/examples.md": "75187a8b6c0434bff3ab6831fa70ac95a742faa8980624991cd0530817f0edc6",
+    "docs/implementation.md": "24843cd338c6f41fe11a12d487ace2b33391de68ca56a448528885603830a603",
+    "docs/inputs.json": "9cdabc56ffea7df5984fcae209070ac65a3d5c44f43eca3d6547407b880875d5",
     "docs/release.md": "35d5d56b42a9f68afbd71a462fe7598ead842069665a68c73b7dc4d8edf899a8",
-    "docs/scope.md": "089006fa387001aadd73b489cdf86da9f3d867e918f5e6713e5db0832fce564d",
-    "docs/validation.md": "6fc24b781f0d2261fa2ea405df813f657be1187a09b394077ec9472625e6c34f",
+    "docs/scope.md": "6bdc573d09ebdcd446cbbbfaa17eec2b16cfa5ce9052e2d3c9dd2b57db591687",
+    "docs/validation.md": "dac5a6b8b74d537e8919365a373fa6f5428dc6a52221699c5801dfe2ad9d92a0",
+    "examples/addf-carry/bench.v": "d14a9314accf4d5927180acf3cd0a39d7fb17b808752620d8bc97f42194beb2c",
+    "examples/addf-carry/expected.json": "71b5cd4875d804fcd4cd7059993fa39db50f070a6ef8a6670a6fc8451a69c160",
+    "examples/addf-carry/original.sdf": "9a5ea2b5e38c82b3e9b32ab08c071981b75af6a3f4c8c8cc930d4afd391fd2fc",
+    "examples/addf-carry/reference/changes.diff": "4b781d70ad3f0be42faafec0753e573b18cebd5bdc526beca76c61d17f7d6bd6",
+    "examples/addf-carry/reference/converted.sdf": "3e065497349e536816697a494225567b10ff53fdad85a1bf14bf20a6e38f126e",
+    "examples/addf-carry/reference/record-map.json": "452effca4b79ee96e200e47182a9af8ac46f25054629aa843f26ca68f26c2aab",
+    "examples/addf-carry/reference/results.json": "7d646a107927f9b8dd002ca4b54511a521411c5b60b83b39b22a834774aeff91",
     "examples/addf/original.sdf": "5aa36058e52c234f8e6851b4b05b195921a33fe85b2c718ee8d54021c20e5cb6",
     "examples/addf/producer.json": "5820feddc5fba88d6ac456690fd9f34645010aee2b73671070628810b5a69868",
     "examples/addf/reference/changes.diff": "769c04472b54a856f09643d241de906da77ff8f790b182d0e860365d6d888b9c",
@@ -477,13 +577,14 @@
     "examples/reference/trace.txt": "b1358a513a68a46d0185037c010d8b431835945265cabc033a3fe0fed2da6d01",
     "licenses/Icarus-GPL-2.0.txt": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
     "licenses/Icarus-target-LGPL-2.1.txt": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
+    "patches/case-equality-condition.patch": "00c3cd4b650a147e9bcfb1ace957696893ba62eb3ef3bafd3c36f7e72c802dd8",
     "patches/initial-annotation.patch": "9096ec309018e69a752ff148c90b73d8f77eb1395e2f51767375f3e3cd5d062c",
-    "tests/path_snapshot.c": "e245af569e2e09252812a938984dc350892cb7a6c5d52a44d1d4141ed1a08365",
+    "tests/path_snapshot.c": "7c9b41c535d4f957117435c76cffd17dedb7b123132ac89436a8a8b4478c193f",
     "tests/test_mixed_contract.py": "5f8da944310cb78675a6a35a1777428368f09b21028bb65a41006ea06dc366df",
     "tests/test_source_contract.py": "127e473a048299ae69cc7c7f3c202f8d677129cda903aa0409e7dae7da30700a",
-    "tests/upstream.list": "c038dbc7fffe48d1d6428aafba105e328c2aafaa632ea90fe594a51cc1195ad3",
+    "tests/upstream.list": "11dad810760a1c5e70fe826870c5fb8970e288521bdaebfc9391b73c3b03455b",
     "tools/assess.py": "d41c2d8dbc2e057a3ce532f4ba98b61d04508772badc541961d39ae404d6168b",
-    "tools/build.sh": "a4033769691e1052ff0ab8955c7efa98ec87c421a56f477470004a93af82c10e",
+    "tools/build.sh": "aa947c47fa11916e05c63c61141a38275187edb2b2beda38f6b7870b4fe3502a",
     "tools/check-upstream.sh": "0c167e3ce054369414bc328726ba59d8ed1adc5e88140e52cc611ae71c4cb2d9",
     "tools/checks.py": "2e5c169abb7352d62c3ab68959749fc4268a9e138258f1a7b9d68249675ddf36",
     "tools/convert.py": "ea1b79ec8052354ffd088583351f2de2b1dfa9f735fcc1e01bc95ac31f7916b5",
@@ -493,7 +594,8 @@
     "tools/references.py": "a8a37d7407f5631f334ddd8aa8dc198be5cbb6a3bdcecea040b9a56758479d1e",
     "tools/run.py": "f1c770649b7340937ade2c8e56d9bc7e969d6d5fe7317173240116925da79d57",
     "tools/run_annotation.py": "ed4a1cc2f96919a46161e56b2da002737b707f197e5865e1e643c3b636e2651e",
-    "tools/run_mixed.py": "84eb169d15e9132e7b67ead195a33d718bd14871852bc5fc2617fd55cd282408",
+    "tools/run_carry.py": "25b2c0cca1f73b6d934cd6acaec8cf4325385d2aacb92d443b39a9c1a24e4fb2",
+    "tools/run_mixed.py": "47611dbad1ba4717cfc9b0678cabab8d2a5285c36a82f27d111ada88ae946f42",
     "tools/verify.py": "c6005d7860efe1161817eff8041d042ef5381372666898ec822cb03da5d88721",
     "upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.behavioral.v": "5c8e4ef21a2472b4b58d35fcc270ab103c94b7dd7b0025143aab1fed9dea4512",
     "upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.functional.v": "8b40feb80af9ba3101ac1eda5fe2b414ecace51a580da860f43af509f546dcb5",
@@ -504,5 +606,66 @@
     "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2.behavioral.v": "b5b193a30f1cd37beda511b05eb944dee21faa8abf74db58c247ffbab72b071a",
     "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2.functional.v": "4f6249c433c1c0e52797d5d167f06e0200fce56f11ed11619d52debfcea94c11",
     "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2__tt_025C_5v00.lib": "1e9fc892244e2bcf3198034d436c52fa8e14a3ef695e14403cb5ee0b83881a64"
+  },
+  "upstream_submission": {
+    "date": "2026-11-12",
+    "pull_request": "https://github.com/steveicarus/iverilog/pull/1771",
+    "repository": "steveicarus/iverilog",
+    "base": "af170a0b5adf0dc35c71f9d7f813b3dfd61b7d33",
+    "candidate": "8528dfb2b86120c411bbbc021ce615028d914f3e",
+    "independent_from_initial_annotation_patch": true,
+    "production_delta_matches_fixed_patch": true,
+    "new_regression": "ivtest/ivltests/sdf_cond_case_equality.v",
+    "results": {
+      "baseline_native": "compiled; intended output timing assertion at 131 ps instead of 103 ps",
+      "baseline_vlog95": "translated and compiled; same intended timing assertion",
+      "candidate_native": {
+        "tests": 20,
+        "failed": 0,
+        "new_test_events": 32
+      },
+      "candidate_vlog95": {
+        "outcomes": 20,
+        "failed": 0,
+        "simulated": 8,
+        "existing_expected_compile_errors": 12,
+        "new_test_events": 32
+      },
+      "make_check": {
+        "baseline": "PASS",
+        "candidate": "PASS"
+      },
+      "production_delta": "same two-file increment as retained GF patch",
+      "negative_controls": "existing expr_reject and or_reject retain all model, SDF and event expectations; two diagnostic gold lines updated"
+    },
+    "tools_sha256": {
+      "baseline": {
+        "bin/iverilog": "a41a1fe5dc4c0028e22736718e3f9cff433570a4212321a2e4bd8af2278fc83d",
+        "bin/vvp": "9dc96dadab04321f02e58a9b007a09dabe232c8787c8b31c4760679c2bf39983",
+        "lib/ivl/ivl": "1f110db33de38dea307dded76491639d180182afd396c9f5e716ff3a1cb738e1",
+        "lib/ivl/system.vpi": "4ca82bf252a1ec72e470aa6c375a6080f7e23a6edff02dad710912c0c5e9e5ee",
+        "lib/ivl/vlog95.tgt": "750c4e0b5384a6c954f8997724ac252f9da2c63dbba50b690db41c77f5a6978a"
+      },
+      "candidate": {
+        "bin/iverilog": "b2fb5a15ef552a397e45f3bedf04d8e779ef317bd37e232ce8525dfb3e5d1219",
+        "bin/vvp": "f46ac288a607689ff40e785e5cf692691eb5a5b895c310835b6a485fbbb09b53",
+        "lib/ivl/ivl": "b6a37ede04a3e98c24e374d6ab94f350b27418e1652e16497bb26d95f5bf98e3",
+        "lib/ivl/system.vpi": "32a840f28d2cc989b09cb9aeb144efeae89398db5d0d720552e7a1ed44134d64",
+        "lib/ivl/vlog95.tgt": "0db1bd186cb4ec34474a6651eda3cb7ba1cf9f7e1b3e2d81c911b9713d927a6c"
+      }
+    },
+    "record": "icarus-case-equality-20261112/VALIDATION.json",
+    "record_sha256": "7ff59d0b2f8522e632a6feac46004f230649b04af19e2d7c410989f8d0b8b6cd",
+    "gf180_runtime_results": "reused from unchanged handoff candidate",
+    "gf180_remote_write": false
+  },
+  "publication": {
+    "authorized_on": "2026-11-12",
+    "destination": "https://github.com/JerryZhong0910/gf180-ifnone",
+    "branch": "main",
+    "scope": "existing delivery handoff plus Icarus PR #1771 association",
+    "validation": "Reuse verified implementation/tool/input identities and completed execution logs; publication changes validation wording and manifest only",
+    "tags_and_historical_releases": "preserved",
+    "local_receipt": "gf180-ifnone-pr1771-publication-20261112/PUBLICATION_RECEIPT.json"
   }
 }

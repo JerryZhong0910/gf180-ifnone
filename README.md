@@ -77,7 +77,7 @@ make build
 make check
 ```
 
-The build fetches the [fixed public Icarus commit](https://github.com/steveicarus/iverilog/commit/beb32f3945f5be1f45cf5d898d440161e9c6f113), verifies its exported source digest, and installs under `.build/install`. [Offline and Docker instructions](docs/examples.md#build-environment) reuse the same source. `make check` runs source regressions, the original three source cases and two nine-track simulations, the edge-annotation controls, and the mixed seven-track simulation. It checks negative controls and reproduces the committed references. It prints a fresh `runs/case-…/` directory containing raw logs and field-to-pin chains.
+The build fetches the [fixed public Icarus commit](https://github.com/steveicarus/iverilog/commit/beb32f3945f5be1f45cf5d898d440161e9c6f113), verifies its exported source digest, and installs under `.build/install`. [Offline and Docker instructions](docs/examples.md#build-environment) reuse the same source. `make check` runs source regressions, the original three source cases and two nine-track simulations, the edge-annotation controls, the mixed seven-track simulation, and the existing addf carry probe. It checks negative controls and reproduces the committed references. It prints a fresh `runs/case-…/` directory containing raw logs and field-to-pin chains.
 
 | Nine-track fixture | Input event | Source delay | Expected / observed output time |
 |---|---:|---:|---:|

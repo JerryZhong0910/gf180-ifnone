@@ -28,8 +28,13 @@ static PLI_INT32 snapshot(PLI_BYTE8 *unused)
         vpi_printf("%s ", vpi_get_str(vpiName, vpi_handle(vpiExpr, input)));
         vpi_printf("%s ", vpi_get_str(vpiName, vpi_handle(vpiExpr, output)));
         const char *condition = vpi_get_str(_vpiModPathCondition, path);
-        vpi_printf("%s %.12g %.12g\n", condition && *condition ? condition : "-",
-                   times[0].real, times[1].real);
+        /* Expression identities contain spaces; keep each observation one token. */
+        if (condition && *condition == ' ') {
+            vpi_printf("hex:");
+            for (const unsigned char *p = (const unsigned char *)condition; *p; ++p)
+                vpi_printf("%02x", *p);
+        } else vpi_printf("%s", condition && *condition ? condition : "-");
+        vpi_printf(" %.12g %.12g\n", times[0].real, times[1].real);
     }
     return 0;
 }

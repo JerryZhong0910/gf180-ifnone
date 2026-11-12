@@ -59,11 +59,18 @@ def run(prefix, out, *, refresh=False):
         'swapped-input-edges':sdf.replace('(posedge S)','(TEMP S)').replace('(negedge S)','(posedge S)').replace('(TEMP S)','(negedge S)'),
         'dropped-ordinary-record':'\n'.join(x for x in sdf.splitlines() if not x.startswith('(IOPATH I1 Z'))+'\n',
         'unsynchronized-condition':sdf.replace('(COND '+key+' ',"(COND (I1===1'b0) ")}
+    # Keep the strict initial-entry positive above. The ordinary entry lets an
+    # unmatched (now parsed) case-equality condition run to the event oracle;
+    # strict cold rejection is already exercised by run.py.
+    negative_bench=(source/'bench.v').read_text()
+    exact(negative_bench.count('$sdf_annotate_initial('),1,'MIXED_NEGATIVE_ANNOTATION_ENTRY')
+    (converted/'ordinary-bench.v').write_text(negative_bench.replace('$sdf_annotate_initial(', '$sdf_annotate('))
+    execute([prefix/'bin/iverilog','-g2012','-gspecify','-Ttyp','-s','bench','-o','ordinary.vvp','ordinary-bench.v'],converted,'ordinary-compile.log')
     negatives=[]
     for name,bad in corrupted.items():
         folder=out/name;folder.mkdir();(folder/'converted.sdf').write_text(bad)
-        # The exact same compiled design runs to its final stimulus time.
-        bad_log=execute([prefix/'bin/vvp','-M'+str(out),'-mpath_snapshot',converted/'bench.vvp','-sdf-verbose'],folder,'capture.log')
+        # One shared ordinary-annotation design runs the unchanged stimulus.
+        bad_log=execute([prefix/'bin/vvp','-M'+str(out),'-mpath_snapshot',converted/'ordinary.vvp','-sdf-verbose'],folder,'capture.log')
         try:events(bad_log,expected)
         except ContractError as error:exact(error.code,'MIXED_PIN_EVENTS','MIXED_NEGATIVE_WRONG_FAILURE')
         else:raise ValueError('Undetected dynamic corruption: '+name)
