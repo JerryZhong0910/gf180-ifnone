@@ -19,6 +19,12 @@
     "upstream/gf180mcu_fd_sc_mcu9t5v0__addf_1__tt_025C_5v00.lib": "eb65a9d13b1ff4f229a0cbc56cb2db6d4caf1834f67a59b1d0099c5a24d27bcf",
     "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2.behavioral.v": "b5b193a30f1cd37beda511b05eb944dee21faa8abf74db58c247ffbab72b071a",
     "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2.functional.v": "4f6249c433c1c0e52797d5d167f06e0200fce56f11ed11619d52debfcea94c11",
-    "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2__tt_025C_5v00.lib": "1e9fc892244e2bcf3198034d436c52fa8e14a3ef695e14403cb5ee0b83881a64"
+    "upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2__tt_025C_5v00.lib": "1e9fc892244e2bcf3198034d436c52fa8e14a3ef695e14403cb5ee0b83881a64",
+    "examples/edge-annotation/expected.json": "d09f61577c1e075edff49134259d48831882d564bf684204bb86bfcf54da2627",
+    "examples/edge-annotation/bench.v": "564e4ac0e063d1e6b4dfb941b4bc7e6409dce999b2a9e5b45a17efe2a417a150",
+    "examples/mixed-mux2/expected.json": "078075be87e819eaf636f456d064c95dcf01e9312950330d6ebc8386b6ce4667",
+    "examples/mixed-mux2/original.sdf": "3df2b7de5a600c629b2b0ff0a68a92f5bde33a6064681a9c4cf667542559e8f7",
+    "examples/mixed-mux2/bench.v": "7e1b9209c4763d3bf223584025c5dfecb8e2484e06c513a9620be39a55dee8db",
+    "examples/mixed-mux2/producer.json": "dbe6f895659f923fa9b33267112ac98274d0c582629f0a1481697d42b8b55083"
   }
 }

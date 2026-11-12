@@ -1,0 +1,74 @@
+[
+  {
+    "source_line": 38,
+    "generated_line": 57,
+    "input": "I0",
+    "output": "Z",
+    "edge": null,
+    "role": "literal_preservation",
+    "predicate": "__gls_path_I0_Z_3235b9e3e2cc8771"
+  },
+  {
+    "source_line": 42,
+    "generated_line": 59,
+    "input": "I0",
+    "output": "Z",
+    "edge": null,
+    "role": "literal_preservation",
+    "predicate": "__gls_path_I0_Z_4d4772acaeb8e908"
+  },
+  {
+    "source_line": 46,
+    "generated_line": 61,
+    "input": "I0",
+    "output": "Z",
+    "edge": null,
+    "role": "literal_preservation",
+    "predicate": "__gls_path_I0_Z_fallback"
+  },
+  {
+    "source_line": 50,
+    "generated_line": 63,
+    "input": "I1",
+    "output": "Z",
+    "edge": null,
+    "role": "literal_preservation",
+    "predicate": "__gls_path_I1_Z_835cf1eec13ef5b2"
+  },
+  {
+    "source_line": 54,
+    "generated_line": 65,
+    "input": "I1",
+    "output": "Z",
+    "edge": null,
+    "role": "literal_preservation",
+    "predicate": "__gls_path_I1_Z_e60879f3ff0ab737"
+  },
+  {
+    "source_line": 58,
+    "generated_line": 67,
+    "input": "I1",
+    "output": "Z",
+    "edge": null,
+    "role": "literal_preservation",
+    "predicate": "__gls_path_I1_Z_fallback"
+  },
+  {
+    "source_line": 62,
+    "generated_line": 69,
+    "input": "S",
+    "output": "Z",
+    "edge": "posedge",
+    "role": "producer_edge",
+    "predicate": ""
+  },
+  {
+    "source_line": 66,
+    "generated_line": 71,
+    "input": "S",
+    "output": "Z",
+    "edge": "negedge",
+    "role": "producer_edge",
+    "predicate": ""
+  }
+]

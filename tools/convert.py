@@ -140,7 +140,7 @@ def standard_cell(records, declarations, accepted_join):
     c.require(bool(records),'STANDARD_NONEMPTY_CELL')
     master=records[0]['master'];c.require(all(r['master']==master for r in records),'STANDARD_SINGLE_MASTER')
     c.exact(len(accepted_join['records']),len(records),'STANDARD_JOIN_RECORD_POPULATION')
-    header='(DELAYFILE\n (SDFVERSION "3.0")\n (DIVIDER /)\n (TIMESCALE 1ns)\n (CELL\n (CELLTYPE "'+master+'")\n (INSTANCE)\n (DELAY (ABSOLUTE\n'
+    header='(DELAYFILE\n (SDFVERSION "3.0")\n (DIVIDER /)\n (TIMESCALE 1ns)\n (CELL\n (CELLTYPE "'+master+'")\n (INSTANCE'+(' '+records[0]['instance'] if records[0]['instance'] else '')+')\n (DELAY (ABSOLUTE\n'
     body=[header];mapping=[];local=header.count('\n')+1
     for row,receipt in zip(records,accepted_join['records']):
         prior=receipt['values'];source,target=[x['port'] for x in row['events']]
@@ -151,20 +151,34 @@ def standard_cell(records, declarations, accepted_join):
         c.require(all(len(slot)==1 for slot in row['slots']),'STANDARD_SINGLE_TRIPLET_SLOTS')
         candidates=[d for d in declarations if (d['source'],d['destination'])==(source,target)]
         exports=[]
-        c.exact(prior['mode'],'O','STANDARD_OWNED_RECORD_MODE')
-        c.require(candidates and all(d['role']=='producer_edge' for d in candidates),'STANDARD_OWNED_GROUP_ROLE')
-        for slot in (0,1):
-            fields=[f['values'] for f in receipt['fields'] if f['values']['slot']==slot]
-            c.exact(len(fields),1,'STANDARD_ONE_PRODUCER_SLOT_OWNER');field=fields[0]
-            edge={13:'posedge',50:'negedge'}[int(field['input_edge'])]
-            selected=[d for d in candidates if d['edge']==edge and
-                      (d['condition_tree']==row['condition_tree'] and d['condition_role']=='strict_conjunction'
-                       if row['condition_tree'] else d['condition_role']=='endpoint_fallback')]
-            c.exact(len(selected),1,'STANDARD_ONE_EDGE_CONDITION_OWNER');owner=selected[0]
-            slots=['',''];slots[slot]=row['slots'][slot][0]
-            record='(IOPATH ('+edge+' '+source+') '+target+' '+' '.join('('+value+')' for value in slots)+')'
-            if owner['key']:record='(COND '+owner['key']+' '+record+')'
-            exports.append((record,dict(input_edge=edge,slot=slot,key=owner['key'],origin_declaration=owner['origin_declaration'],group=field['group'],group_sha256=field['group_sha256'])))
+        if prior['mode']=='O':
+            c.require(candidates and all(d['role']=='producer_edge' for d in candidates),'STANDARD_OWNED_GROUP_ROLE')
+            for slot in (0,1):
+                if not row['slots'][slot][0]:continue
+                fields=[f['values'] for f in receipt['fields'] if f['values']['slot']==slot]
+                c.exact(len(fields),1,'STANDARD_ONE_PRODUCER_SLOT_OWNER');field=fields[0]
+                edge={13:'posedge',50:'negedge'}[int(field['input_edge'])]
+                selected=[d for d in candidates if d['edge']==edge and
+                          (d['condition_tree']==row['condition_tree'] and d['condition_role']=='strict_conjunction'
+                           if row['condition_tree'] else d['condition_role']=='endpoint_fallback')]
+                c.exact(len(selected),1,'STANDARD_ONE_EDGE_CONDITION_OWNER');owner=selected[0]
+                slots=['',''];slots[slot]=row['slots'][slot][0]
+                record='(IOPATH ('+edge+' '+source+') '+target+' '+' '.join('('+value+')' for value in slots)+')'
+                if owner['key']:record='(COND '+owner['key']+' '+record+')'
+                exports.append((record,dict(input_edge=edge,slot=slot,key=owner['key'],origin_declaration=owner['origin_declaration'],group=field['group'],group_sha256=field['group_sha256'])))
+        else:
+            c.exact(prior['mode'],'L','STANDARD_ORDINARY_RECORD_MODE')
+            c.require(candidates and all(d['role'] in ('literal_preservation','untouched') for d in candidates),
+                      'STANDARD_LITERAL_GROUP_ROLE')
+            selected=[d for d in candidates if d['origin_declaration'] in row['original_matches']]
+            c.exact(len(selected),len(row['original_matches']),'STANDARD_LITERAL_MATCH_POPULATION')
+            record=row['source_text'];key=''
+            if row['condition_tree'] and any(d['role']=='literal_preservation' for d in selected):
+                c.exact(len(selected),1,'STANDARD_LITERAL_CONDITION_OWNER')
+                key=selected[0]['key'];record='(COND '+key+' '+row['leaf_text']+')'
+            elif row['condition_tree']:key=condition(row['condition_tree'])[0]
+            exports.append((record,dict(input_edge=row['events'][0]['edge'],slot=None,key=key,
+                                        origin_declarations=[d['origin_declaration'] for d in selected])))
         for child,(record,relation) in enumerate(exports):
             body.append(record+'\n')
             mapping.append(dict(canonical=row['id'],canonical_source=row['source_loc'],mode=prior['mode'],child=child,line=local,

@@ -7,8 +7,9 @@ from checks import exact, require
 PIN = r'[A-Za-z_]\w*'
 TERM = re.compile(rf"({PIN})\s*===\s*(1'b[01])")
 PATH = re.compile(rf'\(\s*(?:(posedge|negedge)\s+)?({PIN})\s*=>\s*(?:({PIN})|\(\s*({PIN})\s*:\s*({PIN})\s*\))\s*\)\s*=\s*\(1\.0,1\.0\);')
-TRIPLET = r'[0-9]+\.[0-9]+:[0-9]+\.[0-9]+:[0-9]+\.[0-9]+'
-LEAF = re.compile(rf'\(IOPATH ({PIN}) ({PIN}) \(({TRIPLET})\) \(({TRIPLET})\)\)')
+NUMBER = r'[0-9]+(?:\.[0-9]+)?'
+VALUE = rf'(?:{NUMBER}(?::{NUMBER}:{NUMBER})?)?'
+LEAF = re.compile(rf'\(IOPATH (?:({PIN})|\((posedge|negedge) ({PIN})\)) ({PIN}) \(({VALUE})\) \(({VALUE})\)\)')
 def digest(s):
     return hashlib.sha256(s.encode('ascii')).hexdigest()
 
@@ -52,55 +53,85 @@ def declarations(path):
     return rows
 
 def records(data, master, decls):
+    """Read the declared single-CELL ABSOLUTE language; reject every unknown row.
+
+    Empty output slots preserve prior values. An input edge and an output slot
+    are separate attributes. Keep the source leaf so ordinary paths can retain
+    its exact spelling when only the surrounding condition needs a new name.
+    """
     text = data.decode('ascii')
-    prefix = f'(DELAYFILE\n (SDFVERSION "3.0")\n (DIVIDER /)\n (TIMESCALE 1ns)\n (CELL (CELLTYPE "{master}") (INSTANCE)\n (DELAY (ABSOLUTE\n'
-    require(text.startswith(prefix) and text.endswith('\n))))\n'), 'EXPECTED_SINGLE_CELL_SDF')
-    offset = len(prefix)
+    prefix = f'(DELAYFILE\n (SDFVERSION "3.0")\n (DIVIDER /)\n (TIMESCALE 1ns)\n (CELL (CELLTYPE "{master}") (INSTANCE'
+    require(text.startswith(prefix), 'EXPECTED_SINGLE_CELL_SDF')
+    envelope = re.match(r'(?P<instance>(?: [A-Za-z_]\w*(?:[./][A-Za-z_]\w*)*)?)\)\n \(DELAY \(ABSOLUTE\n', text[len(prefix):])
+    require(envelope is not None and text.endswith('\n))))\n'), 'EXPECTED_SINGLE_CELL_SDF')
+    instance = envelope['instance'].strip()
+    offset = len(prefix)+envelope.end()
     result = []
-    for i, raw in enumerate(text[len(prefix):-6].splitlines(), 7):
+    for raw in text[offset:-6].splitlines():
+        i = text.count('\n',0,offset)+1
         cond = None
         leaf = raw
         if raw.startswith('(COND '):
             m = re.fullmatch(r'\(COND \(([^()]+)\) (\(IOPATH .*)\)', raw)
-            require(m is not None,'SOURCE_SDF_CONDITION_FORM',raw)
+            require(m is not None,'SOURCE_SDF_CONDITION_FORM',f'line {i}: {raw}')
             cond,leaf = m.groups()
         m = LEAF.fullmatch(leaf)
-        require(m is not None,'SOURCE_IOPATH_FORM',leaf)
-        source,target,rise,fall = m.groups()
+        require(m is not None,'SOURCE_IOPATH_FORM',f'line {i}: {raw}')
+        plain,edge,edged,target,rise,fall = m.groups()
+        source = plain or edged
         tree = terms(cond) if cond else None
-        match = [d['id'] for d in decls if (d['source'],d['destination'])==(source,target)
-                 and (tree is None or tree==d['condition_tree'])]
+        endpoint = [d for d in decls if (d['source'],d['destination'])==(source,target)]
+        match = [d['id'] for d in endpoint if (tree is None or tree==d['condition_tree'])
+                 and (edge is None or edge==d['edge'])]
         require(match,'SOURCE_DECLARATION_MISSING',raw)
-        result.append(dict(id=f'L{i}',master=master,events=[dict(port=source,edge=None),dict(port=target,edge=None)],
+        owned = any(d['kind']=='ifnone' and d['edge'] is not None for d in endpoint)
+        require(not owned or rise or fall,'EMPTY_TARGET_RECORD',f'line {i}')
+        def typical(value):return value.split(':')[1] if ':' in value else value
+        result.append(dict(id=f'L{i}',master=master,instance=instance,
+                           events=[dict(port=source,edge=edge),dict(port=target,edge=None)],
                            source_text=raw, source_loc=dict(line=i,bytes=[offset, offset+len(raw)]),
-                           condition=cond,condition_tree=tree,arity=2,slots=[[rise],[fall]],
-                           selected_typical=[rise.split(':')[1],fall.split(':')[1]],original_matches=match))
+                           leaf_text=leaf,condition=cond,condition_tree=tree,arity=2,slots=[[rise],[fall]],
+                           selected_typical=[typical(rise),typical(fall)],original_matches=match,
+                           requires_ownership=owned))
         offset+=len(raw)+1
+    require(result,'SOURCE_NONEMPTY_RECORDS')
     return result
 
+
 def writer_join(records, authorities, groups):
-    """The fixture supplies an acquisition-time group ID for each original field."""
-    exact(len(records),len(authorities),'WRITER_RECORD_POPULATION')
+    """Require producer owners only where conversion redistributes fields.
+
+    Ordinary paths use the original model match set. Classification comes from
+    the source path structure, never from whether an owner happens to be present.
+    """
     owners = {a['line']:a for a in authorities}
-    exact(len(owners),len(records),'WRITER_OCCURRENCE_IDENTITY')
+    exact(len(owners),len(authorities),'WRITER_OCCURRENCE_IDENTITY')
+    required = {r['source_loc']['line'] for r in records if r['requires_ownership']}
+    require(set(owners)<=required,'UNUSED_FIELD_OWNER',sorted(set(owners)-required))
     joined=[]
     for r in records:
-        n=r['source_loc']['line']
+        n=r['source_loc']['line']; src,dst=[e['port'] for e in r['events']]
+        values=dict(canonical=r['id'],source=src,destination=dst,tokens=r['selected_typical'],
+                    source_sha256=digest(r['source_text']))
+        if not r['requires_ownership']:
+            joined.append(dict(values=dict(values,mode='L'),fields=[]));continue
         require(n in owners,'MISSING_WRITER_OCCURRENCE',n)
         a=owners[n]
         exact(a['record_sha256'],digest(r['source_text']),'WRITER_RECORD_HASH')
-        src,dst=[e['port'] for e in r['events']]
         fields=[]
         for i,name in enumerate(('rise_group','fall_group')):
+            if not r['slots'][i][0]:continue
             require(name in a,'MISSING_FIELD_OWNER',f'line {n}, {name}')
             idx=a[name]
             require(type(idx) is int and 0<=idx<len(groups),'UNKNOWN_LIBERTY_GROUP',idx)
             g=groups[idx]
-            exact(digest(g['raw']),a['group_sha256'],'WRITER_LIBERTY_HASH')
+            group_hash=a.get(name+'_sha256',a.get('group_sha256'))
+            exact(digest(g['raw']),group_hash,'WRITER_LIBERTY_HASH')
             exact((src,dst),(g['related_pin'],g['output']),'WRITER_LIBERTY_ENDPOINTS')
             require(g['timing_sense'] in ('positive_unate','negative_unate'),'WRITER_UNATE_SENSE')
             edge=13 if (i==0)==(g['timing_sense']=='positive_unate') else 50
-            fields.append(dict(values=dict(slot=i,output_slot=i,input_edge=edge,group=str(idx),group_sha256=a['group_sha256'])))
-        joined.append(dict(values=dict(canonical=r['id'],source=src,destination=dst,mode='O',tokens=r['selected_typical'],
-                                       source_sha256=digest(r['source_text'])),fields=fields))
+            if r['events'][0]['edge']:
+                exact(edge,{'posedge':13,'negedge':50}[r['events'][0]['edge']],'SOURCE_EDGE_CONFLICT')
+            fields.append(dict(values=dict(slot=i,output_slot=i,input_edge=edge,group=str(idx),group_sha256=group_hash)))
+        joined.append(dict(values=dict(values,mode='O'),fields=fields))
     return dict(records=joined)

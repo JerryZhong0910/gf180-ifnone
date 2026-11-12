@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def references(output, *, write=False):
     files = {}
     for case in ('addf', 'mux4', 'mux2-7t'):
-        for name in ('model.v', 'helper.v', 'converted.sdf', 'field-map.json', 'source-map.json', 'changes.diff'):
+        for name in ('model.v', 'helper.v', 'converted.sdf', 'field-map.json', 'source-map.json', 'record-map.json', 'changes.diff'):
             files[ROOT/'examples'/case/'reference'/name] = (output/case/name).read_bytes()
     files[ROOT/'examples/reference/delivery.json'] = (output/'delivery.json').read_bytes()
     # Same-time passive observations have no order across channels. Preserve
@@ -28,3 +28,13 @@ def references(output, *, write=False):
         else:
             exact(path.read_bytes(), data, 'REFERENCE_DRIFT_'+str(path.relative_to(ROOT)))
     print(f'PASS {len(files)} derived references '+('refreshed' if write else 'reproduced'))
+
+
+def case_references(case, files, *, write=False):
+    """Check a measured case's compact review artifacts after its assertions pass."""
+    for name,data in files.items():
+        path=ROOT/'examples'/case/'reference'/name
+        if write:
+            path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
+        else:exact(path.read_bytes(),data,'REFERENCE_DRIFT_'+str(path.relative_to(ROOT)))
+    print(f'PASS {case}: {len(files)} references '+('refreshed' if write else 'reproduced'))

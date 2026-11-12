@@ -6,11 +6,11 @@ The [examples](examples.md) show the concrete changes. The selected representati
 
 | Component | Responsibility |
 |---|---|
-| [intake.py](../tools/intake.py), [liberty.py](../tools/liberty.py) | Read original declarations, SDF occurrences and raw Liberty groups; authenticate writer identities and endpoints |
-| [convert.py](../tools/convert.py) | Emit predicate nets, edge paths and ordered one-field SDF children |
+| [intake.py](../tools/intake.py), [liberty.py](../tools/liberty.py) | Read original declarations, every SDF occurrence and raw Liberty groups; classify target/ordinary paths and authenticate required writer identities |
+| [convert.py](../tools/convert.py) | Emit predicate nets, edge paths and ordered one-field target children; preserve ordinary records and synchronize renamed conditions |
 | [verify.py](../tools/verify.py) | Independently derive membership, cone structure, edge/slot ownership and unchanged text from source inputs; check emitted text before accepting generator metadata |
-| [prepare.py](../tools/prepare.py) | Authenticate inputs, prepare each case, generate complete diffs and source/field maps |
-| [assess.py](../tools/assess.py), [run.py](../tools/run.py) | Compile, annotate, observe, compare independent expected events, and require effective negative controls |
+| [prepare.py](../tools/prepare.py) | Authenticate inputs, prepare each case, expose the file-based entry and generate complete diffs and source/record/field maps |
+| [assess.py](../tools/assess.py), [run.py](../tools/run.py), [run_annotation.py](../tools/run_annotation.py), [run_mixed.py](../tools/run_mixed.py) | Compile, annotate, observe, compare independent expected events, and require effective negative controls |
 | [references.py](../tools/references.py) | Compare the single committed reference set, or explicitly regenerate it after a passing run |
 
 Each original conjunction becomes a `wand` driven by scalar `===` comparisons. A `wor` combines those exact binary matches; `membership === 1'b0` enables the endpoint fallback. Empty membership yields unconditional edge paths. The original helper evaluates the logic; the predicates affect timing paths only.
@@ -19,7 +19,9 @@ All declarations sharing a selected output are checked. On the owned paired-edge
 
 Generated nets occupy separate readable lines. The verifier reads syntax and unchanged byte spans, reconstructs every cone independently, and measures generated locations after parsing. Source line numbers identify the original statements; they do not dictate output formatting. The regression suite checks single-line source declarations, expanded cone formatting and rejected corruption of membership, collateral paths, untouched carry text and field bindings.
 
-The SDF reader supplies owned records with authenticated field identities. Unused literal-record serialization from the research API has been removed; collateral HDL verification remains. Source triplets and write order are preserved, and empty companion fields retain earlier values. The fixture format and required inputs are documented [beside the commands](examples.md#run-and-interpret-the-results).
+The public file-based reader classifies each occurrence from its source endpoint structure. A target record needs an authenticated Liberty identity for each supplied field; an ordinary record uses its original declaration match set. Ordinary conditions follow renamed collateral predicates, while the original IOPATH leaf, numeric tokens, empty slots and record order remain intact. Untouched addf carry records are emitted unchanged. A record map accounts for every input occurrence and its output lines. Unknown input forms fail explicitly.
+
+The independent checker reconstructs the generated path relation from the source model, checks raw Liberty endpoints, condition, sense and timing type, and derives expected SDF text before checking emitter metadata. Hashes authenticate the inputs; condition and edge/slot checks establish their relationship. The mixed regression includes an authentic but wrong-condition Liberty owner, lost ordinary records, unsynchronized conditions and conflicting input edges. [Input contract and commands](examples.md#run-and-interpret-the-results) · [Deletion audit](validation.md#review-of-the-previous-deletions)
 
 ## What fixed upstream Icarus owns
 

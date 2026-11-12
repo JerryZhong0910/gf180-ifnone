@@ -1,0 +1,60 @@
+[
+  {
+    "source_line": 7,
+    "instance": "",
+    "action": "edge-fields",
+    "original_declarations": [
+      "decl-182",
+      "decl-186",
+      "decl-190",
+      "decl-194",
+      "decl-198",
+      "decl-202",
+      "decl-206",
+      "decl-210",
+      "decl-214",
+      "decl-218",
+      "decl-222",
+      "decl-226",
+      "decl-230",
+      "decl-234",
+      "decl-238",
+      "decl-242",
+      "decl-246",
+      "decl-250"
+    ],
+    "output_lines": [
+      9,
+      10
+    ]
+  },
+  {
+    "source_line": 8,
+    "instance": "",
+    "action": "edge-fields",
+    "original_declarations": [
+      "decl-182",
+      "decl-186",
+      "decl-190",
+      "decl-194",
+      "decl-198",
+      "decl-202",
+      "decl-206",
+      "decl-210",
+      "decl-214",
+      "decl-218",
+      "decl-222",
+      "decl-226",
+      "decl-230",
+      "decl-234",
+      "decl-238",
+      "decl-242",
+      "decl-246",
+      "decl-250"
+    ],
+    "output_lines": [
+      11,
+      12
+    ]
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "source_line": 7,
+    "instance": "",
+    "action": "edge-fields",
+    "original_declarations": [
+      "decl-62",
+      "decl-66"
+    ],
+    "output_lines": [
+      9,
+      10
+    ]
+  },
+  {
+    "source_line": 8,
+    "instance": "",
+    "action": "edge-fields",
+    "original_declarations": [
+      "decl-62",
+      "decl-66"
+    ],
+    "output_lines": [
+      11,
+      12
+    ]
+  }
+]

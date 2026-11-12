@@ -28,7 +28,33 @@ The two [source SDF records](examples/mux2-7t/original.sdf) both say `(IOPATH S 
 +(IOPATH (negedge S) Z () (0.382399:0.382399:0.382399))
 ```
 
-The empty companion slot keeps its previous value. The negative-unate record supplies the other two fields. **This example checks all four field bindings from real producer records.** Its [complete Verilog/helper/SDF diff](examples/mux2-7t/reference/changes.diff) also shows how the collateral I0/I1 data paths retain their simple path form while acquiring explicit predicates. [Original model](upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.behavioral.v) · [Converted model](examples/mux2-7t/reference/model.v)
+The empty companion slot keeps its previous value. The negative-unate record supplies the other two fields. **The source check verifies all four real field bindings; the mixed-record run also measures their delivery.** Its [complete Verilog/helper/SDF diff](examples/mux2-7t/reference/changes.diff) also shows how the collateral I0/I1 data paths retain their simple path form while acquiring explicit predicates. [Original model](upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.behavioral.v) · [Converted model](examples/mux2-7t/reference/model.v)
+
+With the original mux2 helper and a 1 ns / 1 ps timebase, the mixed-record fixture measures both output transitions for each select edge. The SDF values below are the unchanged real seven-track fields; Icarus rounds each delay to 1 ps before scheduling:
+
+| Input event and data | Output event | Source delay → effective delay | Expected / observed time |
+|---|---|---|---|
+| S rises at 10 ns; I0=0, I1=1 | Z rises | 0.289752 ns → 290 ps | 10,290 / 10,290 ps |
+| S falls at 20 ns; I0=0, I1=1 | Z falls | 0.382399 ns → 382 ps | 20,382 / 20,382 ps |
+| S rises at 40 ns; I0=1, I1=0 | Z falls | 0.428267 ns → 428 ps | 40,428 / 40,428 ps |
+| S falls at 50 ns; I0=1, I1=0 | Z rises | 0.445571 ns → 446 ps | 50,446 / 50,446 ps |
+
+[Measured mixed-path results](examples/mixed-mux2/reference/results.json) also include the ordinary I0/I1 paths. mux2's empty select membership illustrates one structure; [addf/mux4 conditional groups and single-edge scan families](docs/scope.md) retain their own rules and coverage.
+
+## Would simple paths preserve separate input-edge delays?
+
+On pinned Icarus `beb32f3` with the existing annotation patch, **bare repeated `ABSOLUTE IOPATH` records overwrite supplied output slots in source order; edge-qualified records do not match simple paths**. A simple path still has separate output-rise/output-fall slots, but neither slot identifies the input edge.
+
+The [measured control](docs/examples.md#what-happens-if-the-select-path-becomes-simple) uses this same GF180 mux2 model and helper, with asymmetric synthetic delays. At typical selection, record A supplies `(211,419)` ps and record B `(521,631)` ps, ordered A then B:
+
+| Model / SDF | Actual final path readback | Observed Z times for S↑, S↓, S↑, S↓ |
+|---|---|---|
+| Edge pair / bare A, B | Both edges: `(521,631)` ps | 10,521; 20,631; 40,631; 50,521 ps |
+| Edge pair / posedge A, negedge B | Posedge: `(211,419)`; negedge: `(521,631)` ps | 10,211; 20,631; 40,419; 50,521 ps |
+| Simple path / bare A, B | No input edge: `(521,631)` ps | 10,521; 20,631; 40,631; 50,521 ps |
+| Simple path / posedge A, negedge B | No matches; `(1000,1000)` ps defaults | 11,000; 21,000; 41,000; 51,000 ps |
+
+Reversing the bare records leaves A's values instead. Reversing the edge-qualified records leaves each edge's values unchanged. Two duplicate simple declarations behave the same way as one, with both path objects read back. All 36 model/order/corner combinations compare actual paths and complete scored events with source-derived predictions. [Models and complete diffs](docs/examples.md#what-happens-if-the-select-path-becomes-simple)
 
 ## Which case answers my question?
 
@@ -38,6 +64,7 @@ The empty companion slot keeps its previous value. The negative-unate record sup
 | How are conditions after `ifnone` included in the fallback? | [addf: four conditions and a measured sum event](docs/examples.md#addf-four-conditions-including-members-after-ifnone) |
 | Can an unselected X trigger fallback while the output stays known? | [mux4: sixteen conditions and two measured deliveries](docs/examples.md#mux4-an-unselected-x-and-two-fallback-deliveries) |
 | Which families and endpoint structures are covered? | [Family, master and coverage tables](docs/scope.md) |
+| How are ordinary records kept when target paths change? | [Mixed mux2 and the file-based conversion command](docs/examples.md#convert-target-and-ordinary-records-together) |
 | What does the converter require, and how do I run it? | [Inputs and commands](docs/examples.md#run-and-interpret-the-results) |
 | Which responsibilities remain in the Icarus patch? | [Implementation and upstream boundary](docs/implementation.md) |
 
@@ -50,7 +77,7 @@ make build
 make check
 ```
 
-The build fetches the [fixed public Icarus commit](https://github.com/steveicarus/iverilog/commit/beb32f3945f5be1f45cf5d898d440161e9c6f113), verifies its exported source digest, and installs under `.build/install`. [Offline and Docker instructions](docs/examples.md#build-environment) reuse the same source. `make check` runs source regressions, converts all three cases, simulates the two nine-track cases, checks negative controls, and reproduces the committed references. It prints a fresh `runs/case-…/` directory containing raw logs and field-to-pin chains.
+The build fetches the [fixed public Icarus commit](https://github.com/steveicarus/iverilog/commit/beb32f3945f5be1f45cf5d898d440161e9c6f113), verifies its exported source digest, and installs under `.build/install`. [Offline and Docker instructions](docs/examples.md#build-environment) reuse the same source. `make check` runs source regressions, the original three source cases and two nine-track simulations, the edge-annotation controls, and the mixed seven-track simulation. It checks negative controls and reproduces the committed references. It prints a fresh `runs/case-…/` directory containing raw logs and field-to-pin chains.
 
 | Nine-track fixture | Input event | Source delay | Expected / observed output time |
 |---|---:|---:|---:|
@@ -58,6 +85,6 @@ The build fetches the [fixed public Icarus commit](https://github.com/steveicaru
 | `mux4_2`, S0 → Z | S0 rises at 50,000 ps | 511 ps | Z rises at **50,511 / 50,511 ps** |
 | `mux4_2`, S0 → Z | S0 falls at 70,000 ps | 617 ps | Z falls at **70,617 / 70,617 ps** |
 
-These are measured public-fixture results with asymmetric synthetic nine-track SDF values and original PDK functional helpers. Seven-track mux2 is an offline field check. [Current validation](docs/validation.md) identifies the candidate, tools and commands; [RC1 evidence](docs/release.md) preserves the historical acceptance separately.
+These are measured public-fixture results with asymmetric synthetic nine-track SDF values and original PDK functional helpers. Seven-track mux2 has an offline field check and the mixed-record pin-delivery run above. [Current validation](docs/validation.md) identifies the candidate, tools and commands; [RC1 evidence](docs/release.md) preserves the historical acceptance separately.
 
 [GF180 model discussion](https://github.com/fossi-foundation/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu9t5v0/issues/3) · [Icarus discussion](https://github.com/steveicarus/iverilog/discussions/1696) · [Input provenance](docs/inputs.json) · [Licenses and credits](NOTICE.md)

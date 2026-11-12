@@ -154,7 +154,11 @@ def standard_cell(records, original_declarations, declarations, accepted_join, l
     c.require(bool(records),'STANDARD_SOURCE_NONEMPTY_CELL')
     master=records[0]['master'];c.exact(len(accepted_join['records']),len(records),'STANDARD_SOURCE_JOIN_POPULATION')
     expected=[];pieces=[]
-    header='(DELAYFILE\n (SDFVERSION "3.0")\n (DIVIDER /)\n (TIMESCALE 1ns)\n (CELL\n (CELLTYPE "'+master+'")\n (INSTANCE)\n (DELAY (ABSOLUTE\n'
+    instance_match=re.search(r'\(INSTANCE(?: ([A-Za-z_]\w*(?:[./][A-Za-z_]\w*)*))?\)',canonical_sdf.decode('ascii'))
+    c.require(instance_match is not None,'STANDARD_SOURCE_INSTANCE')
+    instance=instance_match[1] or ''
+    c.require(all(row['instance']==instance for row in records),'STANDARD_INSTANCE_PRESERVATION')
+    header='(DELAYFILE\n (SDFVERSION "3.0")\n (DIVIDER /)\n (TIMESCALE 1ns)\n (CELL\n (CELLTYPE "'+master+'")\n (INSTANCE'+(' '+instance if instance else '')+')\n (DELAY (ABSOLUTE\n'
     line=header.count('\n')+1
     for row,prior in zip(records,accepted_join['records']):
         a,b=row['source_loc']['bytes'];c.exact(canonical_sdf[a:b].decode(),row['source_text'],'STANDARD_SOURCE_RAW_SDF')
@@ -166,29 +170,55 @@ def standard_cell(records, original_declarations, declarations, accepted_join, l
                   and (not row['condition_tree'] or d['condition_tree']==row['condition_tree'])
                   and (not row['events'][0]['edge'] or d['edge']==row['events'][0]['edge'])]
         c.exact([d['id'] for d in original],row['original_matches'],'STANDARD_SOURCE_LITERAL_TARGET_SET')
-        c.exact(v['mode'],'O','STANDARD_SOURCE_OWNED_RECORD_MODE')
-        for slot in (0,1):
-            fields=[f['values'] for f in prior['fields'] if f['values']['slot']==slot]
-            c.exact(len(fields),1,'STANDARD_SOURCE_SINGLE_PRODUCER_FIELD');f=fields[0]
-            group=liberty_groups[int(f['group'])]
-            c.exact(digest(group['raw'].encode()),f['group_sha256'],'STANDARD_SOURCE_LIBERTY_IDENTITY')
-            c.exact([group['related_pin'],group['output'],group['timing_type']],[source,destination,'combinational'],'STANDARD_SOURCE_LIBERTY_ENDPOINT_ROLE')
-            c.exact(re.sub(r'\s+','',group['sdf_cond'] or ''),re.sub(r'\s+','',row['condition'] or ''),'STANDARD_SOURCE_LIBERTY_CONDITION')
-            c.require(group['timing_sense'] in ('positive_unate','negative_unate'),'STANDARD_SOURCE_UNATE_ROLE')
-            edge='posedge' if (slot==0)==(group['timing_sense']=='positive_unate') else 'negedge'
-            c.exact(int(f['input_edge']),13 if edge=='posedge' else 50,'STANDARD_SOURCE_PRODUCER_EDGE')
-            c.exact(f['output_slot'],slot,'STANDARD_SOURCE_PRODUCER_SLOT')
-            owners=[d for d in original if d['kind']=='conditional'] if row['condition_tree'] else [d for d in original if d['kind']=='ifnone' and d['edge']==edge]
-            c.exact(len(owners),1,'STANDARD_SOURCE_ORIGINAL_OWNER')
-            target=[d for d in declarations if d.get('origin_declaration')==owners[0]['id'] and d['edge']==edge and d.get('role')=='producer_edge']
-            c.exact(len(target),1,'STANDARD_SOURCE_REPLACEMENT_OWNER');d=target[0]
-            raw_slots=['',''];raw_slots[slot]=row['slots'][slot][0]
-            text='(IOPATH ('+edge+' '+source+') '+destination+' ('+raw_slots[0]+') ('+raw_slots[1]+'))'
-            if d['kind']=='conditional':text='(COND '+d['key']+' '+text+')'
-            else:c.exact(d['kind'],'unconditional','STANDARD_SOURCE_EMPTY_PATH_KIND')
-            tokens=['',''];tokens[slot]=row['selected_typical'][slot]
-            expected.append(dict(canonical=row['id'],source=source,destination=destination,edge=edge,key=d['key'],line=line,tokens=tokens,
-                                 targets=target,mode='ordinary',producer_group=group['ordinal'],producer_output_slot=slot))
+        endpoint=[d for d in original_declarations if (d['source'],d['destination'])==(source,destination)]
+        needs_owners=any(d['kind']=='ifnone' and d['edge'] for d in endpoint)
+        c.exact(v['mode'],'O' if needs_owners else 'L','STANDARD_SOURCE_RECORD_ROLE')
+        if needs_owners:
+            c.exact(len(prior['fields']),sum(bool(s[0]) for s in row['slots']),'STANDARD_SOURCE_FIELD_POPULATION')
+            for slot in (0,1):
+                if not row['slots'][slot][0]:continue
+                fields=[f['values'] for f in prior['fields'] if f['values']['slot']==slot]
+                c.exact(len(fields),1,'STANDARD_SOURCE_SINGLE_PRODUCER_FIELD');f=fields[0]
+                group=liberty_groups[int(f['group'])]
+                c.exact(digest(group['raw'].encode()),f['group_sha256'],'STANDARD_SOURCE_LIBERTY_IDENTITY')
+                c.exact([group['related_pin'],group['output'],group['timing_type']],[source,destination,'combinational'],'STANDARD_SOURCE_LIBERTY_ENDPOINT_ROLE')
+                c.exact(re.sub(r'\s+','',group['sdf_cond'] or ''),re.sub(r'\s+','',row['condition'] or ''),'STANDARD_SOURCE_LIBERTY_CONDITION')
+                c.require(group['timing_sense'] in ('positive_unate','negative_unate'),'STANDARD_SOURCE_UNATE_ROLE')
+                edge='posedge' if (slot==0)==(group['timing_sense']=='positive_unate') else 'negedge'
+                c.exact(int(f['input_edge']),13 if edge=='posedge' else 50,'STANDARD_SOURCE_PRODUCER_EDGE')
+                c.exact(f['output_slot'],slot,'STANDARD_SOURCE_PRODUCER_SLOT')
+                if row['events'][0]['edge']:c.exact(edge,row['events'][0]['edge'],'STANDARD_SOURCE_INPUT_EDGE')
+                owners=[d for d in original if d['kind']=='conditional'] if row['condition_tree'] else [d for d in original if d['kind']=='ifnone' and d['edge']==edge]
+                c.exact(len(owners),1,'STANDARD_SOURCE_ORIGINAL_OWNER')
+                target=[d for d in declarations if d.get('origin_declaration')==owners[0]['id'] and d['edge']==edge and d.get('role')=='producer_edge']
+                c.exact(len(target),1,'STANDARD_SOURCE_REPLACEMENT_OWNER');d=target[0]
+                raw_slots=['',''];raw_slots[slot]=row['slots'][slot][0]
+                text='(IOPATH ('+edge+' '+source+') '+destination+' ('+raw_slots[0]+') ('+raw_slots[1]+'))'
+                if d['kind']=='conditional':text='(COND '+d['key']+' '+text+')'
+                else:c.exact(d['kind'],'unconditional','STANDARD_SOURCE_EMPTY_PATH_KIND')
+                tokens=['',''];tokens[slot]=row['selected_typical'][slot]
+                expected.append(dict(canonical=row['id'],source=source,destination=destination,edge=edge,key=d['key'],line=line,tokens=tokens,
+                                     targets=target,mode='ordinary',producer_group=group['ordinal'],producer_output_slot=slot))
+                pieces.append(text);line+=text.count('\n')+1
+        else:
+            c.exact(prior['fields'],[],'STANDARD_LITERAL_NO_REDISTRIBUTION')
+            targets=[d for source_d in original for d in declarations
+                     if d.get('origin_declaration',d['id'] if 'id' in d else None)==source_d['id']]
+            c.exact(len(targets),len(original),'STANDARD_SOURCE_PRESERVED_LITERAL_FANOUT')
+            c.require(bool(targets),'STANDARD_SOURCE_REQUIRED_LITERAL_TARGETS')
+            c.require(all(d.get('role')!='producer_edge' for d in targets),'STANDARD_SOURCE_LITERAL_PATH_FORM')
+            text=row['source_text'];key=''
+            if row['condition_tree'] and any(d.get('role')=='literal_preservation' for d in targets):
+                c.exact(len(targets),1,'STANDARD_SOURCE_ONE_LITERAL_CONDITION')
+                key=targets[0]['key']
+                # Locate the source IOPATH independently; the reader's leaf
+                # metadata and the emitter's ownership map are not expectations.
+                leaf=re.search(r'\(IOPATH .+\)\)$',row['source_text'])
+                c.require(leaf is not None,'STANDARD_SOURCE_LITERAL_LEAF')
+                text='(COND '+key+' '+leaf[0][:-1]+')'
+            elif row['condition_tree']:key=expression(row['condition_tree'])[0]
+            expected.append(dict(canonical=row['id'],source=source,destination=destination,
+                edge=row['events'][0]['edge'],key=key,line=line,tokens=list(row['selected_typical']),targets=targets,mode='literal'))
             pieces.append(text);line+=text.count('\n')+1
     c.exact(body,header+'\n'.join(pieces)+'\n))\n)\n)\n','STANDARD_SOURCE_EXACT_ORDERED_RECORDS')
     return expected
@@ -200,8 +230,13 @@ def standard_relation(mapping,expected):
         c.exact({k:row[k] for k in ('canonical','source','destination','line','key')},
                 {k:wanted[k] for k in ('canonical','source','destination','line','key')},'STANDARD_AUDIT_RECORD_RELATION')
         c.exact(row['input_edge'],wanted['edge'],'STANDARD_AUDIT_INPUT_EDGE')
-        c.exact(row['slot'],wanted['producer_output_slot'],'STANDARD_AUDIT_OUTPUT_SLOT')
-        c.exact(row['mode'],'O','STANDARD_AUDIT_SOURCE_MODE')
-        c.exact(row['group'],str(wanted['producer_group']),'STANDARD_AUDIT_PRODUCER_GROUP')
-        c.exact(row['origin_declaration'],wanted['targets'][0]['origin_declaration'],'STANDARD_AUDIT_ORIGINAL_OWNER')
+        owned='producer_output_slot' in wanted
+        c.exact(row['slot'],wanted.get('producer_output_slot'),'STANDARD_AUDIT_OUTPUT_SLOT')
+        c.exact(row['mode'],'O' if owned else 'L','STANDARD_AUDIT_SOURCE_MODE')
+        if owned:
+            c.exact(row['group'],str(wanted['producer_group']),'STANDARD_AUDIT_PRODUCER_GROUP')
+            c.exact(row['origin_declaration'],wanted['targets'][0]['origin_declaration'],'STANDARD_AUDIT_ORIGINAL_OWNER')
+        else:
+            c.exact(row['origin_declarations'],[d.get('origin_declaration',d.get('id')) for d in wanted['targets']],
+                    'STANDARD_AUDIT_LITERAL_TARGETS')
     return dict(status='PASS',records=len(expected),generator_decisions_used_as_expectations=False)

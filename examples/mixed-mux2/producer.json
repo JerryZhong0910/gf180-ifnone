@@ -1,0 +1,40 @@
+{
+  "source": "Mixed single-cell fixture: unchanged real S-to-Z records from mux2-7t, interleaved synthetic ordinary data-path records. Named instance mux. Only the two select records require producer/Liberty field owners.",
+  "master": "gf180mcu_fd_sc_mcu7t5v0__mux2_2",
+  "groups": [
+    [
+      "S",
+      "Z"
+    ]
+  ],
+  "original_declarations": 8,
+  "generated_declarations": 8,
+  "records": [
+    {
+      "line": 7,
+      "record_sha256": "7a30210c2c4bae99ff4651b75e6d89f1c8130aa962f0f20084d3d6f886810666",
+      "rise_group": 7,
+      "fall_group": 7,
+      "group_sha256": "70f4513f6e2c96966ba44665e98c38a97cbbeafa8df65532e1be5a9d8a30abd0",
+      "historical_record": 6,
+      "original_sdf_byte_offsets": [
+        1894,
+        1964
+      ]
+    },
+    {
+      "line": 9,
+      "record_sha256": "6554f8e8b4b9407b34e2129ac420076f879d0b8688d562411ce91fcd6a76a95f",
+      "rise_group": 6,
+      "fall_group": 6,
+      "group_sha256": "16c7be36f28bada3356a6a45bd602443777f79884f53187e18bfefe3b8c8880d",
+      "historical_record": 7,
+      "original_sdf_byte_offsets": [
+        1969,
+        2039
+      ]
+    }
+  ],
+  "historical_sdf_sha256": "92d8036cdf748ffff4a55bac2a08903c91549d7569d2250b00d381ea3c32ed8c",
+  "historical_field_map_sha256": "75e4315f05b5dbd12b34190dcc7d8c759cff024e6a51a2f889394584718b5207"
+}

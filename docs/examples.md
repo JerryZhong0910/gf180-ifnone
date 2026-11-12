@@ -21,7 +21,7 @@ The source SDF's two bare S → Z records need distinct Liberty identities. The 
 
 The [converted SDF](../examples/mux2-7t/reference/converted.sdf) writes one field per child, in source-record order, rise child then fall child. The final pairs are `(0.289752, 0.428267)` ns for posedge S and `(0.445571, 0.382399)` ns for negedge S. The checker verifies all four fields against the original declarations and Liberty groups.
 
-These records come from a historical routed minimal circuit. The reduced ledger retains source digests and original byte offsets; the SDF wrapper was rebuilt for this single-cell example. The supplying Liberty group text matches the historical group hashes. Current execution checks the mapping offline; the historical circuit simulation is listed separately in [scope](scope.md#historical-execution-and-current-examples).
+These records come from a historical routed minimal circuit. The reduced ledger retains source digests and original byte offsets; the SDF wrapper was rebuilt for this single-cell example. The supplying Liberty group text matches the historical group hashes. The source-only case checks the mapping offline. The [mixed-record run below](#convert-target-and-ordinary-records-together) measures select and data deliveries in this master; historical circuit simulation remains separately listed in [scope](scope.md#historical-execution-and-current-examples).
 
 The full diff also rewrites six I0/I1 → Z declarations to named conditions and explicit fallback. Their simple path form, endpoints and one-to-one multiplicity stay intact. The independent checker verifies these predicate cones as well as the select pair.
 
@@ -100,9 +100,90 @@ The readback checks all four slots, including preservation of the earlier field 
 
 The [bench](../examples/bench.v) retains initialization at 1 ns and the first mux cofactor/transition at 10 ns before the 30 ns setting. The scored windows are 9–80 ns for S and 40–80 ns for Z. The checker compares the entire ordered output list in each window, including population, values and times, with [independent frozen expectations](../examples/expected.json). The [trace](../examples/reference/trace.txt) groups passive channels for reading; each fresh `capture.log` retains simulator order. Settled predicate probes establish the enabled path at the source event.
 
+## What happens if the select path becomes simple?
+
+The control starts from the same seven-track `gf180mcu_fd_sc_mcu7t5v0__mux2_2`, S → Z, used above. It keeps the PDK helper and the data paths, and varies only the select declarations:
+
+```diff
+-(posedge S => (Z : S)) = (1.0,1.0);
+-(negedge S => (Z : S)) = (1.0,1.0);
++(S => Z) = (1.0,1.0);
+```
+
+A second simple variant keeps two duplicate simple declarations, corresponding to removing the edge qualifiers without coalescing the pair. These are **constructed GF180 simulator controls**, not an IHP model update. [Edge model / full diff](../examples/edge-annotation/reference/edge.diff) · [One simple path / full diff](../examples/edge-annotation/reference/simple.diff) · [Two simple paths / full diff](../examples/edge-annotation/reference/simple-pair.diff)
+
+The retained IHP inventory identifies `sg13g2_stdcell.v` by SHA256 `9c91c5311e0b10525b2e02bfd30910927d821c0928aff45cb7f34f3a6a3280f8`. Its historical contracts retain the canonical model, UDP and raw SDF. We have not authenticated a before/after model revision and corresponding SDF for the reported IHP simple-path update, so the measured conclusion here belongs to the GF180 controls and pinned Icarus above.
+
+The two synthetic source records use different values in every slot and triplet position. In the [bare input](../examples/edge-annotation/reference/bare.sdf):
+
+```sdf
+(IOPATH S Z (0.101:0.211:0.311) (0.401:0.419:0.431))
+(IOPATH S Z (0.503:0.521:0.541) (0.601:0.631:0.661))
+```
+
+The [qualified input](../examples/edge-annotation/reference/qualified.sdf) changes the first source to `(posedge S)` and the second to `(negedge S)`, preserving the output slots and all numeric tokens. Separate [bare-reversed](../examples/edge-annotation/reference/bare-reversed.sdf) and [qualified-reversed](../examples/edge-annotation/reference/qualified-reversed.sdf) inputs exchange the two records.
+
+Input edge, output transition and triplet selection are independent dimensions. `(posedge S)` selects a compiled input-edge path. The first/second delay fields select output rise/fall. Within either field, `min:typ:max` is selected by `-Tmin`, `-Ttyp` or `-Tmax` before annotation; it does not select an input edge.
+
+The [bench](../examples/edge-annotation/bench.v) annotates the first record alone and snapshots actual paths, then annotates the full ordered pair and snapshots again, all at time zero. Inputs start at 1 ns. S changes at 10/20 ns with I0=0, I1=1, then at 40/50 ns with I0=1, I1=0. Thus the four scored outputs are rise, fall, fall, rise. Cell time units/precision are 1 ns / 1 ps; all synthetic delays are exact integer picoseconds. The same stimulus, timescale and windows apply to every variant.
+
+The [home-page table](../README.md#would-simple-paths-preserve-separate-input-edge-delays) shows typical results. The complete [measurement record](../examples/edge-annotation/reference/results.json) contains 36 combinations, first/final actual input-edge and delay readbacks, expected/observed events, and unmatched-annotation counts. For a simple path with qualified SDF, the three attempted annotations (first-only, then the two-record file) report no matching ModPath; the run completes with the original 1 ns defaults. Every complete scored event list is checked. For a bare record, every path with matching endpoints is written, so the second supplied `ABSOLUTE` value replaces the first on both edge paths or on every duplicate simple path.
+
+Run just this comparison with `make check-annotation`. Its fresh directory contains each complete model, model diff, SDF input, compile log and raw VPI/pin capture. The [frozen source-derived predictions](../examples/edge-annotation/expected.json) predate the first measurement.
+
+## Convert target and ordinary records together
+
+The [mixed fixture](../examples/mixed-mux2/original.sdf) uses the real S → Z records above and interleaves synthetic I0/I1 → Z records in the same mux2 cell. It names `(INSTANCE mux)`. The ordinary records keep simple paths; their fields need no producer/Liberty reassignment. One condition must follow the model's new scalar predicate name:
+
+```diff
+-(COND (I1===1'b0) (IOPATH I0 Z (0.101:0.211:0.311) (0.401:0.419:0.431)))
++(COND __gls_path_I0_Z_3235b9e3e2cc8771 (IOPATH I0 Z (0.101:0.211:0.311) (0.401:0.419:0.431)))
+```
+
+The bare `(IOPATH I1 Z ...)` record stays byte-identical and still matches all three simple I1 → Z paths. A later ordinary I0 record writes only fall, retaining the earlier rise value. A final `() ()` ordinary record writes neither field. [Complete model/helper/SDF diff](../examples/mixed-mux2/reference/changes.diff) · [Converted SDF](../examples/mixed-mux2/reference/converted.sdf) · [Every input record's destination](../examples/mixed-mux2/reference/record-map.json)
+
+| Input occurrence | Processing | Output record count |
+|---|---|---:|
+| Line 7: positive-unate S → Z | Distribute two real fields using Liberty group 7 | 2 |
+| Line 8: conditional I0 → Z | Rename condition; retain leaf and both triplets | 1 |
+| Line 9: negative-unate S → Z | Distribute two real fields using Liberty group 6 | 2 |
+| Line 10: bare I1 → Z | Keep the original record | 1 |
+| Line 11: conditional I0 → Z, fall only | Rename condition; preserve the empty rise slot | 1 |
+| Line 12: conditional I0 → Z, both empty | Rename condition; preserve both existing slots | 1 |
+
+The [producer file](../examples/mixed-mux2/producer.json) supplies identities for lines 7 and 9. Ordinary records use the original model's match set, including bare-record fanout. Classification follows source path structure; omitting a required target owner still fails. The independent checker re-derives the mode, target declarations, raw Liberty condition/sense and edge/slot binding. An authentic group hash with the wrong condition is rejected by a separate regression.
+
+The public conversion command takes files and a declared profile rather than a built-in case name:
+
+```sh
+python3 -B tools/prepare.py runs/mixed-source \
+  --model upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.behavioral.v \
+  --helper upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.functional.v \
+  --liberty upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2__tt_025C_5v00.lib \
+  --sdf examples/mixed-mux2/original.sdf \
+  --producer examples/mixed-mux2/producer.json
+make check-mixed
+```
+
+The mixed runner invokes that same file-based entry before compilation. It annotates relative to `bench`, resolving the preserved instance to `bench.mux`, and releases stimulus at 1 ns. The four real select-field deliveries are shown on the home page. The synthetic ordinary paths add these measured events:
+
+| Input event | Expected delay / output | Expected / observed time |
+|---|---|---|
+| I0 falls at 60 ns; S=0, I1=0 | 617 ps, Z falls | 60,617 / 60,617 ps |
+| I0 rises at 70 ns; S=0, I1=0 | 211 ps, Z rises | 70,211 / 70,211 ps |
+| I0 falls at 80 ns; S=0, I1=0 | 617 ps, Z falls | 80,617 / 80,617 ps |
+| I1 rises at 100 ns; S=1, I0=0 | 811 ps, Z rises | 100,811 / 100,811 ps |
+| I1 falls at 110 ns; S=1, I0=0 | 877 ps, Z falls | 110,877 / 110,877 ps |
+
+Actual path snapshots check all eight path objects. The named I0 path reads `(211,419)`, then `(211,617)`, then `(211,617)` ps after its successive writes. The real select fields round to `(290,428)` ps on posedge and `(446,382)` ps on negedge. [Measured results](../examples/mixed-mux2/reference/results.json) · [Frozen events and windows](../examples/mixed-mux2/expected.json)
+
+Three dynamic negatives reuse the same compiled design and complete the stimulus at 120 ns with process exit 0. Swapping select input edges changes the first observed event to 10,446 ps; dropping the ordinary I1 record changes its first event to 101,000 ps; leaving the old I0 condition unsynchronized changes the first data fall to 61,000 ps. Each fails `MIXED_PIN_EVENTS` against the unchanged complete expected list. The unsynchronized condition also produces SDF diagnostics, while execution still reaches the checked final time. Separate source checks reject the malformed output relation before simulation. These controls distinguish a field-binding failure from a compiler refusal.
+
 ## Run and interpret the results
 
-All supplied model, helper, Liberty, SDF, producer, bench and expected-event inputs are authenticated by [inputs.json](inputs.json). The converter accepts the pinned scalar source syntax, one-cell 1 ns SDF envelopes, explicit rise/fall triplets, and positive/negative-unate combinational Liberty owners. To prepare a different fixture, supply its exact endpoint inventory and declaration populations, and an acquisition-time owner identity for **each source record and output field**. A real producer with missing or ambiguous identities must be resolved at its source; the converter cannot infer those identities from the SDF numbers.
+All supplied model, helper, Liberty, SDF, producer, bench and expected-event inputs are authenticated by [inputs.json](inputs.json). The converter accepts the pinned scalar source syntax, one-cell 1 ns SDF envelopes, two output fields containing non-negative scalar values, complete triplets or empty slots, and positive/negative-unate combinational Liberty owners for redistributed fields. The single CELL may name a scalar or hierarchical instance. Target records require at least one supplied field; all-empty ordinary records are preserved. Unknown record kinds, including INTERCONNECT or timing checks in this finite reader, produce an explicit error rather than disappearing. To prepare a different fixture, supply its exact endpoint inventory and declaration populations, and an acquisition-time owner identity for **each supplied target output field**. Ordinary records need their source declaration matches, not invented field owners. An edge-qualified target record must agree with the owner-derived edge; per-field group hashes allow its rise and fall fields to have different owners. A real producer with missing or ambiguous identities must be resolved at its source; the converter cannot infer those identities from the SDF numbers.
+
+For untouched paths, conversion preserves the original conditions as well as the leaf. For example, addf carry's `COND (B===1'b0 && CI===1'b1)` passes source-preservation checks, but this pinned Icarus reports `COND not supported` and leaves its carry slots at 1 ns. A focused probe observed CO at 11,000 and 21,000 ps for A transitions at 10 and 20 ns. The runnable mixed mux2 case instead uses the synchronized scalar predicates shown above. Adding runtime support for untouched case-equality conditions would require a separate implementation; the converter does not silently substitute `==` or discard the record.
 
 From the repository root:
 
@@ -115,12 +196,13 @@ python3 -B tools/prepare.py runs/source-review
 python3 -B tools/run.py --prefix .build/install --out runs/review
 ```
 
-Use a new output directory for each command. A passing full run prints the three expected/observed times, missing-owner rejection, unknown-predicate rejection, and `PASS 20 derived references reproduced`. `make check` also runs the source regressions. Inspect:
+Use a new output directory for each command. A passing full run prints the three expected/observed times, missing-owner rejection, unknown-predicate rejection, and `PASS 23 derived references reproduced`, followed by the edge-annotation and mixed-record results. `make check` also runs the source regressions. Inspect:
 
 | Output | What it establishes |
 |---|---|
 | `<case>/changes.diff`, `model.v`, `helper.v`, `converted.sdf` | Complete generated change from the shipped inputs |
 | `<case>/source-map.json` | Source/generated locations for every path, including collateral and untouched paths |
+| `<case>/record-map.json` | Every input occurrence, its preserved instance, processing action and output lines |
 | `<case>/field-map.json` | SDF occurrence, Liberty group/sense, edge, slot and generated location for each supplied field |
 | `capture.log`, `delivery.json` | Ordered writes, observations and source-to-pin event chains |
 | `invalid-annotation/capture.log` | Unknown second predicate rejected after the first write and before stimulus |
@@ -151,4 +233,4 @@ Keep using the same `/repo` mount when running that installed toolchain: Icarus 
 
 ### Updating derived references
 
-`examples/*/reference/` and `examples/reference/` are the single committed reference set. Normal checks compare against them without writing. After an intentional implementation change, run `python3 -B tools/run.py --refresh-references`, review the diffs and record the validation. This regenerates the full diffs and location maps together; [expected.json](../examples/expected.json) remains an independent input.
+`examples/*/reference/` and `examples/reference/` are the single committed reference set. Normal checks compare against them without writing. After an intentional implementation change, run the affected runner with `--refresh-references` (`run.py`, `run_annotation.py` or `run_mixed.py`), review the diffs and record the validation. This regenerates the full diffs and location maps together; [expected.json](../examples/expected.json) remains an independent input.

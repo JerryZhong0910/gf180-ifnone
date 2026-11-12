@@ -1,0 +1,74 @@
+[
+  {
+    "source_line": 7,
+    "instance": "mux",
+    "action": "edge-fields",
+    "original_declarations": [
+      "decl-62",
+      "decl-66"
+    ],
+    "output_lines": [
+      9,
+      10
+    ]
+  },
+  {
+    "source_line": 8,
+    "instance": "mux",
+    "action": "condition-renamed",
+    "original_declarations": [
+      "decl-38"
+    ],
+    "output_lines": [
+      11
+    ]
+  },
+  {
+    "source_line": 9,
+    "instance": "mux",
+    "action": "edge-fields",
+    "original_declarations": [
+      "decl-62",
+      "decl-66"
+    ],
+    "output_lines": [
+      12,
+      13
+    ]
+  },
+  {
+    "source_line": 10,
+    "instance": "mux",
+    "action": "preserved",
+    "original_declarations": [
+      "decl-50",
+      "decl-54",
+      "decl-58"
+    ],
+    "output_lines": [
+      14
+    ]
+  },
+  {
+    "source_line": 11,
+    "instance": "mux",
+    "action": "condition-renamed",
+    "original_declarations": [
+      "decl-38"
+    ],
+    "output_lines": [
+      15
+    ]
+  },
+  {
+    "source_line": 12,
+    "instance": "mux",
+    "action": "condition-renamed",
+    "original_declarations": [
+      "decl-38"
+    ],
+    "output_lines": [
+      16
+    ]
+  }
+]

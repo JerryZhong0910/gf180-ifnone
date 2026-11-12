@@ -1,0 +1,124 @@
+{
+  "description": "Frozen from original mux truth function, real mux2-7t source fields (rounded to 1 ps), and synthetic ordinary records. Typical selection. Two windows exclude initialization and data cofactor setup; all scored output events are listed.",
+  "windows": [
+    [
+      9000,
+      29000
+    ],
+    [
+      39000,
+      85000
+    ],
+    [
+      99000,
+      119000
+    ]
+  ],
+  "events": [
+    [
+      10290,
+      "1"
+    ],
+    [
+      20382,
+      "0"
+    ],
+    [
+      40428,
+      "0"
+    ],
+    [
+      50446,
+      "1"
+    ],
+    [
+      60617,
+      "0"
+    ],
+    [
+      70211,
+      "1"
+    ],
+    [
+      80617,
+      "0"
+    ],
+    [
+      100811,
+      "1"
+    ],
+    [
+      110877,
+      "0"
+    ]
+  ],
+  "source_events": [
+    [
+      10000,
+      "S",
+      "1"
+    ],
+    [
+      20000,
+      "S",
+      "0"
+    ],
+    [
+      40000,
+      "S",
+      "1"
+    ],
+    [
+      50000,
+      "S",
+      "0"
+    ],
+    [
+      60000,
+      "I0",
+      "0"
+    ],
+    [
+      70000,
+      "I0",
+      "1"
+    ],
+    [
+      80000,
+      "I0",
+      "0"
+    ],
+    [
+      100000,
+      "I1",
+      "1"
+    ],
+    [
+      110000,
+      "I1",
+      "0"
+    ]
+  ],
+  "select_readback_ps": [
+    [
+      13,
+      290,
+      428
+    ],
+    [
+      50,
+      446,
+      382
+    ]
+  ],
+  "i0_condition_zero_ps": [
+    211,
+    617
+  ],
+  "i1_all_paths_ps": [
+    811,
+    877
+  ],
+  "end_ps": 120000,
+  "quantization": "vvp/vpi_time.cc vpip_scaled_real_to_time64 rounds val*10^(time_units-time_precision) before storing integer ticks; cell 1ns/1ps means nearest ps."
+}

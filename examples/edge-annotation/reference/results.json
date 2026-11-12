@@ -1,0 +1,3086 @@
+[
+  {
+    "model": "edge",
+    "sdf": "bare",
+    "selection": "min",
+    "path_edges": [
+      13,
+      50
+    ],
+    "first_readback_ps": [
+      [
+        101,
+        401
+      ],
+      [
+        101,
+        401
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        503,
+        601
+      ],
+      [
+        503,
+        601
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          13,
+          101,
+          401
+        ],
+        [
+          50,
+          101,
+          401
+        ]
+      ],
+      "final": [
+        [
+          13,
+          503,
+          601
+        ],
+        [
+          50,
+          503,
+          601
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10503,
+        "1"
+      ],
+      [
+        20601,
+        "0"
+      ],
+      [
+        40601,
+        "0"
+      ],
+      [
+        50503,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10503,
+        "1"
+      ],
+      [
+        20601,
+        "0"
+      ],
+      [
+        40601,
+        "0"
+      ],
+      [
+        50503,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "edge",
+    "sdf": "bare",
+    "selection": "typ",
+    "path_edges": [
+      13,
+      50
+    ],
+    "first_readback_ps": [
+      [
+        211,
+        419
+      ],
+      [
+        211,
+        419
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        521,
+        631
+      ],
+      [
+        521,
+        631
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          13,
+          211,
+          419
+        ],
+        [
+          50,
+          211,
+          419
+        ]
+      ],
+      "final": [
+        [
+          13,
+          521,
+          631
+        ],
+        [
+          50,
+          521,
+          631
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10521,
+        "1"
+      ],
+      [
+        20631,
+        "0"
+      ],
+      [
+        40631,
+        "0"
+      ],
+      [
+        50521,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10521,
+        "1"
+      ],
+      [
+        20631,
+        "0"
+      ],
+      [
+        40631,
+        "0"
+      ],
+      [
+        50521,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "edge",
+    "sdf": "bare",
+    "selection": "max",
+    "path_edges": [
+      13,
+      50
+    ],
+    "first_readback_ps": [
+      [
+        311,
+        431
+      ],
+      [
+        311,
+        431
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        541,
+        661
+      ],
+      [
+        541,
+        661
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          13,
+          311,
+          431
+        ],
+        [
+          50,
+          311,
+          431
+        ]
+      ],
+      "final": [
+        [
+          13,
+          541,
+          661
+        ],
+        [
+          50,
+          541,
+          661
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10541,
+        "1"
+      ],
+      [
+        20661,
+        "0"
+      ],
+      [
+        40661,
+        "0"
+      ],
+      [
+        50541,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10541,
+        "1"
+      ],
+      [
+        20661,
+        "0"
+      ],
+      [
+        40661,
+        "0"
+      ],
+      [
+        50541,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "edge",
+    "sdf": "bare-reversed",
+    "selection": "min",
+    "path_edges": [
+      13,
+      50
+    ],
+    "first_readback_ps": [
+      [
+        503,
+        601
+      ],
+      [
+        503,
+        601
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        101,
+        401
+      ],
+      [
+        101,
+        401
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          13,
+          503,
+          601
+        ],
+        [
+          50,
+          503,
+          601
+        ]
+      ],
+      "final": [
+        [
+          13,
+          101,
+          401
+        ],
+        [
+          50,
+          101,
+          401
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10101,
+        "1"
+      ],
+      [
+        20401,
+        "0"
+      ],
+      [
+        40401,
+        "0"
+      ],
+      [
+        50101,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10101,
+        "1"
+      ],
+      [
+        20401,
+        "0"
+      ],
+      [
+        40401,
+        "0"
+      ],
+      [
+        50101,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "edge",
+    "sdf": "bare-reversed",
+    "selection": "typ",
+    "path_edges": [
+      13,
+      50
+    ],
+    "first_readback_ps": [
+      [
+        521,
+        631
+      ],
+      [
+        521,
+        631
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        211,
+        419
+      ],
+      [
+        211,
+        419
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          13,
+          521,
+          631
+        ],
+        [
+          50,
+          521,
+          631
+        ]
+      ],
+      "final": [
+        [
+          13,
+          211,
+          419
+        ],
+        [
+          50,
+          211,
+          419
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10211,
+        "1"
+      ],
+      [
+        20419,
+        "0"
+      ],
+      [
+        40419,
+        "0"
+      ],
+      [
+        50211,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10211,
+        "1"
+      ],
+      [
+        20419,
+        "0"
+      ],
+      [
+        40419,
+        "0"
+      ],
+      [
+        50211,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "edge",
+    "sdf": "bare-reversed",
+    "selection": "max",
+    "path_edges": [
+      13,
+      50
+    ],
+    "first_readback_ps": [
+      [
+        541,
+        661
+      ],
+      [
+        541,
+        661
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        311,
+        431
+      ],
+      [
+        311,
+        431
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          13,
+          541,
+          661
+        ],
+        [
+          50,
+          541,
+          661
+        ]
+      ],
+      "final": [
+        [
+          13,
+          311,
+          431
+        ],
+        [
+          50,
+          311,
+          431
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10311,
+        "1"
+      ],
+      [
+        20431,
+        "0"
+      ],
+      [
+        40431,
+        "0"
+      ],
+      [
+        50311,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10311,
+        "1"
+      ],
+      [
+        20431,
+        "0"
+      ],
+      [
+        40431,
+        "0"
+      ],
+      [
+        50311,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "edge",
+    "sdf": "qualified",
+    "selection": "min",
+    "path_edges": [
+      13,
+      50
+    ],
+    "first_readback_ps": [
+      [
+        101,
+        401
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        101,
+        401
+      ],
+      [
+        503,
+        601
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          13,
+          101,
+          401
+        ],
+        [
+          50,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          13,
+          101,
+          401
+        ],
+        [
+          50,
+          503,
+          601
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10101,
+        "1"
+      ],
+      [
+        20601,
+        "0"
+      ],
+      [
+        40401,
+        "0"
+      ],
+      [
+        50503,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10101,
+        "1"
+      ],
+      [
+        20601,
+        "0"
+      ],
+      [
+        40401,
+        "0"
+      ],
+      [
+        50503,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "edge",
+    "sdf": "qualified",
+    "selection": "typ",
+    "path_edges": [
+      13,
+      50
+    ],
+    "first_readback_ps": [
+      [
+        211,
+        419
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        211,
+        419
+      ],
+      [
+        521,
+        631
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          13,
+          211,
+          419
+        ],
+        [
+          50,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          13,
+          211,
+          419
+        ],
+        [
+          50,
+          521,
+          631
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10211,
+        "1"
+      ],
+      [
+        20631,
+        "0"
+      ],
+      [
+        40419,
+        "0"
+      ],
+      [
+        50521,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10211,
+        "1"
+      ],
+      [
+        20631,
+        "0"
+      ],
+      [
+        40419,
+        "0"
+      ],
+      [
+        50521,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "edge",
+    "sdf": "qualified",
+    "selection": "max",
+    "path_edges": [
+      13,
+      50
+    ],
+    "first_readback_ps": [
+      [
+        311,
+        431
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        311,
+        431
+      ],
+      [
+        541,
+        661
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          13,
+          311,
+          431
+        ],
+        [
+          50,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          13,
+          311,
+          431
+        ],
+        [
+          50,
+          541,
+          661
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10311,
+        "1"
+      ],
+      [
+        20661,
+        "0"
+      ],
+      [
+        40431,
+        "0"
+      ],
+      [
+        50541,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10311,
+        "1"
+      ],
+      [
+        20661,
+        "0"
+      ],
+      [
+        40431,
+        "0"
+      ],
+      [
+        50541,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "edge",
+    "sdf": "qualified-reversed",
+    "selection": "min",
+    "path_edges": [
+      13,
+      50
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        503,
+        601
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        101,
+        401
+      ],
+      [
+        503,
+        601
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          13,
+          1000,
+          1000
+        ],
+        [
+          50,
+          503,
+          601
+        ]
+      ],
+      "final": [
+        [
+          13,
+          101,
+          401
+        ],
+        [
+          50,
+          503,
+          601
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10101,
+        "1"
+      ],
+      [
+        20601,
+        "0"
+      ],
+      [
+        40401,
+        "0"
+      ],
+      [
+        50503,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10101,
+        "1"
+      ],
+      [
+        20601,
+        "0"
+      ],
+      [
+        40401,
+        "0"
+      ],
+      [
+        50503,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "edge",
+    "sdf": "qualified-reversed",
+    "selection": "typ",
+    "path_edges": [
+      13,
+      50
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        521,
+        631
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        211,
+        419
+      ],
+      [
+        521,
+        631
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          13,
+          1000,
+          1000
+        ],
+        [
+          50,
+          521,
+          631
+        ]
+      ],
+      "final": [
+        [
+          13,
+          211,
+          419
+        ],
+        [
+          50,
+          521,
+          631
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10211,
+        "1"
+      ],
+      [
+        20631,
+        "0"
+      ],
+      [
+        40419,
+        "0"
+      ],
+      [
+        50521,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10211,
+        "1"
+      ],
+      [
+        20631,
+        "0"
+      ],
+      [
+        40419,
+        "0"
+      ],
+      [
+        50521,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "edge",
+    "sdf": "qualified-reversed",
+    "selection": "max",
+    "path_edges": [
+      13,
+      50
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        541,
+        661
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        311,
+        431
+      ],
+      [
+        541,
+        661
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          13,
+          1000,
+          1000
+        ],
+        [
+          50,
+          541,
+          661
+        ]
+      ],
+      "final": [
+        [
+          13,
+          311,
+          431
+        ],
+        [
+          50,
+          541,
+          661
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10311,
+        "1"
+      ],
+      [
+        20661,
+        "0"
+      ],
+      [
+        40431,
+        "0"
+      ],
+      [
+        50541,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10311,
+        "1"
+      ],
+      [
+        20661,
+        "0"
+      ],
+      [
+        40431,
+        "0"
+      ],
+      [
+        50541,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple",
+    "sdf": "bare",
+    "selection": "min",
+    "path_edges": [
+      0
+    ],
+    "first_readback_ps": [
+      [
+        101,
+        401
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        503,
+        601
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          101,
+          401
+        ]
+      ],
+      "final": [
+        [
+          0,
+          503,
+          601
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10503,
+        "1"
+      ],
+      [
+        20601,
+        "0"
+      ],
+      [
+        40601,
+        "0"
+      ],
+      [
+        50503,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10503,
+        "1"
+      ],
+      [
+        20601,
+        "0"
+      ],
+      [
+        40601,
+        "0"
+      ],
+      [
+        50503,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple",
+    "sdf": "bare",
+    "selection": "typ",
+    "path_edges": [
+      0
+    ],
+    "first_readback_ps": [
+      [
+        211,
+        419
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        521,
+        631
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          211,
+          419
+        ]
+      ],
+      "final": [
+        [
+          0,
+          521,
+          631
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10521,
+        "1"
+      ],
+      [
+        20631,
+        "0"
+      ],
+      [
+        40631,
+        "0"
+      ],
+      [
+        50521,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10521,
+        "1"
+      ],
+      [
+        20631,
+        "0"
+      ],
+      [
+        40631,
+        "0"
+      ],
+      [
+        50521,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple",
+    "sdf": "bare",
+    "selection": "max",
+    "path_edges": [
+      0
+    ],
+    "first_readback_ps": [
+      [
+        311,
+        431
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        541,
+        661
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          311,
+          431
+        ]
+      ],
+      "final": [
+        [
+          0,
+          541,
+          661
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10541,
+        "1"
+      ],
+      [
+        20661,
+        "0"
+      ],
+      [
+        40661,
+        "0"
+      ],
+      [
+        50541,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10541,
+        "1"
+      ],
+      [
+        20661,
+        "0"
+      ],
+      [
+        40661,
+        "0"
+      ],
+      [
+        50541,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple",
+    "sdf": "bare-reversed",
+    "selection": "min",
+    "path_edges": [
+      0
+    ],
+    "first_readback_ps": [
+      [
+        503,
+        601
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        101,
+        401
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          503,
+          601
+        ]
+      ],
+      "final": [
+        [
+          0,
+          101,
+          401
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10101,
+        "1"
+      ],
+      [
+        20401,
+        "0"
+      ],
+      [
+        40401,
+        "0"
+      ],
+      [
+        50101,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10101,
+        "1"
+      ],
+      [
+        20401,
+        "0"
+      ],
+      [
+        40401,
+        "0"
+      ],
+      [
+        50101,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple",
+    "sdf": "bare-reversed",
+    "selection": "typ",
+    "path_edges": [
+      0
+    ],
+    "first_readback_ps": [
+      [
+        521,
+        631
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        211,
+        419
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          521,
+          631
+        ]
+      ],
+      "final": [
+        [
+          0,
+          211,
+          419
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10211,
+        "1"
+      ],
+      [
+        20419,
+        "0"
+      ],
+      [
+        40419,
+        "0"
+      ],
+      [
+        50211,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10211,
+        "1"
+      ],
+      [
+        20419,
+        "0"
+      ],
+      [
+        40419,
+        "0"
+      ],
+      [
+        50211,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple",
+    "sdf": "bare-reversed",
+    "selection": "max",
+    "path_edges": [
+      0
+    ],
+    "first_readback_ps": [
+      [
+        541,
+        661
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        311,
+        431
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          541,
+          661
+        ]
+      ],
+      "final": [
+        [
+          0,
+          311,
+          431
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10311,
+        "1"
+      ],
+      [
+        20431,
+        "0"
+      ],
+      [
+        40431,
+        "0"
+      ],
+      [
+        50311,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10311,
+        "1"
+      ],
+      [
+        20431,
+        "0"
+      ],
+      [
+        40431,
+        "0"
+      ],
+      [
+        50311,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple",
+    "sdf": "qualified",
+    "selection": "min",
+    "path_edges": [
+      0
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        1000,
+        1000
+      ]
+    ],
+    "unmatched_annotations": 3,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          0,
+          1000,
+          1000
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple",
+    "sdf": "qualified",
+    "selection": "typ",
+    "path_edges": [
+      0
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        1000,
+        1000
+      ]
+    ],
+    "unmatched_annotations": 3,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          0,
+          1000,
+          1000
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple",
+    "sdf": "qualified",
+    "selection": "max",
+    "path_edges": [
+      0
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        1000,
+        1000
+      ]
+    ],
+    "unmatched_annotations": 3,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          0,
+          1000,
+          1000
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple",
+    "sdf": "qualified-reversed",
+    "selection": "min",
+    "path_edges": [
+      0
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        1000,
+        1000
+      ]
+    ],
+    "unmatched_annotations": 3,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          0,
+          1000,
+          1000
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple",
+    "sdf": "qualified-reversed",
+    "selection": "typ",
+    "path_edges": [
+      0
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        1000,
+        1000
+      ]
+    ],
+    "unmatched_annotations": 3,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          0,
+          1000,
+          1000
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple",
+    "sdf": "qualified-reversed",
+    "selection": "max",
+    "path_edges": [
+      0
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        1000,
+        1000
+      ]
+    ],
+    "unmatched_annotations": 3,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          0,
+          1000,
+          1000
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple-pair",
+    "sdf": "bare",
+    "selection": "min",
+    "path_edges": [
+      0,
+      0
+    ],
+    "first_readback_ps": [
+      [
+        101,
+        401
+      ],
+      [
+        101,
+        401
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        503,
+        601
+      ],
+      [
+        503,
+        601
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          101,
+          401
+        ],
+        [
+          0,
+          101,
+          401
+        ]
+      ],
+      "final": [
+        [
+          0,
+          503,
+          601
+        ],
+        [
+          0,
+          503,
+          601
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10503,
+        "1"
+      ],
+      [
+        20601,
+        "0"
+      ],
+      [
+        40601,
+        "0"
+      ],
+      [
+        50503,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10503,
+        "1"
+      ],
+      [
+        20601,
+        "0"
+      ],
+      [
+        40601,
+        "0"
+      ],
+      [
+        50503,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple-pair",
+    "sdf": "bare",
+    "selection": "typ",
+    "path_edges": [
+      0,
+      0
+    ],
+    "first_readback_ps": [
+      [
+        211,
+        419
+      ],
+      [
+        211,
+        419
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        521,
+        631
+      ],
+      [
+        521,
+        631
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          211,
+          419
+        ],
+        [
+          0,
+          211,
+          419
+        ]
+      ],
+      "final": [
+        [
+          0,
+          521,
+          631
+        ],
+        [
+          0,
+          521,
+          631
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10521,
+        "1"
+      ],
+      [
+        20631,
+        "0"
+      ],
+      [
+        40631,
+        "0"
+      ],
+      [
+        50521,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10521,
+        "1"
+      ],
+      [
+        20631,
+        "0"
+      ],
+      [
+        40631,
+        "0"
+      ],
+      [
+        50521,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple-pair",
+    "sdf": "bare",
+    "selection": "max",
+    "path_edges": [
+      0,
+      0
+    ],
+    "first_readback_ps": [
+      [
+        311,
+        431
+      ],
+      [
+        311,
+        431
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        541,
+        661
+      ],
+      [
+        541,
+        661
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          311,
+          431
+        ],
+        [
+          0,
+          311,
+          431
+        ]
+      ],
+      "final": [
+        [
+          0,
+          541,
+          661
+        ],
+        [
+          0,
+          541,
+          661
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10541,
+        "1"
+      ],
+      [
+        20661,
+        "0"
+      ],
+      [
+        40661,
+        "0"
+      ],
+      [
+        50541,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10541,
+        "1"
+      ],
+      [
+        20661,
+        "0"
+      ],
+      [
+        40661,
+        "0"
+      ],
+      [
+        50541,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple-pair",
+    "sdf": "bare-reversed",
+    "selection": "min",
+    "path_edges": [
+      0,
+      0
+    ],
+    "first_readback_ps": [
+      [
+        503,
+        601
+      ],
+      [
+        503,
+        601
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        101,
+        401
+      ],
+      [
+        101,
+        401
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          503,
+          601
+        ],
+        [
+          0,
+          503,
+          601
+        ]
+      ],
+      "final": [
+        [
+          0,
+          101,
+          401
+        ],
+        [
+          0,
+          101,
+          401
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10101,
+        "1"
+      ],
+      [
+        20401,
+        "0"
+      ],
+      [
+        40401,
+        "0"
+      ],
+      [
+        50101,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10101,
+        "1"
+      ],
+      [
+        20401,
+        "0"
+      ],
+      [
+        40401,
+        "0"
+      ],
+      [
+        50101,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple-pair",
+    "sdf": "bare-reversed",
+    "selection": "typ",
+    "path_edges": [
+      0,
+      0
+    ],
+    "first_readback_ps": [
+      [
+        521,
+        631
+      ],
+      [
+        521,
+        631
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        211,
+        419
+      ],
+      [
+        211,
+        419
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          521,
+          631
+        ],
+        [
+          0,
+          521,
+          631
+        ]
+      ],
+      "final": [
+        [
+          0,
+          211,
+          419
+        ],
+        [
+          0,
+          211,
+          419
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10211,
+        "1"
+      ],
+      [
+        20419,
+        "0"
+      ],
+      [
+        40419,
+        "0"
+      ],
+      [
+        50211,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10211,
+        "1"
+      ],
+      [
+        20419,
+        "0"
+      ],
+      [
+        40419,
+        "0"
+      ],
+      [
+        50211,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple-pair",
+    "sdf": "bare-reversed",
+    "selection": "max",
+    "path_edges": [
+      0,
+      0
+    ],
+    "first_readback_ps": [
+      [
+        541,
+        661
+      ],
+      [
+        541,
+        661
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        311,
+        431
+      ],
+      [
+        311,
+        431
+      ]
+    ],
+    "unmatched_annotations": 0,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          541,
+          661
+        ],
+        [
+          0,
+          541,
+          661
+        ]
+      ],
+      "final": [
+        [
+          0,
+          311,
+          431
+        ],
+        [
+          0,
+          311,
+          431
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        10311,
+        "1"
+      ],
+      [
+        20431,
+        "0"
+      ],
+      [
+        40431,
+        "0"
+      ],
+      [
+        50311,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        10311,
+        "1"
+      ],
+      [
+        20431,
+        "0"
+      ],
+      [
+        40431,
+        "0"
+      ],
+      [
+        50311,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple-pair",
+    "sdf": "qualified",
+    "selection": "min",
+    "path_edges": [
+      0,
+      0
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "unmatched_annotations": 3,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          0,
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000,
+          1000
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple-pair",
+    "sdf": "qualified",
+    "selection": "typ",
+    "path_edges": [
+      0,
+      0
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "unmatched_annotations": 3,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          0,
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000,
+          1000
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple-pair",
+    "sdf": "qualified",
+    "selection": "max",
+    "path_edges": [
+      0,
+      0
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "unmatched_annotations": 3,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          0,
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000,
+          1000
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple-pair",
+    "sdf": "qualified-reversed",
+    "selection": "min",
+    "path_edges": [
+      0,
+      0
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "unmatched_annotations": 3,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          0,
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000,
+          1000
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple-pair",
+    "sdf": "qualified-reversed",
+    "selection": "typ",
+    "path_edges": [
+      0,
+      0
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "unmatched_annotations": 3,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          0,
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000,
+          1000
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ]
+  },
+  {
+    "model": "simple-pair",
+    "sdf": "qualified-reversed",
+    "selection": "max",
+    "path_edges": [
+      0,
+      0
+    ],
+    "first_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "final_readback_ps": [
+      [
+        1000,
+        1000
+      ],
+      [
+        1000,
+        1000
+      ]
+    ],
+    "unmatched_annotations": 3,
+    "actual_readback_ps": {
+      "first": [
+        [
+          0,
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000,
+          1000
+        ]
+      ],
+      "final": [
+        [
+          0,
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000,
+          1000
+        ]
+      ]
+    },
+    "expected_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ],
+    "observed_events": [
+      [
+        11000,
+        "1"
+      ],
+      [
+        21000,
+        "0"
+      ],
+      [
+        41000,
+        "0"
+      ],
+      [
+        51000,
+        "1"
+      ]
+    ]
+  }
+]

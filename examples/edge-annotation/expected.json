@@ -1,0 +1,10 @@
+{
+  "description": "Predictions frozen before execution, derived from scalar modpath matching in pinned Icarus sys_sdf.c: bare source matches any edge; specified edge must equal the compiled edge. ABSOLUTE writes replace supplied slots. Values are synthetic ns triplets represented here in integer ps.",
+  "records": {"a": [[101,211,311],[401,419,431]], "b": [[503,521,541],[601,631,661]]},
+  "variants": {"edge": [13,50], "simple": [0], "simple-pair": [0,0]},
+  "annotations": {"bare": ["a","b"], "bare-reversed": ["b","a"], "qualified": ["a","b"], "qualified-reversed": ["b","a"]},
+  "qualified_edge": {"a":13,"b":50},
+  "source_events": [[10000,13,0,1],[20000,50,1,0],[40000,13,1,0],[50000,50,0,1]],
+  "windows": [[9000,29000],[39000,59000]],
+  "end_ps":60000
+}
