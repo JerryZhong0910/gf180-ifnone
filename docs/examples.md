@@ -1,12 +1,84 @@
-# Follow a source field through the repair
+# Run, inspect and adapt the examples
 
-Each case keeps its SDF input, producer identity and generated reference together under `examples/`. Original PDK model, helper and Liberty bytes have one home in `upstream/`. The complete diffs below include every model edit, the helper module-name adaptation and every SDF change. `source-map.json` locates all paths; `field-map.json` locates the annotated fields. Original and generated line numbers are measured separately.
+The supplied examples include every model, SDF, Liberty group, owner ledger, bench and expected event needed to reproduce their results. Start with the commands below; use [current scope](scope.md#check-your-input) before preparing another cell. The [case index](#source-files-and-complete-changes) links inputs to full diffs and results.
+
+## Run and interpret the results
+
+From the repository root, with the [build dependencies](#build-environment) installed:
+
+```sh
+make build
+make check
+make check-upstream
+```
+
+`make check` runs the 14 source regressions, original addf/mux4 simulations, mux2 source check, 36 edge-annotation comparisons, mixed mux2 and addf carry. It checks expected failures and reproduces the committed reference outputs. `make check-upstream` runs 18 selected condition and event regressions against the same fixed tool source.
+
+| Run a selected check | Successful result |
+|---|---|
+| `make test` | Source structure, field bindings, ordinary-record handling and rejection controls pass. |
+| `make check-mixed` | Six input records become eight; nine output events match; three dynamic corruptions reach and fail event checks. |
+| `make check-carry` | Original carry COND preserved; nine carry paths checked; CO at 10,211/20,419 ps. |
+| `make check-annotation` | 36 model/record/order/corner combinations match actual path readback and complete scored events. |
+
+For source-only conversion and checking, no simulator is needed:
+
+```sh
+python3 -B tools/prepare.py runs/source-review
+```
+
+This prepares addf, mux4 and seven-track mux2 in separate subdirectories. To choose a fresh destination for the original addf/mux4 simulation and source checks:
+
+```sh
+python3 -B tools/run.py --prefix .build/install --out runs/review
+```
+
+Use a new destination each time. The runners otherwise print automatically created `runs/case-*`, `runs/annotation-*`, `runs/mixed-*` or `runs/carry-*` directories. A nonzero command status means a check failed. Expected negative controls are caught by the runner and reported as passing rejection checks.
+
+### Read the outputs
+
+| Files in the printed run directory | What to inspect |
+|---|---|
+| `<case>/changes.diff`, `model.v`, `helper.v`, `converted.sdf` | Complete change from the source inputs. Mixed and carry runners put these files under `converted/`. |
+| `source-map.json` beside each generated model | Every source/generated path location, including collateral and untouched paths. |
+| `record-map.json` beside each generated SDF | Every input occurrence, instance, processing action and output line. |
+| `field-map.json` beside each generated SDF | Source occurrence, Liberty group/sense, input edge and output slot for each redistributed field. |
+| Original case run: `capture.log`, `delivery.json` | Ordered annotation writes and source-to-pin chains, with expected/observed values and times. |
+| Mixed/carry: `results.json`, `converted/capture.log`; annotation controls: `results.json` and each variant's `capture.log` | Actual path readback and complete scored events, checked against independent expectations. |
+| Original case run: `invalid-annotation/capture.log` | Unknown second predicate rejected after the first write, before stimulus. |
+
+Source-only success establishes model structure and field relationships. Simulation additionally checks actual annotated paths and the complete event lists in each bench's declared windows. The original examples expect S at 10,233 ps and Z at 50,511/70,617 ps. Their missing-owner control fails `MISSING_FIELD_OWNER`; the cold annotation control exits with status 1, retains the first readback and releases no input events.
+
+## Inputs for another cell
+
+The file-based command requires all five options together. The [mixed mux2 command](#convert-target-and-ordinary-records-together) is a complete example that can be copied and run.
+
+| Option | Required content |
+|---|---|
+| `--model` | Original behavioral model for the exact track library and master, with the [supported path structure](scope.md#check-your-input). |
+| `--helper` | The matching original functional model. Conversion adapts its module declaration name to the wrapper; the logic body stays intact. |
+| `--liberty` | Liberty text for that master and the corner supplying the SDF fields. The fixture uses TT, 25°C, 5 V. |
+| `--sdf` | Single-cell input in the accepted layout: target records plus any ordinary records to retain. |
+| `--producer` | JSON profile declaring the master, target endpoint groups, declaration counts and source-to-Liberty field owners. See the [mixed profile](../examples/mixed-mux2/producer.json). |
+
+The profile's `master` is the complete cell name and `groups` lists every paired-edge `ifnone` `[input, output]` pair in that master, including groups with no supplied SDF record. `original_declarations` and `generated_declarations` count the rewritten population, including collateral paths to the selected outputs. For each target record, `records` identifies its input line and authenticates the exact record text. `rise_group` and `fall_group` identify zero-based Liberty group ordinals; a shared `group_sha256` or per-field group hashes authenticate the raw group text. Only supplied fields need owners.
+
+Acquire the record/arc correspondence when exporting the SDF, or assign it explicitly when constructing a synthetic fixture. The independent checker verifies the supplied endpoints, condition, timing sense and resulting edge/slot relation. Matching hashes authenticate the inputs; they do not recover a missing source relationship from record order or numeric values. Resolve missing or ambiguous owners at the producer.
+
+Ordinary records require no field-owner entries: their source declaration matches determine retention and any condition rename. An edge-qualified target must agree with its owner-derived input edge. Numeric tokens, record order, instance context and empty-slot writes are preserved as described in [scope](scope.md#what-the-candidate-changes). The committed fixture inputs and expected events are authenticated by [inputs.json](inputs.json).
+
+## Source files and complete changes
+
+Each case keeps its SDF, owner ledger and references under `examples/`; original PDK model/helper/Liberty files live in `upstream/`. The complete diffs include all model edits, helper declaration-name adaptation and SDF changes. Source and generated locations are measured separately.
 
 | Case | Source inputs | Full change and result |
 |---|---|---|
 | Seven-track mux2_2 | [Model](../upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.behavioral.v), [Liberty](../upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2__tt_025C_5v00.lib), [SDF](../examples/mux2-7t/original.sdf), [owners](../examples/mux2-7t/producer.json) | [Diff](../examples/mux2-7t/reference/changes.diff), [model](../examples/mux2-7t/reference/model.v), [fields](../examples/mux2-7t/reference/field-map.json), [all paths](../examples/mux2-7t/reference/source-map.json) |
 | Nine-track addf_1 | [Model](../upstream/gf180mcu_fd_sc_mcu9t5v0__addf_1.behavioral.v), [Liberty](../upstream/gf180mcu_fd_sc_mcu9t5v0__addf_1__tt_025C_5v00.lib), [SDF](../examples/addf/original.sdf), [owners](../examples/addf/producer.json) | [Diff](../examples/addf/reference/changes.diff), [model](../examples/addf/reference/model.v), [fields](../examples/addf/reference/field-map.json), [all paths](../examples/addf/reference/source-map.json) |
 | Nine-track mux4_2 | [Model](../upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2.behavioral.v), [Liberty](../upstream/gf180mcu_fd_sc_mcu9t5v0__mux4_2__tt_025C_5v00.lib), [SDF](../examples/mux4/original.sdf), [owners](../examples/mux4/producer.json) | [Diff](../examples/mux4/reference/changes.diff), [model](../examples/mux4/reference/model.v), [fields](../examples/mux4/reference/field-map.json), [all paths](../examples/mux4/reference/source-map.json) |
+| Seven-track mixed mux2_2 | Same mux2 model/Liberty; [SDF](../examples/mixed-mux2/original.sdf), [owners](../examples/mixed-mux2/producer.json) | [Diff](../examples/mixed-mux2/reference/changes.diff), [record map](../examples/mixed-mux2/reference/record-map.json), [result](../examples/mixed-mux2/reference/results.json) |
+| Nine-track addf_1 carry | Same addf model/Liberty/profile; [SDF](../examples/addf-carry/original.sdf), [bench](../examples/addf-carry/bench.v) | [Diff](../examples/addf-carry/reference/changes.diff), [record map](../examples/addf-carry/reference/record-map.json), [result](../examples/addf-carry/reference/results.json) |
+| Seven-track mux2 controls | Same mux2 helper; [model/SDF variants](#what-happens-if-the-select-path-becomes-simple), [bench](../examples/edge-annotation/bench.v) | [All path readbacks and events](../examples/edge-annotation/reference/results.json) |
 
 ## mux2: real fields with no select conditions
 
@@ -16,12 +88,12 @@ The source SDF's two bare S → Z records need distinct Liberty identities. The 
 
 | Source SDF | Liberty owner | Output-rise field → input edge | Output-fall field → input edge |
 |---|---|---|---|
-| Line 7, historical record 6 | group 7, positive unate | 0.289752 ns → posedge S | 0.382399 ns → negedge S |
-| Line 8, historical record 7 | group 6, negative unate | 0.445571 ns → negedge S | 0.428267 ns → posedge S |
+| Line 7 | group 7, positive unate | 0.289752 ns → posedge S | 0.382399 ns → negedge S |
+| Line 8 | group 6, negative unate | 0.445571 ns → negedge S | 0.428267 ns → posedge S |
 
 The [converted SDF](../examples/mux2-7t/reference/converted.sdf) writes one field per child, in source-record order, rise child then fall child. The final pairs are `(0.289752, 0.428267)` ns for posedge S and `(0.445571, 0.382399)` ns for negedge S. The checker verifies all four fields against the original declarations and Liberty groups.
 
-These records come from a historical routed minimal circuit. The reduced ledger retains source digests and original byte offsets; the SDF wrapper was rebuilt for this single-cell example. The supplying Liberty group text matches the historical group hashes. The source-only case checks the mapping offline. The [mixed-record run below](#convert-target-and-ordinary-records-together) measures select and data deliveries in this master; historical circuit simulation remains separately listed in [scope](scope.md#historical-execution-and-current-examples).
+The [ledger](../examples/mux2-7t/producer.json) retains the original producer record identities and byte offsets for these real fields; the SDF wrapper contains just this cell. The source-only case checks their mapping, and the [mixed-record run](#convert-target-and-ordinary-records-together) measures select and data deliveries. [Original acquisition and circuit results](https://github.com/JerryZhong0910/gf180-ifnone/blob/98c39b18f0ecd4fa25080d35aa24cc2a6bca600a/docs/scope.md#historical-execution-and-current-examples).
 
 The full diff also rewrites six I0/I1 → Z declarations to named conditions and explicit fallback. Their simple path form, endpoints and one-to-one multiplicity stay intact. The independent checker verifies these predicate cones as well as the select pair.
 
@@ -70,6 +142,14 @@ With typical selection, the first write yields a 233 ps rise slot and retains th
 
 The addf view transforms A/B/CI → S, including the unannotated B and CI groups. Its carry-output declarations and original helper logic remain byte-identical. The [full diff](../examples/addf/reference/changes.diff) makes that distinction reviewable; the checker verifies it.
 
+## addf carry: preserve the record and bind its condition
+
+For nine-track `addf_1`, conversion leaves the carry declarations and their SDF records intact. `make check-carry` uses the public file-based converter with the [addf profile](../examples/addf/producer.json), [carry SDF](../examples/addf-carry/original.sdf) and [bench](../examples/addf-carry/bench.v). With B=0 and CI=1, A → CO uses the original `B===1'b0 && CI===1'b1` condition.
+
+The fixed case-equality binding patch, linked to [Icarus PR #1771](https://github.com/steveicarus/iverilog/pull/1771), gives that path `(211,419)` ps. A changes at 10/20 ns produce CO at **10,211/20,419 ps**, matching the [independent expectation](../examples/addf-carry/expected.json). All nine carry paths are read back; the other eight retain 1 ns defaults. [Complete model/helper/SDF diff](../examples/addf-carry/reference/changes.diff) · [Record destinations](../examples/addf-carry/reference/record-map.json) · [Measured paths and events](../examples/addf-carry/reference/results.json)
+
+The [validation record](validation.md#carry-repair-and-fixedupstream-comparison) shows the old-tool control reaching the same event checks with 1 ns defaults. The runtime binding fix preserves the original model condition and the candidate's four-state policy.
+
 ## mux4: an unselected X and two fallback deliveries
 
 For nine-track `mux4_2`, S0 → Z has sixteen conditional declarations. For example, the source tests all four data pins and S1:
@@ -110,9 +190,7 @@ The control starts from the same seven-track `gf180mcu_fd_sc_mcu7t5v0__mux2_2`, 
 +(S => Z) = (1.0,1.0);
 ```
 
-A second simple variant keeps two duplicate simple declarations, corresponding to removing the edge qualifiers without coalescing the pair. These are **constructed GF180 simulator controls**, not an IHP model update. [Edge model / full diff](../examples/edge-annotation/reference/edge.diff) · [One simple path / full diff](../examples/edge-annotation/reference/simple.diff) · [Two simple paths / full diff](../examples/edge-annotation/reference/simple-pair.diff)
-
-The retained IHP inventory identifies `sg13g2_stdcell.v` by SHA256 `9c91c5311e0b10525b2e02bfd30910927d821c0928aff45cb7f34f3a6a3280f8`. Its historical contracts retain the canonical model, UDP and raw SDF. We have not authenticated a before/after model revision and corresponding SDF for the reported IHP simple-path update, so the measured conclusion here belongs to the GF180 controls and pinned Icarus above.
+A second simple variant keeps two duplicate simple declarations, corresponding to removing the edge qualifiers without coalescing the pair. These **constructed GF180 simulator controls** are separate from the reported IHP model update. The measurements use the [fixed Icarus build](#build-environment). [Edge model / full diff](../examples/edge-annotation/reference/edge.diff) · [One simple path / full diff](../examples/edge-annotation/reference/simple.diff) · [Two simple paths / full diff](../examples/edge-annotation/reference/simple-pair.diff)
 
 The two synthetic source records use different values in every slot and triplet position. In the [bare input](../examples/edge-annotation/reference/bare.sdf):
 
@@ -127,7 +205,18 @@ Input edge, output transition and triplet selection are independent dimensions. 
 
 The [bench](../examples/edge-annotation/bench.v) annotates the first record alone and snapshots actual paths, then annotates the full ordered pair and snapshots again, all at time zero. Inputs start at 1 ns. S changes at 10/20 ns with I0=0, I1=1, then at 40/50 ns with I0=1, I1=0. Thus the four scored outputs are rise, fall, fall, rise. Cell time units/precision are 1 ns / 1 ps; all synthetic delays are exact integer picoseconds. The same stimulus, timescale and windows apply to every variant.
 
-The [home-page table](../README.md#would-simple-paths-preserve-separate-input-edge-delays) shows typical results. The complete [measurement record](../examples/edge-annotation/reference/results.json) contains 36 combinations, first/final actual input-edge and delay readbacks, expected/observed events, and unmatched-annotation counts. For a simple path with qualified SDF, the three attempted annotations (first-only, then the two-record file) report no matching ModPath; the run completes with the original 1 ns defaults. Every complete scored event list is checked. For a bare record, every path with matching endpoints is written, so the second supplied `ABSOLUTE` value replaces the first on both edge paths or on every duplicate simple path.
+At typical selection, record A supplies `(211,419)` ps and record B `(521,631)` ps, ordered A then B:
+
+| Model / SDF | Actual final path readback | Observed Z times for S↑, S↓, S↑, S↓ |
+|---|---|---|
+| Edge pair / bare A, B | Both edges: `(521,631)` ps | 10,521; 20,631; 40,631; 50,521 ps |
+| Edge pair / posedge A, negedge B | Posedge: `(211,419)`; negedge: `(521,631)` ps | 10,211; 20,631; 40,419; 50,521 ps |
+| Simple path / bare A, B | No input edge: `(521,631)` ps | 10,521; 20,631; 40,631; 50,521 ps |
+| Simple path / posedge A, negedge B | No matches; `(1000,1000)` ps defaults | 11,000; 21,000; 41,000; 51,000 ps |
+
+Reversing the bare records leaves A's values instead. Reversing the edge-qualified records leaves each edge's values unchanged. Two duplicate simple declarations behave the same way as one, with both path objects read back.
+
+The [measurement record](../examples/edge-annotation/reference/results.json) includes first/final path edges and delays, expected/observed events, and unmatched-annotation counts for all 36 combinations. With simple paths and qualified SDF, the three annotation attempts (first-only, then the two-record file) report no matching ModPath; the same bench completes with the default delays shown above.
 
 Run just this comparison with `make check-annotation`. Its fresh directory contains each complete model, model diff, SDF input, compile log and raw VPI/pin capture. The [frozen source-derived predictions](../examples/edge-annotation/expected.json) predate the first measurement.
 
@@ -177,41 +266,11 @@ The mixed runner invokes that same file-based entry before compilation. It annot
 
 Actual path snapshots check all eight path objects. The named I0 path reads `(211,419)`, then `(211,617)`, then `(211,617)` ps after its successive writes. The real select fields round to `(290,428)` ps on posedge and `(446,382)` ps on negedge. [Measured results](../examples/mixed-mux2/reference/results.json) · [Frozen events and windows](../examples/mixed-mux2/expected.json)
 
-Three dynamic negatives share a compiled design using ordinary `$sdf_annotate` and complete the unchanged stimulus at 120 ns with process exit 0. Swapping select input edges changes the first observed event to 10,446 ps; dropping the ordinary I1 record changes its first event to 101,000 ps; leaving the old I0 condition unsynchronized changes the first data fall to 61,000 ps. Each fails `MIXED_PIN_EVENTS` against the unchanged complete expected list. The unsynchronized condition is parsed as an expression but has no matching named path. Ordinary annotation reports the mismatch and reaches the checked final time; the positive run keeps `$sdf_annotate_initial`, and the existing strict-entry negative checks cold rejection. Separate source checks reject the malformed output relation before simulation. These controls distinguish a field-binding failure from a compiler refusal.
+Three dynamic negatives run the unchanged stimulus through ordinary `$sdf_annotate` to its final 120 ns, then fail `MIXED_PIN_EVENTS`: swapping input edges moves the first select event to 10,446 ps; dropping I1's record moves its first event to 101,000 ps; leaving I0's condition unsynchronized moves its first data fall to 61,000 ps. These runs compile successfully and reach the event checker. The positive uses `$sdf_annotate_initial`; the original strict-entry negative separately checks rejection before stimulus. Source tests also reject the wrong record/field relation before simulation.
 
-## Run and interpret the results
+## Build environment
 
-All supplied model, helper, Liberty, SDF, producer, bench and expected-event inputs are authenticated by [inputs.json](inputs.json). The converter accepts the pinned scalar source syntax, one-cell 1 ns SDF envelopes, two output fields containing non-negative scalar values, complete triplets or empty slots, and positive/negative-unate combinational Liberty owners for redistributed fields. The single CELL may name a scalar or hierarchical instance. Target records require at least one supplied field; all-empty ordinary records are preserved. Unknown record kinds, including INTERCONNECT or timing checks in this finite reader, produce an explicit error rather than disappearing. To prepare a different fixture, supply its exact endpoint inventory and declaration populations, and an acquisition-time owner identity for **each supplied target output field**. Ordinary records need their source declaration matches, not invented field owners. An edge-qualified target record must agree with the owner-derived edge; per-field group hashes allow its rise and fall fields to have different owners. A real producer with missing or ambiguous identities must be resolved at its source; the converter cannot infer those identities from the SDF numbers.
-
-For untouched paths, conversion preserves the original conditions as well as the leaf. The existing [addf carry probe](../examples/addf-carry/bench.v) is now public: `make check-carry` uses the file-based converter, the existing addf producer profile and [unchanged probe SDF](../examples/addf-carry/original.sdf). With B=0 and CI=1, `(COND (B===1'b0 && CI===1'b1) (IOPATH A CO ...))` remains verbatim. The case-equality binding increment gives its actual path `(211,419)` ps; A changes at 10/20 ns produce CO at **10,211/20,419 ps**, matching the [independent expectation](../examples/addf-carry/expected.json). All nine carry paths are read back; the other eight retain 1 ns defaults. [Complete change](../examples/addf-carry/reference/changes.diff) · [Measured paths and events](../examples/addf-carry/reference/results.json). The old tool failed these same event expectations at 11,000/21,000 ps; the [validation record](validation.md) identifies both tools.
-
-From the repository root:
-
-```sh
-make build
-make check
-# Source-only conversion and checking; no simulator needed:
-python3 -B tools/prepare.py runs/source-review
-# An explicit fresh destination and an already built tool prefix:
-python3 -B tools/run.py --prefix .build/install --out runs/review
-```
-
-Use a new output directory for each command. A passing full run prints the three expected/observed times, missing-owner rejection, unknown-predicate rejection, and `PASS 23 derived references reproduced`, followed by the edge-annotation, mixed-record and carry results. `make check` also runs the source regressions. Inspect:
-
-| Output | What it establishes |
-|---|---|
-| `<case>/changes.diff`, `model.v`, `helper.v`, `converted.sdf` | Complete generated change from the shipped inputs |
-| `<case>/source-map.json` | Source/generated locations for every path, including collateral and untouched paths |
-| `<case>/record-map.json` | Every input occurrence, its preserved instance, processing action and output lines |
-| `<case>/field-map.json` | SDF occurrence, Liberty group/sense, edge, slot and generated location for each supplied field |
-| `capture.log`, `delivery.json` | Ordered writes, observations and source-to-pin event chains |
-| `invalid-annotation/capture.log` | Unknown second predicate rejected after the first write and before stimulus |
-
-The missing-owner negative fails at `MISSING_FIELD_OWNER`. The annotation negative must return exit 1, report the unknown compiled condition, retain the first readback and release no input events. Source regressions additionally corrupt membership, collateral endpoints, carry text and unequal field bindings. A nonzero command status is a failed check; source-only success establishes structure and mapping, while the full run also establishes the declared pin events.
-
-### Build environment
-
-`make build` uses public Icarus commit `beb32f3945f5be1f45cf5d898d440161e9c6f113` plus [initial-annotation.patch](../patches/initial-annotation.patch) and [case-equality-condition.patch](../patches/case-equality-condition.patch). The tool requirements are listed on the home page. `JOBS=8 make build` selects eight compiler jobs. To reuse a local clone or transfer inputs to an offline machine:
+Use Linux, a checkout path without spaces, a C/C++ compiler, make, autoconf, flex, bison, gperf, Python 3.9+, Git, patch, tar and coreutils. Python has no third-party dependencies. `make build` uses Icarus `beb32f3`, fixed in [build.sh](../tools/build.sh), plus [initial-annotation.patch](../patches/initial-annotation.patch) and [case-equality-condition.patch](../patches/case-equality-condition.patch). `JOBS=8 make build` selects eight compiler jobs. To reuse a local clone or transfer inputs to an offline machine:
 
 ```sh
 git -c tar.umask=0002 -C /path/to/iverilog archive --format=tar \
@@ -219,18 +278,18 @@ git -c tar.umask=0002 -C /path/to/iverilog archive --format=tar \
 ICARUS_ARCHIVE=/tmp/icarus-source.tar make build
 ```
 
-The exported archive SHA256 is `4d6471d2a79b2dcbf1270b9f494c772fd4b35e9d844683b11552c724f8283407`. The script checks it before extracting. This is a `git archive` tar, not a GitHub-generated tar.gz.
+The build script verifies the archive against its stored checksum before extraction. Supply a `git archive` tar with the command above; a GitHub-generated tar.gz has different bytes. [Validation manifest](validation.json) records the source, patches and installed tool identities.
 
 An existing Linux Docker image with the listed build tools can run the same commands without network access. Set `IMAGE` to that image's immutable ID and prepare the archive above:
 
 ```sh
 docker run --rm --network none --pull never --user "$(id -u):$(id -g)" \
   --entrypoint /bin/sh -v "$PWD:/repo" -v /tmp/icarus-source.tar:/input/icarus-source.tar:ro \
-  -w /repo "$IMAGE" -c 'ICARUS_ARCHIVE=/input/icarus-source.tar make build && make check'
+  -w /repo "$IMAGE" -c 'ICARUS_ARCHIVE=/input/icarus-source.tar make build && make check && make check-upstream'
 ```
 
-Keep using the same `/repo` mount when running that installed toolchain: Icarus embeds its installation prefix. [Current validation](validation.md) records the actual image and commands used here. Source and example execution need no historical container contents.
+Keep using the same `/repo` mount when running that installed toolchain: Icarus embeds its installation prefix. [Current validation](validation.md) records the actual image and commands used here. The checkout, authenticated archive and ordinary build dependencies supply the run inputs.
 
-### Updating derived references
+## Updating derived references
 
 `examples/*/reference/` and `examples/reference/` are the single committed reference set. Normal checks compare against them without writing. After an intentional implementation change, run the affected runner with `--refresh-references` (`run.py`, `run_annotation.py`, `run_mixed.py` or `run_carry.py`), review the diffs and record the validation. This regenerates the full diffs and location maps together; [expected.json](../examples/expected.json) remains an independent input.

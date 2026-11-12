@@ -4,7 +4,7 @@
   "repository_base": "a565911fc8068211d7970fe90cf75d2dbc81500e",
   "research_revision": "424bf08221c027a374271b8d173f100a472a9d6b",
   "first_public_revision": "1ca8ea512fc21c921e7d8889f0968cb04bb79210",
-  "candidate_kind": "delivery handoff; publication reuses the exact locally executed implementation",
+  "candidate_kind": "public documentation edit over published 98c39b1; implementation, inputs and validation responsibilities unchanged",
   "icarus_revision": "beb32f3945f5be1f45cf5d898d440161e9c6f113",
   "source_archive_sha256": "4d6471d2a79b2dcbf1270b9f494c772fd4b35e9d844683b11552c724f8283407",
   "patches_sha256": {
@@ -504,13 +504,13 @@
     "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
     "Makefile": "1e17485a529a4aeb283e412b021d0b6e89a0b5f28d219c31a0e23a5aed783549",
     "NOTICE.md": "b3367148bb075c11823bf8640f39d3596a349d718eec16d32629bc6bc810a4ea",
-    "README.md": "d59c45556af324c5241a6b66476b05e57058b141aa038ff27718f4c3421d1413",
-    "docs/examples.md": "75187a8b6c0434bff3ab6831fa70ac95a742faa8980624991cd0530817f0edc6",
+    "README.md": "a4e548553c6699cf56450ea601d19a5029640c8c14913d6d76f922b4b9df0f92",
+    "docs/examples.md": "9fd9e925cbed3d1723d7abbede5dfe9a492b76f889d65423c7734593c255f38b",
     "docs/implementation.md": "24843cd338c6f41fe11a12d487ace2b33391de68ca56a448528885603830a603",
     "docs/inputs.json": "9cdabc56ffea7df5984fcae209070ac65a3d5c44f43eca3d6547407b880875d5",
-    "docs/release.md": "35d5d56b42a9f68afbd71a462fe7598ead842069665a68c73b7dc4d8edf899a8",
-    "docs/scope.md": "6bdc573d09ebdcd446cbbbfaa17eec2b16cfa5ce9052e2d3c9dd2b57db591687",
-    "docs/validation.md": "dac5a6b8b74d537e8919365a373fa6f5428dc6a52221699c5801dfe2ad9d92a0",
+    "docs/release.md": "f729388b4a21cc0553dbd6e6160024e218396ec489cbe68a92a1d7fb75d7c33e",
+    "docs/scope.md": "337d5e3fdcc7d430bb554716c83d5b4e53ac5f9ba53db99ec1ff3d641123d0c2",
+    "docs/validation.md": "577e90f1f8eda9ffa52824d3d7407f7b82ee8e7be775a9cec6556d5cf3607f33",
     "examples/addf-carry/bench.v": "d14a9314accf4d5927180acf3cd0a39d7fb17b808752620d8bc97f42194beb2c",
     "examples/addf-carry/expected.json": "71b5cd4875d804fcd4cd7059993fa39db50f070a6ef8a6670a6fc8451a69c160",
     "examples/addf-carry/original.sdf": "9a5ea2b5e38c82b3e9b32ab08c071981b75af6a3f4c8c8cc930d4afd391fd2fc",
@@ -667,5 +667,30 @@
     "validation": "Reuse verified implementation/tool/input identities and completed execution logs; publication changes validation wording and manifest only",
     "tags_and_historical_releases": "preserved",
     "local_receipt": "gf180-ifnone-pr1771-publication-20261112/PUBLICATION_RECEIPT.json"
+  },
+  "documentation_review": {
+    "date": "2026-11-12",
+    "base": "98c39b18f0ecd4fa25080d35aa24cc2a6bca600a",
+    "scope": "README, current scope, examples, and incoming historical links",
+    "record": "gf180-ifnone-docs-20261112/DOCUMENT_REVIEW.json",
+    "record_sha256": "91589172ccaf77da2d40c8a0e72d0814ef13f7735f7284e2d7c1680e9adfa8a3",
+    "commands": "gf180-ifnone-docs-20261112/commands.sh",
+    "commands_sha256": "7b2d5f7f0b7b696a7a934b428015c7333d4d5fce83a69434357e7ec6d5aef86c",
+    "execution_log_sha256": "6b1f4e5af9c7597c566a98474f320c0354be6db7438c4e62ef899781bf5dc24d",
+    "results": {
+      "source_tests": 14,
+      "edge_annotation_combinations": 36,
+      "mixed_events": 9,
+      "mixed_dynamic_negatives": 3,
+      "carry_events": 2,
+      "carry_paths": 9,
+      "upstream_tests": 18
+    },
+    "local_links_checked": 171,
+    "source_excerpts_checked": 37,
+    "build": "reused fixed build; public checks rerun",
+    "runtime_files_inputs_expectations_references": "unchanged from base",
+    "historical_material": "linked to the existing published revision; no new archive page",
+    "remote_writes": false
   }
 }

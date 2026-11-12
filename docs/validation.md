@@ -1,6 +1,6 @@
 # Delivery handoff validation — 2026-11-12
 
-This candidate completes the existing addf carry probe's public conversion/annotation route and connects existing upstream event tests. It preserves the modeling policy, official PDK inputs, earlier independent expectations and all previously accepted references. The [scope handoff table](scope.md#handoff-from-research-to-the-current-combinational-delivery) separates carried responsibilities, completed connections, mechanism adaptations and independent extensions.
+This candidate completes the existing addf carry probe's public conversion/annotation route and connects existing upstream event tests. It preserves the modeling policy, official PDK inputs, earlier independent expectations and all previously accepted references. [Current scope](scope.md) describes accepted inputs and executed coverage. The [recorded handoff](https://github.com/JerryZhong0910/gf180-ifnone/blob/98c39b18f0ecd4fa25080d35aa24cc2a6bca600a/docs/scope.md#handoff-from-research-to-the-current-combinational-delivery) retains the research comparison and responsibility decisions.
 
 ## Compared revisions and call chains
 
