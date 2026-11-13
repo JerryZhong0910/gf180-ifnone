@@ -1,7 +1,7 @@
 --- a/vpi/sys_sdf.c
 +++ b/vpi/sys_sdf.c
-@@ -55,6 +55,14 @@
-       return sdf_timescale / pow(10.0, (double)unit);
+@@ -77,6 +77,14 @@
+       return true;
  }
  static char* sdf_fname = NULL;
 +static bool initial_annotation;
@@ -15,7 +15,7 @@
  
  /* Hierarchy separators have been normalized to dots by the parser. Split
     before decoding escapes so a literal dot remains part of its local name.
-@@ -380,8 +388,18 @@
+@@ -475,8 +483,18 @@
  	    }
  
  	    vpi_put_delays(path, &delays);
@@ -34,7 +34,7 @@
  
        if (match_count == 0) {
  	    vpi_printf("SDF ERROR: %s:%d: Unable to match ModPath %s%s -> %s in %s\n",
-@@ -484,9 +502,20 @@
+@@ -579,9 +597,20 @@
        vpiHandle callh = vpi_handle(vpiSysTfCall, 0);
        vpiHandle argv = vpi_iterate(vpiArgument, callh);
        FILE *sdf_fd;
@@ -55,7 +55,7 @@
  	    vpi_free_object(argv);
  	    return 0;
        }
-@@ -500,6 +529,7 @@
+@@ -595,6 +624,7 @@
  
        sdf_fd = fopen(fname, "r");
        if (sdf_fd == 0) {
@@ -63,7 +63,7 @@
  	    vpi_printf("SDF WARNING: %s:%d: ", vpi_get_str(vpiFile, callh),
  	               (int)vpi_get(vpiLineNo, callh));
  	    vpi_printf("Unable to open SDF file \"%s\"."
-@@ -520,7 +550,9 @@
+@@ -615,7 +645,9 @@
  
        sdf_cur_cell = 0;
        sdf_callh = callh;
@@ -73,7 +73,7 @@
        sdf_callh = 0;
  
        fclose(sdf_fd);
-@@ -542,4 +574,9 @@
+@@ -637,4 +669,9 @@
        tf_data.user_data = "$sdf_annotate";
        res = vpi_register_systf(&tf_data);
        vpip_make_systf_system_defined(res);

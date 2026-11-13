@@ -1,89 +1,54 @@
-# Delivery handoff validation — 2026-11-12
+# Fixed upstream upgrade validation — 2026-11-13
 
-This candidate completes the existing addf carry probe's public conversion/annotation route and connects existing upstream event tests. It preserves the modeling policy, official PDK inputs, earlier independent expectations and all previously accepted references. [Current scope](scope.md) describes accepted inputs and executed coverage. The [recorded handoff](https://github.com/JerryZhong0910/gf180-ifnone/blob/98c39b18f0ecd4fa25080d35aa24cc2a6bca600a/docs/scope.md#handoff-from-research-to-the-current-combinational-delivery) retains the research comparison and responsibility decisions.
+The fixed tool is now official Icarus merge [`5b9ce29`](https://github.com/steveicarus/iverilog/commit/5b9ce29b41d6af30e6ccb6e178d3ed2a71974e69), which merged [PR #1771](https://github.com/steveicarus/iverilog/pull/1771). Upstream supplies the `===` condition identity repair, so the duplicate local case-equality patch is removed. The original GF180 models, SDF inputs, owner relationships, independent event expectations and all 46 reference files are unchanged.
 
-## Compared revisions and call chains
+[Current scope](scope.md) describes accepted inputs and executed coverage. [Implementation](implementation.md#what-fixed-upstream-icarus-owns) separates upstream responsibilities from the remaining local initialization/readback facility.
 
-The starting HEAD was `a565911fc8068211d7970fe90cf75d2dbc81500e`, with a clean working tree. The audit read source at research `424bf08221c027a374271b8d173f100a472a9d6b`, first public package `1ca8ea512fc21c921e7d8889f0968cb04bb79210` and the current implementation. The research files read were checked byte-for-byte against that commit. Its matrix contains 13 masters and 29 replacement groups; six collateral mux endpoints follow the same-output rule.
+## Build and patch identity
 
-The actual research source path is `materialize_finite.standard` → `prepare_owned_inputs.standard_cell`, independently checked by `finite_source_oracle.standard_assess` → `independent_owned.standard_model/standard_cell/standard_relation`. Application annotation uses the same source verifier. RC1 extracted those transformation/checking functions, but its `intake.writer_join` produced only O rows. The current file-based `prepare_files` entry carries both target and ordinary records through source classification, conversion, independent text checking and record/field maps. Existing source and mixed tests exercise that responsibility; this round did not duplicate them.
+The merge's code tree is identical to the independently tested PR candidate. The new source was exported from the official merge, authenticated by the digest in [build.sh](../tools/build.sh), and freshly configured, built and installed in the same Linux Docker image used for the previous validation, with networking disabled. The compiler's own `make check` passed.
 
-The producer's earlier source relationship was also traced: `producer.adapter` → `source_oracle.assess_transcript` → `source_join.when_identity`, using `producer_formats` for strict transcript decoding and exact binary32 writer arithmetic. This verifies graph/Liberty transition identity, source conditions/WHEN, labelled min/max analysis points and before/after export state. The public owner ledger is the input boundary for that relationship; current hashes and field checks do not recreate a producer capture or prove a newly supplied acquisition ledger. No OpenSTA or full-chip producer process was rerun.
+The remaining [initial-annotation patch](../patches/initial-annotation.patch) needed new context because upstream inserted an INTERCONNECT helper before `sdf_fname`. Its added/removed source lines are identical to the previous patch's applied delta; only context and hunk positions changed. It applies to the new source with zero fuzz and zero offsets. The fresh build uses this single patch, and its cache stamp binds the new commit and that patch's content.
 
-The event assessor was traced through `finite_runtime.assess` → `path_assessment.predict_causal/compare_causal/compare_outputs` → `semantic_oracle`. Its receiving/pre-path history and object-identity interfaces require adaptation to replace the research observer. Current pin observations and the selected upstream events retain their specific scope. Scan, chip INTERCONNECT/timing checks and physical execution remain independent extensions. These distinctions are recorded as handoff outcomes, not as inherited full-population PASS claims.
+[validation.json](validation.json) records the complete source, patch, installed binary and evidence hashes. The [input manifest](inputs.json) continues to authenticate the supplied PDK files, fixtures and independent expectations.
 
-## Carry repair and fixed/upstream comparison
+## Commands and results
 
-The [existing probe input](../examples/addf-carry/original.sdf) and [bench](../examples/addf-carry/bench.v) were copied byte-for-byte from the preceding `carry-boundary/` execution. Its independent expectation was frozen before the new public entry's first run: B=0, CI=1 makes CO follow A, and the source SDF's typical fields are 211/419 ps.
-
-| Same probe and expectation | Actual target readback | Observed CO events after A at 10/20 ns | Result |
-|---|---|---|---|
-| Previous pinned tool plus initial-annotation patch | 1,000/1,000 ps; no condition identity | 11,000/21,000 ps | Public runner failed `CARRY_PIN_EVENTS`; full stimulus completed |
-| Same source version plus case-equality binding increment | 211/419 ps, exact source-condition identity | 10,211/20,419 ps | Both events match; all nine carry paths checked, eight defaults retained |
-
-Both fixed source `beb32f3945f5be1f45cf5d898d440161e9c6f113` and inspected official HEAD [`af170a0b5adf0dc35c71f9d7f813b3dfd61b7d33`](https://github.com/steveicarus/iverilog/commit/af170a0b5adf0dc35c71f9d7f813b3dfd61b7d33) omit case-equality condition keys in the compiler and SDF reader. The latter adds ordered logical OR and unrelated changes, so advancing the pin alone would not repair the carry binding. The [increment](../patches/case-equality-condition.patch) adds distinct case-equality identity without changing HDL evaluation, model declarations, SDF conditions, fallback or four-state policy. It applies to the inspected upstream source with zero fuzz; the runtime measurements here use the fixed base.
-
-The existing upstream rejection test still rejects `===` SDF against a `==` HDL path and the converse, with its original input, delay and event expectations. One diagnostic gold line changes from unsupported syntax to an unmatched parsed condition. That is the observable parser-support change, not a changed timing expectation.
-
-A first full regression exposed the same distinction in the existing unsynchronized-mux-condition negative: the newly parsed condition now triggers the strict initial-entry mismatch guard, so that run exits before the event oracle. The negative harness now uses ordinary `$sdf_annotate` for its three corrupted SDF files, sharing one compiled design and the unchanged stimulus/expected events. They all finish at 120 ns and fail `MIXED_PIN_EVENTS`. The positive retains `$sdf_annotate_initial`, and the original strict cold-rejection test remains effective.
-
-## Tools, commands and results
-
-| Tool/input | Identity |
-|---|---|
-| Icarus base | `beb32f3945f5be1f45cf5d898d440161e9c6f113` |
-| Source `git archive` SHA256 | `4d6471d2a79b2dcbf1270b9f494c772fd4b35e9d844683b11552c724f8283407` |
-| Initial-annotation patch | Unchanged SHA256 `9096ec309018e69a752ff148c90b73d8f77eb1395e2f51767375f3e3cd5d062c` |
-| Case-equality increment and installed binaries | Exact hashes in [validation.json](validation.json) |
-| Docker image | `cva6-sha3-ready:20261014`, immutable ID `sha256:9bf368f4b38f15350dec8a8a0283225bcebddf51a91793c800ca60475d37a210` |
-| Execution environment | Ubuntu 24.04.4, uid 1000, network disabled; `/repo`, `/evidence`, source archive mounted read-only at `/input/icarus-source.tar` |
-
-The tool change received a fresh configure/build/install from the authenticated source archive in Docker. Both patches applied without fuzz. The build cache now authenticates the ordered pair of patch contents. The original runtime build remains identified by the saved baseline record.
+From the repository root, using the [build environment](examples.md#build-environment):
 
 ```sh
-# Existing tool: the new carry entry first failed its unchanged event oracle.
-python3 -B tools/run_carry.py --out /evidence/carry-before
-# Rebuild with the incremental fix, then generate the carry reference.
-ICARUS_ARCHIVE=/input/icarus-source.tar JOBS=4 make build
-python3 -B tools/run_carry.py --refresh-references --out /evidence/carry-after
-# Final candidate, after preserving event-based negative checks:
+make build
 make check
 make check-upstream
-make check-carry
 ```
 
-| Final check | Observed result |
+The build was fresh for this upgrade. The public checks ran against that installed tool without regenerating any reference or expected-event input.
+
+| Check | Observed result |
 |---|---|
-| Existing source suite | 14/14 passed, including authentic-but-wrong Liberty condition, partial owners, wrong edge/slot, ordinary loss/condition synchronization and untouched carry |
-| Original case simulations | All six ordered writes and original complete event lists reproduced; S at 10,233 ps, Z at 50,511/70,617 ps |
-| Original cold negative | Missing named predicate rejected after preserving the first write and before stimulus |
-| Edge-annotation controls | 36/36 combinations; first/final actual edge/slot readback and all scored output events matched |
-| Mixed mux2 | Nine events, all eight path objects and ordinary partial/empty writes passed; all three corruptions reached and failed the event oracle |
-| Public carry entry | Source conversion preserved both records; original carry COND unchanged; nine carry paths read back and CO at 10,211/20,419 ps |
-| References | All 42 pre-existing reference files reproduced unchanged; four carry references reproduced |
-| Existing upstream COND regressions | 15/15 passed; rejection still distinguishes logical and case equality |
-| Newly connected existing upstream event tests | 3/3 passed: first valid time-zero edge, asymmetric pending-pulse histories, four-state/zero-delay values |
+| Source regressions | 14/14 passed, including source membership, field binding, ordinary-record retention and condition synchronization. |
+| Original addf/mux4 examples | All six ordered writes and complete expected event lists reproduced: S at 10,233 ps; Z at 50,511/70,617 ps. |
+| Strict initialization negative | Unknown second predicate rejected after preserving the first write and before stimulus. |
+| Input-edge annotation controls | All 36 combinations of model, SDF record form/order and min/typ/max triplet selection passed actual path readback and four scored events each. |
+| Mixed mux2 | Nine events and all eight path objects matched; each of three corruptions completed the stimulus and failed the independent event check. |
+| Addf carry | Original carry COND retained; CO at 10,211/20,419 ps. All nine carry paths checked; eight retain their 1 ns defaults. |
+| Committed references | All 46 reproduced unchanged, including the carry and mixed-record results. |
+| Upstream native selection | 23/23 passed: 20 condition-binding tests and three existing event tests. This includes the merged case-equality test and four OR tests. |
+| Upstream COND through vlog95 | 20 expected outcomes: eight simulations passed and 12 existing translation cases retained their expected compile errors. The new case-equality fixture checks all 32 events in both native and translated flows. |
 
-No new duplicate source/event tests were created for responsibilities already checked. The carry probe is the new public regression; the three added upstream entries use the tests shipped by the fixed source. [Original follow-up validation](https://github.com/JerryZhong0910/gf180-ifnone/blob/a565911fc8068211d7970fe90cf75d2dbc81500e/docs/validation.md), [RC1 acceptance](release.md) and historical family/application results retain their original execution identities.
+The additional vlog95 check uses the same upstream tests and their existing expectations. With the fixed installation available at the path used to build it, run:
 
-## Comparison and retained execution evidence
+```sh
+gf180_root=$PWD
+icarus_source=$(cat .build/SOURCE)
+sed -n '/^sdf_cond/p' tests/upstream.list > /tmp/gf180-cond.list
+(cd "$icarus_source/ivtest" && PATH="$gf180_root/.build/install/bin:$PATH"   python3 -B vvp_reg.py --vlog95 /tmp/gf180-cond.list)
+```
 
-All pre-existing input-manifest entries, including PDK sources and independent expected files, match the starting HEAD. The carry input and bench also match the preceding probe; the carry expectation matches its pre-execution freeze. Model/SDF converter and independent source-checker behavior are unchanged. The source relation, compiled readback and pin delivery connect the completed carry duty without changing the selected model representation.
+The case-equality regression uses standard `$sdf_annotate` without PDK inputs. Its fixture bytes match the original PR's frozen inputs. The existing operator-mismatch regressions remain effective; `===` and `==` retain different condition identities. The [public test list](../tests/upstream.list) makes these upstream checks part of the fixed tool's regression selection.
 
-The local `gf180-ifnone-handoff-20261112/` record contains `BASELINE.json`, `HANDOFF.json`, `UPSTREAM_COMPARISON.json`, the before/after carry captures, new build log, first regression failure and final successful log. [validation.json](validation.json) binds the distributed candidate, input manifest, tool binaries and execution evidence by SHA256. Public measured results and complete changes remain beside the cases. That local handoff made no remote writes. The subsequent independent Icarus submission is recorded below; the GF180 patch, inputs, event expectations and release/tag refs remain unchanged.
+## Comparison with earlier evidence
 
+The new execution replaces the fixed-tool identity for current use. It preserves the selected model/SDF strategy and independent predictions. The [preceding validation](https://github.com/JerryZhong0910/gf180-ifnone/blob/efb18976afa3dba64c5430dba0c662fa45a75300/docs/validation.md) retains the original carry failure, research handoff and independent PR baseline comparison under their original tool identities. [RC1 acceptance](release.md) and [historical family/application results](https://github.com/JerryZhong0910/gf180-ifnone/blob/98c39b18f0ecd4fa25080d35aa24cc2a6bca600a/docs/scope.md#historical-execution-and-current-examples) remain at their existing locations.
 
-## Independent Icarus submission
-
-[Icarus PR #1771](https://github.com/steveicarus/iverilog/pull/1771) submits candidate [`8528dfb2b86120c411bbbc021ce615028d914f3e`](https://github.com/steveicarus/iverilog/commit/8528dfb2b86120c411bbbc021ce615028d914f3e) directly against official `af170a0b5adf0dc35c71f9d7f813b3dfd61b7d33`. Its two-file production delta is identical to the retained [fixed increment](../patches/case-equality-condition.patch). The standalone regression uses standard `$sdf_annotate`, four buffer paths and hand-authored SDF; it has no PDK or initial-annotation patch dependency.
-
-The new regression checks 32 output events for `=== 0/1`, mixed `&&`/`||` conditions and 0/1/X/Z control values. Both the unmodified parent and candidate were freshly built in the same Docker image recorded above, with networking disabled. Both builds and `make check` passed.
-
-| Flow | Unmodified official parent | Independent candidate |
-|---|---|---|
-| Native | Compiled; event check failed at 131 ps instead of 103 ps | All 32 new events passed; 20/20 COND regressions passed |
-| Vlog95 | Translated and compiled; same 131-versus-103 ps event failure | All 32 new events passed; 8 simulations passed and 12 existing expected compile rejections remained effective |
-
-The existing comparison and OR rejection tests retain their models, SDF delays and event expectations. Two diagnostic gold lines now identify an unmatched parsed condition. The fixed GF180 base predates OR support and needs only its original one-line diagnostic update.
-
-The local `icarus-case-equality-20261112/` record contains the committed candidate, `FROZEN_INPUTS.json`, `VALIDATION.json`, build and per-test logs, and `PR.json`. The PR includes commands for reproducing the COND selection through the upstream test runner. These are new upstream execution results; the GF180 results above are reused unchanged. The source pin, both local patches, all original PDK files, independent event expectations and `rc1` remain byte-for-byte or ref-identical to the handoff. The separate PR association changes documentation only. Publication of this GF180 handoff reuses the exact validated implementation and fixed tools above; `rc1` and historical release assets remain unchanged.
+The local `gf180-ifnone-upstream-1771-20261113/` execution record contains the baseline, verified merge metadata, authenticated archive, patch-context comparison, fresh build log, native/vlog95 logs and document checks. Original PDK inputs, event expectations, references, `rc1` and historical releases remain unchanged.

@@ -2,14 +2,13 @@
 # SPDX-License-Identifier: Apache-2.0
 set -eu
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-rev=beb32f3945f5be1f45cf5d898d440161e9c6f113
-sha=4d6471d2a79b2dcbf1270b9f494c772fd4b35e9d844683b11552c724f8283407
+rev=5b9ce29b41d6af30e6ccb6e178d3ed2a71974e69
+sha=9e4709f2299af169d6855cd013720545ec5032f6224901a25b12001b3d41f03b
 patchfile="$root/patches/initial-annotation.patch"
-condition_patch="$root/patches/case-equality-condition.patch"
 dest="$root/.build"
 jobs=${JOBS:-4}
 mkdir -p "$dest"
-patchsha=$(cat "$patchfile" "$condition_patch" | sha256sum | cut -d' ' -f1)
+patchsha=$(sha256sum "$patchfile" | cut -d' ' -f1)
 if test -x "$dest/install/bin/iverilog" && test -x "$dest/install/bin/vvp" && test -f "$dest/SOURCE" && test -f "$dest/BUILT" && test "$(cat "$dest/BUILT")" = "$rev $patchsha"; then
     echo "Toolchain already built at $dest/install"
     exit 0
@@ -31,7 +30,6 @@ tar xf "$archive" -C "$work/src"
 cd "$work/src"
 # Use patch against this source archive even if an enclosing directory is a Git checkout.
 patch --batch --fuzz=0 -p1 < "$patchfile"
-patch --batch --fuzz=0 -p1 < "$condition_patch"
 sh autoconf.sh
 cd "$work/obj"
 "$work/src/configure" --prefix="$dest/install"

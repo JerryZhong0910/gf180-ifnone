@@ -12,14 +12,14 @@ make check
 make check-upstream
 ```
 
-`make check` runs the 14 source regressions, original addf/mux4 simulations, mux2 source check, 36 edge-annotation comparisons, mixed mux2 and addf carry. It checks expected failures and reproduces the committed reference outputs. `make check-upstream` runs 18 selected condition and event regressions against the same fixed tool source.
+`make check` runs the 14 source regressions, original addf/mux4 simulations, mux2 source check, 36 edge-annotation comparisons, mixed mux2 and addf carry. It checks expected failures and reproduces the committed reference outputs. `make check-upstream` runs 23 selected condition and event regressions against the same fixed tool source.
 
 | Run a selected check | Successful result |
 |---|---|
 | `make test` | Source structure, field bindings, ordinary-record handling and rejection controls pass. |
 | `make check-mixed` | Six input records become eight; nine output events match; three dynamic corruptions reach and fail event checks. |
 | `make check-carry` | Original carry COND preserved; nine carry paths checked; CO at 10,211/20,419 ps. |
-| `make check-annotation` | 36 model/record/order/corner combinations match actual path readback and complete scored events. |
+| `make check-annotation` | 36 combinations of model, SDF record form/order and min/typ/max triplet selection match actual path readback and complete scored events. |
 
 For source-only conversion and checking, no simulator is needed:
 
@@ -146,9 +146,9 @@ The addf view transforms A/B/CI → S, including the unannotated B and CI groups
 
 For nine-track `addf_1`, conversion leaves the carry declarations and their SDF records intact. `make check-carry` uses the public file-based converter with the [addf profile](../examples/addf/producer.json), [carry SDF](../examples/addf-carry/original.sdf) and [bench](../examples/addf-carry/bench.v). With B=0 and CI=1, A → CO uses the original `B===1'b0 && CI===1'b1` condition.
 
-The fixed case-equality binding patch, linked to [Icarus PR #1771](https://github.com/steveicarus/iverilog/pull/1771), gives that path `(211,419)` ps. A changes at 10/20 ns produce CO at **10,211/20,419 ps**, matching the [independent expectation](../examples/addf-carry/expected.json). All nine carry paths are read back; the other eight retain 1 ns defaults. [Complete model/helper/SDF diff](../examples/addf-carry/reference/changes.diff) · [Record destinations](../examples/addf-carry/reference/record-map.json) · [Measured paths and events](../examples/addf-carry/reference/results.json)
+The upstream case-equality binding support from [Icarus PR #1771](https://github.com/steveicarus/iverilog/pull/1771), included in the fixed build, gives that path `(211,419)` ps. A changes at 10/20 ns produce CO at **10,211/20,419 ps**, matching the [independent expectation](../examples/addf-carry/expected.json). All nine carry paths are read back; the other eight retain 1 ns defaults. [Complete model/helper/SDF diff](../examples/addf-carry/reference/changes.diff) · [Record destinations](../examples/addf-carry/reference/record-map.json) · [Measured paths and events](../examples/addf-carry/reference/results.json)
 
-The [validation record](validation.md#carry-repair-and-fixedupstream-comparison) shows the old-tool control reaching the same event checks with 1 ns defaults. The runtime binding fix preserves the original model condition and the candidate's four-state policy.
+The [original carry validation](https://github.com/JerryZhong0910/gf180-ifnone/blob/efb18976afa3dba64c5430dba0c662fa45a75300/docs/validation.md#carry-repair-and-fixedupstream-comparison) shows the old-tool control reaching the same event checks with 1 ns defaults. The runtime binding fix preserves the original model condition and the candidate's four-state policy.
 
 ## mux4: an unselected X and two fallback deliveries
 
@@ -270,11 +270,11 @@ Three dynamic negatives run the unchanged stimulus through ordinary `$sdf_annota
 
 ## Build environment
 
-Use Linux, a checkout path without spaces, a C/C++ compiler, make, autoconf, flex, bison, gperf, Python 3.9+, Git, patch, tar and coreutils. Python has no third-party dependencies. `make build` uses Icarus `beb32f3`, fixed in [build.sh](../tools/build.sh), plus [initial-annotation.patch](../patches/initial-annotation.patch) and [case-equality-condition.patch](../patches/case-equality-condition.patch). `JOBS=8 make build` selects eight compiler jobs. To reuse a local clone or transfer inputs to an offline machine:
+Use Linux, a checkout path without spaces, a C/C++ compiler, make, autoconf, flex, bison, gperf, Python 3.9+, Git, patch, tar and coreutils. Python has no third-party dependencies. `make build` uses Icarus `5b9ce29` (the merge of PR #1771), fixed in [build.sh](../tools/build.sh), plus [initial-annotation.patch](../patches/initial-annotation.patch). `JOBS=8 make build` selects eight compiler jobs. To reuse a local clone or transfer inputs to an offline machine:
 
 ```sh
 git -c tar.umask=0002 -C /path/to/iverilog archive --format=tar \
-  beb32f3945f5be1f45cf5d898d440161e9c6f113 -o /tmp/icarus-source.tar
+  5b9ce29b41d6af30e6ccb6e178d3ed2a71974e69 -o /tmp/icarus-source.tar
 ICARUS_ARCHIVE=/tmp/icarus-source.tar make build
 ```
 

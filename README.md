@@ -57,7 +57,7 @@ make check
 make check-upstream
 ```
 
-`make build` verifies and builds the fixed Icarus source plus the two local patches under `.build/install`. [Offline and Docker instructions](docs/examples.md#build-environment) use the same source and checks. `make check` runs the source suite, supplied cell examples, edge-annotation comparisons and negative controls; `make check-upstream` adds the selected Icarus condition and event regressions.
+`make build` verifies and builds the fixed Icarus source plus the local initialization/readback patch under `.build/install`. [Offline and Docker instructions](docs/examples.md#build-environment) use the same source and checks. `make check` runs the source suite, supplied cell examples, edge-annotation comparisons and negative controls; `make check-upstream` adds the selected Icarus condition and event regressions.
 
 Each example runner prints a fresh `runs/` directory containing its generated files and raw logs. Success requires source checks, actual path readback, complete expected output events and rejection of the intended corruptions. Normal runs also reproduce the committed references. [Commands and output guide](docs/examples.md#run-and-interpret-the-results)
 
@@ -66,8 +66,8 @@ Each example runner prints a fresh `runs/` directory containing its generated fi
 | [Seven-track mixed mux2](docs/examples.md#convert-target-and-ordinary-records-together), `make check-mixed` | The four select events above plus five data-path events; ordinary records and partial writes remain effective. |
 | [Nine-track addf sum](docs/examples.md#addf-four-conditions-including-members-after-ifnone), included in `make check` | Conditions after `ifnone` join the fallback membership; A → S delivers at 10,233 ps. |
 | [Nine-track mux4](docs/examples.md#mux4-an-unselected-x-and-two-fallback-deliveries), included in `make check` | An unselected X enables fallback while the output stays known; Z delivers at 50,511 and 70,617 ps. |
-| [Nine-track addf carry](docs/examples.md#addf-carry-preserve-the-record-and-bind-its-condition), `make check-carry` | The original carry condition stays intact; CO delivers at 10,211 and 20,419 ps. The binding fix is [Icarus PR #1771](https://github.com/steveicarus/iverilog/pull/1771). |
-| [Input-edge annotation comparison](docs/examples.md#what-happens-if-the-select-path-becomes-simple), `make check-annotation` | 36 model/record/order/corner combinations compare actual paths and complete event lists. |
+| [Nine-track addf carry](docs/examples.md#addf-carry-preserve-the-record-and-bind-its-condition), `make check-carry` | The original carry condition stays intact; CO delivers at 10,211 and 20,419 ps. The upstream binding fix is [Icarus PR #1771](https://github.com/steveicarus/iverilog/pull/1771). |
+| [Input-edge annotation comparison](docs/examples.md#what-happens-if-the-select-path-becomes-simple), `make check-annotation` | 36 combinations of model, SDF record form/order and min/typ/max triplet selection compare actual paths and complete event lists. |
 
 Nine-track delays and the ordinary mux2 data-path delays are asymmetric synthetic fixtures; the seven-track select fields above come from real producer records. [Scope](docs/scope.md#executed-coverage) separates model conversion, supplied-field checking and simulated events for each master. [Validation](docs/validation.md) records the tools, commands and results; [input identities](docs/inputs.json) and the [validation manifest](docs/validation.json) maintain the full checksums.
 
