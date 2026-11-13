@@ -1,6 +1,6 @@
 # Historical RC1 acceptance
 
-This page records the **2026-11-04 acceptance and 2026-11-06 publication**. The current implementation and results are described in [validation.md](validation.md). Historical release/tag bytes remain available at [rc1](https://github.com/JerryZhong0910/gf180-ifnone/releases/tag/rc1).
+This page records the **2026-11-04 acceptance and 2026-11-06 publication**. To use this historical snapshot, follow the [rc1 README and its build commands](https://github.com/JerryZhong0910/gf180-ifnone/blob/rc1/README.md#run-the-examples). Its [release assets](https://github.com/JerryZhong0910/gf180-ifnone/releases/tag/rc1) preserve that source and tool baseline. For the current mixed-record, carry, edge-annotation and upstream checks, use the [main checkout instructions](../README.md#run-and-see-the-result) and [current validation](validation.md).
 
 The accepted candidate was extracted into an empty directory and executed in rootless Linux mount, PID and network namespaces. Only the extracted source, authenticated official Icarus archive and ordinary host compiler/OS dependencies were visible. HOME and temporary storage started empty; networking was disabled. `make build` and `make check` returned 0.
 

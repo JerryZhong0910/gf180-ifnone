@@ -4,7 +4,7 @@ The supplied examples include every model, SDF, Liberty group, owner ledger, ben
 
 ## Run and interpret the results
 
-From the repository root, with the [build dependencies](#build-environment) installed:
+Use the [main checkout instructions](../README.md#run-and-see-the-result), then run from that checkout's root with the [build dependencies](#build-environment) installed:
 
 ```sh
 make build
@@ -95,7 +95,7 @@ The [converted SDF](../examples/mux2-7t/reference/converted.sdf) writes one fiel
 
 The [ledger](../examples/mux2-7t/producer.json) retains the original producer record identities and byte offsets for these real fields; the SDF wrapper contains just this cell. The source-only case checks their mapping, and the [mixed-record run](#convert-target-and-ordinary-records-together) measures select and data deliveries. [Original acquisition and circuit results](https://github.com/JerryZhong0910/gf180-ifnone/blob/98c39b18f0ecd4fa25080d35aa24cc2a6bca600a/docs/scope.md#historical-execution-and-current-examples).
 
-The full diff also rewrites six I0/I1 → Z declarations to named conditions and explicit fallback. Their simple path form, endpoints and one-to-one multiplicity stay intact. The independent checker verifies these predicate cones as well as the select pair.
+The full diff also rewrites six I0/I1 → Z declarations because the candidate makes fallback membership explicit for every endpoint group feeding Z. Each data group's fallback depends on its own two conditions, alongside the unconditional S edge pair. The data paths keep their simple form, endpoints, defaults and one-to-one declaration relation; the helper's mux logic is unchanged. The independent checker verifies these predicate cones as well as the select pair. The [mixed example](#convert-target-and-ordinary-records-together) shows the corresponding ordinary SDF condition rename and measures data-path delivery; [implementation](implementation.md#what-the-python-tools-own) explains the representation choice.
 
 ## addf: four conditions including members after `ifnone`
 

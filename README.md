@@ -2,7 +2,7 @@
 
 Some GF180 cell models attach `ifnone` to an edge-sensitive timing path. Icarus warns that this form is unsupported and omits the declaration. The output can reach the right logic value without the intended path delay.
 
-This repository delivers a candidate GF180 model/SDF repair, runnable examples and independent checks. It makes fallback conditions explicit and assigns each SDF field to its input edge and output transition. The Icarus increments provide the condition binding and annotation checks used by the examples.
+This repository delivers a candidate GF180 model/SDF repair, runnable examples and independent checks. It makes fallback conditions explicit and assigns each SDF field to its input edge and output transition. The fixed Icarus source supplies condition binding and module-path event handling; a local patch supplies the examples' initialization checks and delay readback. [Upstream improvements and how this repository checks them](docs/implementation.md#what-fixed-upstream-icarus-owns) explain that division.
 
 [Check input suitability](docs/scope.md) · [Inspect a real change](#what-changes-in-a-real-cell) · [Run the examples](#run-and-see-the-result) · [Supply your own files](docs/examples.md#inputs-for-another-cell) · [Review the Icarus changes](docs/implementation.md#what-fixed-upstream-icarus-owns)
 
@@ -30,7 +30,9 @@ The two [source SDF records](examples/mux2-7t/original.sdf) both say `(IOPATH S 
 +(IOPATH (negedge S) Z () (0.382399:0.382399:0.382399))
 ```
 
-The empty companion slot keeps its previous value. The negative-unate record supplies the other two fields. **The independent checker verifies all four field bindings; `make check-mixed` measures their delivery.** Its [complete Verilog/helper/SDF diff](examples/mux2-7t/reference/changes.diff) also shows how the collateral I0/I1 data paths retain their simple path form while acquiring explicit predicates. [Original model](upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.behavioral.v) · [Converted model](examples/mux2-7t/reference/model.v)
+The empty companion slot keeps its previous value. The negative-unate record supplies the other two fields. **The independent checker verifies all four field bindings; `make check-mixed` measures their delivery.** [Complete Verilog/helper/SDF diff](examples/mux2-7t/reference/changes.diff) · [Original model](upstream/gf180mcu_fd_sc_mcu7t5v0__mux2_2.behavioral.v) · [Converted model](examples/mux2-7t/reference/model.v)
+
+The full diff also changes I0/I1 → Z because this candidate expresses fallback membership separately for each input–output group across the affected output Z. Naming the data-path conditions and their fallback avoids mixing that policy with Icarus's destination-wide legacy `ifnone` selection. Each data group keeps its three simple paths, endpoints and default delays; the mux logic stays unchanged. Ordinary SDF `COND` records must then name the same predicates as the model, as the [mixed example's before/after](docs/examples.md#convert-target-and-ordinary-records-together) shows. This is the candidate's chosen representation, not a requirement imposed on every simulator.
 
 With the original mux2 helper and a 1 ns / 1 ps timebase, the mixed-record fixture measures both output transitions for each select edge. The SDF values below are the unchanged real seven-track fields; Icarus rounds each delay to 1 ps before scheduling:
 
@@ -49,13 +51,19 @@ On the fixed Icarus build used here, repeated bare `ABSOLUTE IOPATH` records ove
 
 ## Run and see the result
 
-Use Linux with Python 3.9+ and the [build dependencies](docs/examples.md#build-environment). Run from the repository root in a path without spaces:
+**Use `main` for the commands and examples on this page.** Use Linux with Python 3.9+ and the [build dependencies](docs/examples.md#build-environment), and choose a checkout path without spaces:
 
 ```sh
+git clone --branch main https://github.com/JerryZhong0910/gf180-ifnone.git
+cd gf180-ifnone
 make build
 make check
 make check-upstream
 ```
+
+The [release page](https://github.com/JerryZhong0910/gf180-ifnone/releases) currently contains only **rc1**, an earlier snapshot without the current mixed-record, carry and edge-annotation commands or upstream regression selection. To reproduce rc1, follow [its own README](https://github.com/JerryZhong0910/gf180-ifnone/blob/rc1/README.md#run-the-examples) and [acceptance record](docs/release.md).
+
+For a fixed comparison of the current examples, run `git switch --detach 97f6829` after cloning and before building; that project's [validation record](https://github.com/JerryZhong0910/gf180-ifnone/blob/97f68296043e72320ac3b7926444ab67fffc67f2/docs/validation.md) identifies the executed inputs and results. The project revision selects the converter, fixtures and checks. Separately, [build.sh](tools/build.sh) pins and authenticates the Icarus source commit and local patch; a system-installed Icarus release is not the tested toolchain.
 
 `make build` verifies and builds the fixed Icarus source plus the local initialization/readback patch under `.build/install`. [Offline and Docker instructions](docs/examples.md#build-environment) use the same source and checks. `make check` runs the source suite, supplied cell examples, edge-annotation comparisons and negative controls; `make check-upstream` adds the selected Icarus condition and event regressions.
 
